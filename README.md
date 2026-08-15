@@ -326,4 +326,4 @@ railway init && railway up
 Set `ANTHROPIC_API_KEY` in the host's environment. Nothing else is required — the
 knowledge pack ships in the image, and `prebuild` bundles the artifact runner.
 
-> Not yet deployed. The Dockerfile has been written but never built or pushed.
+> Deployed at https://prox-challenge-production-db9e.up.railway.app/
