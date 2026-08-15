@@ -289,3 +289,80 @@ Cloned the repo to a scratch directory and ran it as an evaluator would:
   needs the user's Railway/Render account.
 - **Video walkthrough.** Needs the user.
 - **Full eval re-run** after the Phase 4 fixes (~$2.50 of API budget).
+
+---
+
+## Phase 6 — Independent adversarial review, and the fixes
+
+An independent reviewer was pointed at the finished system with instructions to
+attack it. It returned 2 critical, 9 high and 13 medium findings. The critical
+two were the exact failure this architecture is built to prevent — **a wrong
+number in front of the user with a citation attached** — and neither was caught
+by 59 passing tests, the numeric QA gate, or my own adversarial pass.
+
+### Critical, both fixed and regression-tested
+
+**C-1 · `parseVoltage` concatenated digits.** `"120 VAC 20 amp circuit"` stripped
+to `"12020"`, which is greater than 160 and so resolved to **240V**. A user on a
+120V circuit asking about 100A was told they could weld **continuously**; the
+manual rates that point at **40% duty** (p. 7). Reachable directly from the model,
+since the tool schema accepts a free string. Now matches voltage tokens, rejects
+out-of-range values, and returns null on `"120/240"` so the agent asks which cord
+is plugged in.
+
+**C-2 · Gas flow was MIG-only, served for every process.** `20–30 SCFH` citing
+p. 20 was returned for TIG and stick as well. TIG is **10–25 SCFH (p. 30)**;
+stick and flux-cored use **no gas** (p. 32, Selection Chart). Argon at the MIG
+rate on a TIG torch causes turbulence and breaks the shield. **The QA gate could
+not have caught this** — the number does appear on the page it cites, just not
+for that process. That is a real limitation of `08_qa.py` worth remembering.
+
+### High, fixed
+- **CSP named the wrong origin.** It used the origin Next sees, not the one the
+  browser used. Behind any reverse proxy — Railway, Render, Fly, i.e. every real
+  deployment — the runner's own scripts would be blocked and the artifact panel
+  would sit on "Starting sandbox…" forever while chat kept working. Invisible on
+  localhost. Verified fixed by replaying `X-Forwarded-Host`.
+- **`text/html` artifacts had no CSP at all**, because a `srcdoc` document
+  inherits from the embedding page and the app shell deliberately has none. The
+  isolation half held (opaque origin) but the network half did not. The policy is
+  now injected into the document itself, ahead of any script.
+- **`conservative_pct` was an over-estimate above the rated range.** At 220A —
+  the machine's published max — it reported 25%, when the true figure must be
+  lower. Now omitted there and named `max_published_pct`; the bracketed case
+  states the bound as an explicit `Math.min` rather than relying on duty cycle
+  happening to decrease with amperage.
+- **Troubleshooting returned confident nonsense.** The process bonus was applied
+  before the relevance filter, so "how do I make coffee" with process=MIG
+  returned three matches. Separately, entries whose causes were all filtered out
+  were returned with an empty `causes` array and no citation — the shape most
+  likely to make the model fill the gap from prose. Both fixed.
+- **The polarity table was quotable from the system prompt**, behind a soft "call
+  the tool anyway" note. That made the project's central claim — grounding is
+  mechanical, not an instruction — false for its highest-traffic question class.
+  Replaced with a pointer.
+- **Parser:** a lone `\r` broke split-invariance; a stray `<options>` in prose
+  swallowed the rest of the message including any artifact; tag matching had no
+  name boundary; and **my own `>` fix had regressed** into losing whole artifacts
+  on an unbalanced quote.
+- **`parser.flush()` was not on every exit path**, so an aborted stream left an
+  artifact streaming forever.
+
+### What this says about the test suite
+Every one of these shipped green. The tests asserted the happy path; the bugs
+lived just outside it. Two specific traps worth noting:
+- `lookups.test.ts`'s "returns nothing for an unrelated query" passed **only
+  because it omitted the process argument** — while production always passes it.
+- The CRLF test called `parseComplete` only, never replaying at every offset, so
+  it read as coverage while the invariance property was broken.
+
+19 regression tests added (`regressions.test.ts`, plus additions to
+`edge.test.ts`). **78/78 pass.**
+
+### Not fixed, recorded instead
+Medium and low findings not addressed are listed in REVIEW_BRIEF.md so they are
+not lost: `parseThickness` treating millimetres as inches, SVG/mermaid artifacts
+rendering in the parent origin behind a sanitizer rather than in the sandbox,
+`08_qa.py` false-greening on a fresh clone (it globs a gitignored directory),
+`--env-file` making the friendly key-missing errors unreachable, and several
+troubleshooting entries that drop printed causes from om-43/om-44.
