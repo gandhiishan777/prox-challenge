@@ -81,7 +81,7 @@ cannot do. A text-only pipeline answers "what settings for TIG aluminium?" with
 confident nonsense. That single measurement is why every page goes through vision
 transcription rather than text extraction.
 
-The stages (`scripts/00`–`08`, re-runnable via `scripts/run_pipeline.sh`):
+The stages (`scripts/00_inspect.py` through `08_qa.py`, re-runnable via `scripts/run_pipeline.sh`):
 
 1. **Inspect** — page counts, text density, and a vector-drawing census.
 2. **Render** — every page at 150 DPI, which is where the vision API's downscale

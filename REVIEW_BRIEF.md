@@ -216,7 +216,7 @@ the SSE path is verified by curl and in the browser.
 ```bash
 npm install
 cp .env.example .env      # add ANTHROPIC_API_KEY
-npm test                  # 54 unit tests, no API key needed, ~0.5s
+npm test                  # 59 unit tests, no API key needed, ~0.5s
 
 python3 scripts/08_qa.py  # knowledge pack integrity, no API key needed
 
