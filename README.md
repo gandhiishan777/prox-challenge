@@ -243,10 +243,17 @@ eval/                      gold set + graded runner
 - **Compiler (8)** — JSX, hooks, `@/components/ui/*` resolution, unknown imports
   rejected with a useful message, host globals not leaked into artifact scope.
 
-`python3 scripts/08_qa.py` re-checks the knowledge pack: every numeric value in the
-curated data must appear on the page it cites. It earned its keep during the build
-by catching an item number taken from the product page rather than the manual, and
-a receptacle spec attributed to the wrong page.
+Two checks re-verify the knowledge pack, both without an API key:
+
+- `python3 scripts/08_qa.py` — every numeric value in the curated data must appear
+  on the page it cites (183 tokens). It earned its keep during the build by
+  catching an item number taken from the product page rather than the manual, and
+  a receptacle spec attributed to the wrong page.
+- `python3 scripts/09_verify_facts.py` — the same idea for claims that contain no
+  distinctive number. "The ground clamp goes in the POSITIVE socket for TIG" would
+  pass a numeric check even if it were transposed, and getting that backwards is
+  exactly the kind of error that matters at a live machine. 21 load-bearing facts,
+  checked against the phrasing the manual actually uses.
 
 `npm run eval` grades the gold set twice over: programmatic gates on the tool trace
 and answer text (did it call the lookup? did it show the figure? did it avoid the

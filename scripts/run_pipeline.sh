@@ -34,8 +34,11 @@ python3 scripts/06_build_parts.py
 echo "==> 7. manifest"
 python3 scripts/07_build_manifest.py
 
-echo "==> 8. QA gate"
+echo "==> 8. QA gate (numeric)"
 python3 scripts/08_qa.py
+
+echo "==> 9. semantic fact check"
+python3 scripts/09_verify_facts.py
 
 echo
 echo "knowledge pack rebuilt."
