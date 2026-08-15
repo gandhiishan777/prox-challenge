@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Artifact runner</title>
+    <!--
+      Tailwind's browser (JIT) build is vendored rather than pulled from a CDN,
+      so artifacts render identically offline and under the sandbox CSP, which
+      forbids third-party origins. Loading it first means utility classes are
+      available the moment the first artifact mounts.
+    -->
+    <script src="/vendor/tailwind-play.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #ffffff;
+        color: #0f172a;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      #artifact-root {
+        padding: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="artifact-root"></div>
+    <script src="/runner/runner.js"></script>
+  </body>
+</html>
