@@ -1,0 +1,207 @@
+{
+  "meta": {
+    "source_pages": ["om-07", "om-13", "om-14", "om-24", "om-27", "qs-02", "sc-01"],
+    "verified_by_human": true,
+    "note": "Every value carries the page it came from so the agent can cite it. Values are transcribed exactly as printed; units are not converted."
+  },
+
+  "product": {
+    "name": "OmniPro 220 Multiprocess Welding System",
+    "item_number": "57812",
+    "_item_number_note": "57812 is the item number printed throughout the manual. The same machine is also listed under item 63621 on Harbor Freight's site, but that number does not appear in this documentation, so the agent should not cite it as coming from the manual.",
+    "model": "VW220-OP",
+    "processes": ["MIG", "Flux-Cored", "TIG", "Stick"],
+    "page": "om-01"
+  },
+
+  "output": {
+    "MIG": {
+      "_applies_to": "MIG and Flux-Cored (the manual specifies them together)",
+      "120V": {
+        "power_input": "120 VAC / 60 Hz",
+        "current_input_at_output": "20.8 A at 100 A",
+        "welding_current_range": "30–140 A",
+        "page": "om-07"
+      },
+      "240V": {
+        "power_input": "240 VAC / 60 Hz",
+        "current_input_at_output": "25.5 A at 200 A",
+        "welding_current_range": "30–220 A",
+        "page": "om-07"
+      },
+      "max_ocv": "86 VDC",
+      "weldable_materials": "Mild Steel, Stainless Steel; Aluminum with optional Spool Gun",
+      "wire_capacity": {
+        "solid_core_in": [0.025, 0.03, 0.035],
+        "flux_cored_in": [0.03, 0.035, 0.045],
+        "page": "om-07"
+      },
+      "wire_speed": "50–500 IPM",
+      "wire_spool_capacity": "Up to 12 lb spool",
+      "page": "om-07"
+    },
+    "TIG": {
+      "120V": {
+        "power_input": "120 VAC / 60 Hz",
+        "current_input_at_output": "20.6 A at 125 A",
+        "welding_current_range": "10 A–125 A",
+        "page": "om-07"
+      },
+      "240V": {
+        "power_input": "240 VAC / 60 Hz",
+        "current_input_at_output": "15.6 A at 175 A",
+        "welding_current_range": "10 A–175 A",
+        "page": "om-07"
+      },
+      "max_ocv": "86 VDC",
+      "weldable_materials": "Mild Steel, Stainless Steel, Chrome Moly",
+      "page": "om-07"
+    },
+    "STICK": {
+      "120V": {
+        "power_input": "120 VAC / 60 Hz",
+        "current_input_at_output": "19.5 A at 80 A",
+        "welding_current_range": "10 A – 80 A",
+        "page": "om-07"
+      },
+      "240V": {
+        "power_input": "240 VAC / 60 Hz",
+        "current_input_at_output": "23.7 A at 175 A",
+        "welding_current_range": "10 A–175 A",
+        "page": "om-07"
+      },
+      "max_ocv": "86 VDC",
+      "weldable_materials": "Mild Steel, Stainless Steel",
+      "page": "om-07"
+    }
+  },
+
+  "connections": {
+    "_note": "Which lead goes in which socket, per process. This is the highest-traffic question class, so it is a deterministic lookup rather than something the model recalls from prose. Each entry is corroborated by both the owner's manual setup page and the quick start guide.",
+    "MIG": {
+      "polarity": "DCEP",
+      "polarity_name": "Direct Current Electrode Positive",
+      "electrode_lead": "Wire Feed Power Cable",
+      "electrode_socket": "POSITIVE (+)",
+      "work_clamp_socket": "NEGATIVE (−)",
+      "notes": "Solid core wire with shielding gas. Twist cables clockwise all the way to lock.",
+      "pages": ["om-14", "qs-02"],
+      "figure_id": "polarity-mig-dcep"
+    },
+    "FLUX_CORED": {
+      "polarity": "DCEN",
+      "polarity_name": "Direct Current Electrode Negative",
+      "electrode_lead": "Wire Feed Power Cable",
+      "electrode_socket": "NEGATIVE (−)",
+      "work_clamp_socket": "POSITIVE (+)",
+      "notes": "Self-shielded flux-cored wire. This is the reverse of MIG — switching between the two processes means swapping both leads.",
+      "pages": ["om-13", "qs-02"],
+      "figure_id": "polarity-fluxcore-dcen"
+    },
+    "TIG": {
+      "polarity": "DCEN",
+      "polarity_name": "Direct Current Electrode Negative",
+      "electrode_lead": "TIG Torch Cable",
+      "electrode_socket": "NEGATIVE (−)",
+      "work_clamp_socket": "POSITIVE (+)",
+      "notes": "Ground clamp goes in POSITIVE, torch in NEGATIVE. Foot pedal connects to the socket inside the welder. Leave wire feed power disconnected.",
+      "pages": ["om-24", "qs-02"],
+      "figure_id": "polarity-tig"
+    },
+    "STICK": {
+      "polarity": "DCEP",
+      "polarity_name": "Direct Current Electrode Positive",
+      "electrode_lead": "Electrode Holder Cable",
+      "electrode_socket": "POSITIVE (+)",
+      "work_clamp_socket": "NEGATIVE (−)",
+      "notes": "Leave wire feed power disconnected.",
+      "pages": ["om-27", "qs-02"],
+      "figure_id": "polarity-stick"
+    }
+  },
+
+  "capability_limits": {
+    "_note": "Facts that prevent confidently wrong answers about what this machine can do.",
+    "tig_is_dc_only": {
+      "claim": "This welder provides DC TIG only. Aluminium and magnesium alloys require AC TIG, so they cannot be TIG welded on this machine.",
+      "evidence": "The selection chart states that steel, stainless and chrome moly require DC TIG while aluminium and magnesium alloys require AC TIG; the specification table lists this machine's TIG weldable materials as Mild Steel, Stainless Steel and Chrome Moly.",
+      "pages": ["sc-01", "om-07"],
+      "figure_id": "process-selection-chart"
+    },
+    "aluminium_route": {
+      "claim": "Aluminium can be welded on this machine with MIG using the optional spool gun, not with TIG.",
+      "pages": ["om-07", "om-17"],
+      "figure_id": "spool-gun-setup"
+    },
+    "no_extension_cord": {
+      "claim": "Do not use an extension cord with this welder. Use only one of the supplied power cords or an identical replacement.",
+      "pages": ["om-42"]
+    }
+  },
+
+  "process_selection": {
+    "_note": "From the selection chart, which has no text layer at all and is therefore invisible to text-only extraction.",
+    "FLUX_CORED": {
+      "skill_level": "LOW",
+      "shielding_gas": "No gas required",
+      "materials": "Steel, Stainless Steel",
+      "thickness": "18 Gauge to 5/16\"",
+      "weld_cleanliness": "More spatter",
+      "applications": ["Galvanized steel", "Pipe and tubing", "General fabrication", "Maintenance & repair"],
+      "page": "sc-01"
+    },
+    "MIG": {
+      "skill_level": "LOW",
+      "shielding_gas": "Gas required (indoor welding recommended)",
+      "materials": "Steel, Stainless Steel, Aluminum (spool gun required)",
+      "thickness": "22 Gauge to 3/8\"",
+      "weld_cleanliness": "Clean / minimal spatter",
+      "applications": ["Sheet metal", "Tubing", "Automotive body", "Structural steel"],
+      "page": "sc-01"
+    },
+    "STICK": {
+      "skill_level": "MODERATE",
+      "shielding_gas": "No gas required",
+      "materials": "Steel, Stainless Steel, Castings",
+      "thickness": "10 Gauge to 1/2\"",
+      "weld_cleanliness": "More spatter",
+      "applications": ["Pipe and tubing", "Pressure vessels", "Structural steel", "Maintenance & repair"],
+      "page": "sc-01"
+    },
+    "TIG": {
+      "skill_level": "HIGH",
+      "shielding_gas": "Gas required (indoor welding recommended)",
+      "materials": "Steel, Stainless Steel, Chrome Moly (DC TIG); Aluminum and Magnesium alloys require AC TIG",
+      "thickness": "24 Gauge to 3/16\"",
+      "weld_cleanliness": "Extremely clean",
+      "applications": ["Stainless steel exhausts", "Thin wall pipe & tubing", "Bicycle frames", "Metal art"],
+      "page": "sc-01"
+    }
+  },
+
+  "mig_vs_fluxcored": {
+    "_note": "Attribute comparison from the selection chart.",
+    "uses_cored_wire": "FLUX_CORED",
+    "uses_solid_wire": "MIG",
+    "uses_shielding_gas": "MIG",
+    "clean_welds_minimal_spatter": "MIG",
+    "welds_over_mill_scale_and_rust": "FLUX_CORED",
+    "requires_minimal_surface_prep": "FLUX_CORED",
+    "usable_outdoors_in_wind": "FLUX_CORED",
+    "deep_penetration_handles_gaps": "FLUX_CORED",
+    "thin_materials_like_sheet_metal": "MIG",
+    "page": "sc-01"
+  },
+
+  "gas": {
+    "flow_rate": {
+      "value": "20–30 SCFH",
+      "context": "Set SCFH between 20-30 when following the on-screen polarity and gas settings.",
+      "page": "om-20"
+    },
+    "c100_adapter": {
+      "note": "When using C100 shielding gas, connect the enclosed CGA 580/320 adapter to the regulator inlet and wrench-tighten.",
+      "page": "om-14"
+    }
+  }
+}

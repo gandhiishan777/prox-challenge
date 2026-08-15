@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "source_pages": ["om-07", "om-19", "om-29", "sc-01"],
+    "verified_by_human": true,
+    "note": "Cross-checked against three independent places in the corpus: the specification table (om-07), the MIG duty-cycle dials (om-19), and the TIG/Stick duty-cycle dials (om-29). All three agree."
+  },
+
+  "definition": "The Duty Cycle defines the number of minutes, within a 10 minute period, during which a given welder can produce a particular welding current without overheating.",
+  "definition_pages": ["om-19", "om-29"],
+
+  "worked_example_from_manual": {
+    "text": "A welder with a 40% duty cycle at 100 A welding current must be allowed to rest for at least 6 minutes after every 4 minutes of continuous welding.",
+    "page": "om-19"
+  },
+
+  "thermal_protection": {
+    "behavior": "The Welder has an internal thermal protection system. When it overheats it automatically shuts down and a warning screen appears in the LCD Display window. It automatically returns to service after cooling off.",
+    "what_to_do": "Rest the MIG Gun (or TIG Torch / Electrode Holder) on an electrically non-conductive, heat-proof surface such as a concrete slab, well clear of the ground clamp. Allow the Welder to cool with the Power Switch on so the fan keeps running.",
+    "pages": ["om-19", "om-29"]
+  },
+
+  "consequence_of_ignoring": {
+    "text": "Failure to carefully observe duty cycle limitations can easily over-stress a welder's power generation system, contributing to premature welder failure.",
+    "pages": ["om-19", "om-29"]
+  },
+
+  "interpolation_policy": "rated_points_only",
+  "interpolation_note": "The manual publishes only two rated points per process and input voltage — the maximum-output point and the 100% continuous point — and prints no derating curve between them. Values between the published points must NOT be interpolated or invented. Report the two bracketing points and treat the lower duty cycle as the safe bound.",
+
+  "entries": [
+    { "process": "MIG",   "input_voltage": 120, "amps": 100, "duty_cycle_pct": 40,  "welding_minutes": 4, "resting_minutes": 6, "pages": ["om-07", "om-19"] },
+    { "process": "MIG",   "input_voltage": 120, "amps": 75,  "duty_cycle_pct": 100, "welding_minutes": 10, "resting_minutes": 0, "continuous": true, "pages": ["om-07", "om-19"] },
+    { "process": "MIG",   "input_voltage": 240, "amps": 200, "duty_cycle_pct": 25,  "welding_minutes": 2.5, "resting_minutes": 7.5, "pages": ["om-07", "om-19"] },
+    { "process": "MIG",   "input_voltage": 240, "amps": 115, "duty_cycle_pct": 100, "welding_minutes": 10, "resting_minutes": 0, "continuous": true, "pages": ["om-07", "om-19"] },
+
+    { "process": "TIG",   "input_voltage": 120, "amps": 125, "duty_cycle_pct": 40,  "welding_minutes": 4, "resting_minutes": 6, "pages": ["om-07", "om-29"] },
+    { "process": "TIG",   "input_voltage": 120, "amps": 90,  "duty_cycle_pct": 100, "welding_minutes": 10, "resting_minutes": 0, "continuous": true, "pages": ["om-07", "om-29"] },
+    { "process": "TIG",   "input_voltage": 240, "amps": 175, "duty_cycle_pct": 30,  "welding_minutes": 3, "resting_minutes": 7, "pages": ["om-07", "om-29"] },
+    { "process": "TIG",   "input_voltage": 240, "amps": 105, "duty_cycle_pct": 100, "welding_minutes": 10, "resting_minutes": 0, "continuous": true, "pages": ["om-07", "om-29"] },
+
+    { "process": "STICK", "input_voltage": 120, "amps": 80,  "duty_cycle_pct": 40,  "welding_minutes": 4, "resting_minutes": 6, "pages": ["om-07", "om-29"] },
+    { "process": "STICK", "input_voltage": 120, "amps": 60,  "duty_cycle_pct": 100, "welding_minutes": 10, "resting_minutes": 0, "continuous": true, "pages": ["om-07", "om-29"] },
+    { "process": "STICK", "input_voltage": 240, "amps": 175, "duty_cycle_pct": 25,  "welding_minutes": 2.5, "resting_minutes": 7.5, "pages": ["om-07", "om-29"] },
+    { "process": "STICK", "input_voltage": 240, "amps": 100, "duty_cycle_pct": 100, "welding_minutes": 10, "resting_minutes": 0, "continuous": true, "pages": ["om-07", "om-29"] }
+  ],
+
+  "process_aliases": {
+    "FLUX_CORED": "MIG",
+    "_note": "The manual publishes one set of duty cycles covering both MIG and flux-cored wire welding; the specification table heads that block 'MIG'. Flux-cored questions resolve to the MIG rows, and the answer should say so rather than implying a separate flux-cored rating exists."
+  }
+}

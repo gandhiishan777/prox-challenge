@@ -1,0 +1,1504 @@
+{
+  "product": {
+    "name": "Vulcan OmniPro 220 Industrial Multiprocess Welder",
+    "item_numbers": [
+      "57812",
+      "63621"
+    ],
+    "model": "VW220-OP",
+    "processes": [
+      "MIG",
+      "Flux-Cored",
+      "TIG",
+      "Stick"
+    ]
+  },
+  "documents": [
+    {
+      "id": "om",
+      "title": "Owner's Manual & Safety Instructions",
+      "file": "owner-manual.pdf"
+    },
+    {
+      "id": "qs",
+      "title": "Quick Start Guide",
+      "file": "quick-start-guide.pdf"
+    },
+    {
+      "id": "sc",
+      "title": "Welding Process Selection Chart",
+      "file": "selection-chart.pdf"
+    }
+  ],
+  "counts": {
+    "pages": 51,
+    "figures": 26,
+    "sections": 12
+  },
+  "manual_full": {
+    "file": "manual_full.md",
+    "chars": 203287,
+    "approx_tokens": 50821
+  },
+  "data_files": [
+    {
+      "id": "specs",
+      "file": "data/specs.json",
+      "covers": "output ratings, socket/polarity connections, process selection, capability limits"
+    },
+    {
+      "id": "duty_cycle",
+      "file": "data/duty_cycle.json",
+      "covers": "rated duty cycles per process and input voltage"
+    },
+    {
+      "id": "troubleshooting",
+      "file": "data/troubleshooting.json",
+      "covers": "machine faults and weld defects with causes and remedies"
+    },
+    {
+      "id": "settings",
+      "file": "data/settings.json",
+      "covers": "synergic setup procedure and thickness capability"
+    },
+    {
+      "id": "parts",
+      "file": "data/parts.json",
+      "covers": "parts list keyed to the assembly diagram"
+    }
+  ],
+  "sections": [
+    {
+      "id": "cover",
+      "title": "Cover and Product Overview",
+      "pages": [
+        "om-01"
+      ]
+    },
+    {
+      "id": "safety",
+      "title": "Safety",
+      "pages": [
+        "om-02",
+        "om-03",
+        "om-04",
+        "om-05",
+        "om-06"
+      ]
+    },
+    {
+      "id": "specifications",
+      "title": "Specifications",
+      "pages": [
+        "om-07"
+      ]
+    },
+    {
+      "id": "controls",
+      "title": "Controls",
+      "pages": [
+        "om-08",
+        "om-09"
+      ]
+    },
+    {
+      "id": "mig-flux-cored",
+      "title": "MIG / Flux-Cored Wire Welding",
+      "pages": [
+        "om-10",
+        "om-11",
+        "om-12",
+        "om-13",
+        "om-14",
+        "om-15",
+        "om-16",
+        "om-17",
+        "om-18",
+        "om-19",
+        "om-20",
+        "om-21",
+        "om-22",
+        "om-23"
+      ]
+    },
+    {
+      "id": "tig-stick",
+      "title": "TIG / Stick Welding",
+      "pages": [
+        "om-24",
+        "om-25",
+        "om-26",
+        "om-27",
+        "om-28",
+        "om-29",
+        "om-30",
+        "om-31",
+        "om-32",
+        "om-33"
+      ]
+    },
+    {
+      "id": "welding-tips",
+      "title": "Welding Tips and Weld Diagnosis",
+      "pages": [
+        "om-34",
+        "om-35",
+        "om-36",
+        "om-37",
+        "om-38",
+        "om-39",
+        "om-40"
+      ]
+    },
+    {
+      "id": "maintenance",
+      "title": "Maintenance and Troubleshooting",
+      "pages": [
+        "om-41",
+        "om-42",
+        "om-43",
+        "om-44",
+        "om-45"
+      ]
+    },
+    {
+      "id": "parts",
+      "title": "Parts List and Diagram",
+      "pages": [
+        "om-46",
+        "om-47"
+      ]
+    },
+    {
+      "id": "warranty",
+      "title": "Warranty",
+      "pages": [
+        "om-48"
+      ]
+    },
+    {
+      "id": "qs",
+      "title": "Quick Start Guide",
+      "pages": [
+        "qs-01",
+        "qs-02"
+      ]
+    },
+    {
+      "id": "sc",
+      "title": "Welding Process Selection Chart",
+      "pages": [
+        "sc-01"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "om-01",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 1,
+      "citation": "p. 1",
+      "section": "cover",
+      "image": "pages/om-01.png",
+      "thumb": "pages/thumbs/om-01.jpg"
+    },
+    {
+      "id": "om-02",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 2,
+      "citation": "p. 2",
+      "section": "safety",
+      "image": "pages/om-02.png",
+      "thumb": "pages/thumbs/om-02.jpg"
+    },
+    {
+      "id": "om-03",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 3,
+      "citation": "p. 3",
+      "section": "safety",
+      "image": "pages/om-03.png",
+      "thumb": "pages/thumbs/om-03.jpg"
+    },
+    {
+      "id": "om-04",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 4,
+      "citation": "p. 4",
+      "section": "safety",
+      "image": "pages/om-04.png",
+      "thumb": "pages/thumbs/om-04.jpg"
+    },
+    {
+      "id": "om-05",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 5,
+      "citation": "p. 5",
+      "section": "safety",
+      "image": "pages/om-05.png",
+      "thumb": "pages/thumbs/om-05.jpg"
+    },
+    {
+      "id": "om-06",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 6,
+      "citation": "p. 6",
+      "section": "safety",
+      "image": "pages/om-06.png",
+      "thumb": "pages/thumbs/om-06.jpg"
+    },
+    {
+      "id": "om-07",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 7,
+      "citation": "p. 7",
+      "section": "specifications",
+      "image": "pages/om-07.png",
+      "thumb": "pages/thumbs/om-07.jpg"
+    },
+    {
+      "id": "om-08",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 8,
+      "citation": "p. 8",
+      "section": "controls",
+      "image": "pages/om-08.png",
+      "thumb": "pages/thumbs/om-08.jpg"
+    },
+    {
+      "id": "om-09",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 9,
+      "citation": "p. 9",
+      "section": "controls",
+      "image": "pages/om-09.png",
+      "thumb": "pages/thumbs/om-09.jpg"
+    },
+    {
+      "id": "om-10",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 10,
+      "citation": "p. 10",
+      "section": "mig-flux-cored",
+      "image": "pages/om-10.png",
+      "thumb": "pages/thumbs/om-10.jpg"
+    },
+    {
+      "id": "om-11",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 11,
+      "citation": "p. 11",
+      "section": "mig-flux-cored",
+      "image": "pages/om-11.png",
+      "thumb": "pages/thumbs/om-11.jpg"
+    },
+    {
+      "id": "om-12",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 12,
+      "citation": "p. 12",
+      "section": "mig-flux-cored",
+      "image": "pages/om-12.png",
+      "thumb": "pages/thumbs/om-12.jpg"
+    },
+    {
+      "id": "om-13",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 13,
+      "citation": "p. 13",
+      "section": "mig-flux-cored",
+      "image": "pages/om-13.png",
+      "thumb": "pages/thumbs/om-13.jpg"
+    },
+    {
+      "id": "om-14",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 14,
+      "citation": "p. 14",
+      "section": "mig-flux-cored",
+      "image": "pages/om-14.png",
+      "thumb": "pages/thumbs/om-14.jpg"
+    },
+    {
+      "id": "om-15",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 15,
+      "citation": "p. 15",
+      "section": "mig-flux-cored",
+      "image": "pages/om-15.png",
+      "thumb": "pages/thumbs/om-15.jpg"
+    },
+    {
+      "id": "om-16",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 16,
+      "citation": "p. 16",
+      "section": "mig-flux-cored",
+      "image": "pages/om-16.png",
+      "thumb": "pages/thumbs/om-16.jpg"
+    },
+    {
+      "id": "om-17",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 17,
+      "citation": "p. 17",
+      "section": "mig-flux-cored",
+      "image": "pages/om-17.png",
+      "thumb": "pages/thumbs/om-17.jpg"
+    },
+    {
+      "id": "om-18",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 18,
+      "citation": "p. 18",
+      "section": "mig-flux-cored",
+      "image": "pages/om-18.png",
+      "thumb": "pages/thumbs/om-18.jpg"
+    },
+    {
+      "id": "om-19",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 19,
+      "citation": "p. 19",
+      "section": "mig-flux-cored",
+      "image": "pages/om-19.png",
+      "thumb": "pages/thumbs/om-19.jpg"
+    },
+    {
+      "id": "om-20",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 20,
+      "citation": "p. 20",
+      "section": "mig-flux-cored",
+      "image": "pages/om-20.png",
+      "thumb": "pages/thumbs/om-20.jpg"
+    },
+    {
+      "id": "om-21",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 21,
+      "citation": "p. 21",
+      "section": "mig-flux-cored",
+      "image": "pages/om-21.png",
+      "thumb": "pages/thumbs/om-21.jpg"
+    },
+    {
+      "id": "om-22",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 22,
+      "citation": "p. 22",
+      "section": "mig-flux-cored",
+      "image": "pages/om-22.png",
+      "thumb": "pages/thumbs/om-22.jpg"
+    },
+    {
+      "id": "om-23",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 23,
+      "citation": "p. 23",
+      "section": "mig-flux-cored",
+      "image": "pages/om-23.png",
+      "thumb": "pages/thumbs/om-23.jpg"
+    },
+    {
+      "id": "om-24",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 24,
+      "citation": "p. 24",
+      "section": "tig-stick",
+      "image": "pages/om-24.png",
+      "thumb": "pages/thumbs/om-24.jpg"
+    },
+    {
+      "id": "om-25",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 25,
+      "citation": "p. 25",
+      "section": "tig-stick",
+      "image": "pages/om-25.png",
+      "thumb": "pages/thumbs/om-25.jpg"
+    },
+    {
+      "id": "om-26",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 26,
+      "citation": "p. 26",
+      "section": "tig-stick",
+      "image": "pages/om-26.png",
+      "thumb": "pages/thumbs/om-26.jpg"
+    },
+    {
+      "id": "om-27",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 27,
+      "citation": "p. 27",
+      "section": "tig-stick",
+      "image": "pages/om-27.png",
+      "thumb": "pages/thumbs/om-27.jpg"
+    },
+    {
+      "id": "om-28",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 28,
+      "citation": "p. 28",
+      "section": "tig-stick",
+      "image": "pages/om-28.png",
+      "thumb": "pages/thumbs/om-28.jpg"
+    },
+    {
+      "id": "om-29",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 29,
+      "citation": "p. 29",
+      "section": "tig-stick",
+      "image": "pages/om-29.png",
+      "thumb": "pages/thumbs/om-29.jpg"
+    },
+    {
+      "id": "om-30",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 30,
+      "citation": "p. 30",
+      "section": "tig-stick",
+      "image": "pages/om-30.png",
+      "thumb": "pages/thumbs/om-30.jpg"
+    },
+    {
+      "id": "om-31",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 31,
+      "citation": "p. 31",
+      "section": "tig-stick",
+      "image": "pages/om-31.png",
+      "thumb": "pages/thumbs/om-31.jpg"
+    },
+    {
+      "id": "om-32",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 32,
+      "citation": "p. 32",
+      "section": "tig-stick",
+      "image": "pages/om-32.png",
+      "thumb": "pages/thumbs/om-32.jpg"
+    },
+    {
+      "id": "om-33",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 33,
+      "citation": "p. 33",
+      "section": "tig-stick",
+      "image": "pages/om-33.png",
+      "thumb": "pages/thumbs/om-33.jpg"
+    },
+    {
+      "id": "om-34",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 34,
+      "citation": "p. 34",
+      "section": "welding-tips",
+      "image": "pages/om-34.png",
+      "thumb": "pages/thumbs/om-34.jpg"
+    },
+    {
+      "id": "om-35",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 35,
+      "citation": "p. 35",
+      "section": "welding-tips",
+      "image": "pages/om-35.png",
+      "thumb": "pages/thumbs/om-35.jpg"
+    },
+    {
+      "id": "om-36",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 36,
+      "citation": "p. 36",
+      "section": "welding-tips",
+      "image": "pages/om-36.png",
+      "thumb": "pages/thumbs/om-36.jpg"
+    },
+    {
+      "id": "om-37",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 37,
+      "citation": "p. 37",
+      "section": "welding-tips",
+      "image": "pages/om-37.png",
+      "thumb": "pages/thumbs/om-37.jpg"
+    },
+    {
+      "id": "om-38",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 38,
+      "citation": "p. 38",
+      "section": "welding-tips",
+      "image": "pages/om-38.png",
+      "thumb": "pages/thumbs/om-38.jpg"
+    },
+    {
+      "id": "om-39",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 39,
+      "citation": "p. 39",
+      "section": "welding-tips",
+      "image": "pages/om-39.png",
+      "thumb": "pages/thumbs/om-39.jpg"
+    },
+    {
+      "id": "om-40",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 40,
+      "citation": "p. 40",
+      "section": "welding-tips",
+      "image": "pages/om-40.png",
+      "thumb": "pages/thumbs/om-40.jpg"
+    },
+    {
+      "id": "om-41",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 41,
+      "citation": "p. 41",
+      "section": "maintenance",
+      "image": "pages/om-41.png",
+      "thumb": "pages/thumbs/om-41.jpg"
+    },
+    {
+      "id": "om-42",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 42,
+      "citation": "p. 42",
+      "section": "maintenance",
+      "image": "pages/om-42.png",
+      "thumb": "pages/thumbs/om-42.jpg"
+    },
+    {
+      "id": "om-43",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 43,
+      "citation": "p. 43",
+      "section": "maintenance",
+      "image": "pages/om-43.png",
+      "thumb": "pages/thumbs/om-43.jpg"
+    },
+    {
+      "id": "om-44",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 44,
+      "citation": "p. 44",
+      "section": "maintenance",
+      "image": "pages/om-44.png",
+      "thumb": "pages/thumbs/om-44.jpg"
+    },
+    {
+      "id": "om-45",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 45,
+      "citation": "p. 45",
+      "section": "maintenance",
+      "image": "pages/om-45.png",
+      "thumb": "pages/thumbs/om-45.jpg"
+    },
+    {
+      "id": "om-46",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 46,
+      "citation": "p. 46",
+      "section": "parts",
+      "image": "pages/om-46.png",
+      "thumb": "pages/thumbs/om-46.jpg"
+    },
+    {
+      "id": "om-47",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 47,
+      "citation": "p. 47",
+      "section": "parts",
+      "image": "pages/om-47.png",
+      "thumb": "pages/thumbs/om-47.jpg"
+    },
+    {
+      "id": "om-48",
+      "doc": "om",
+      "doc_title": "Owner's Manual & Safety Instructions",
+      "page": 48,
+      "citation": "p. 48",
+      "section": "warranty",
+      "image": "pages/om-48.png",
+      "thumb": "pages/thumbs/om-48.jpg"
+    },
+    {
+      "id": "qs-01",
+      "doc": "qs",
+      "doc_title": "Quick Start Guide",
+      "page": 1,
+      "citation": "Quick Start p. 1",
+      "section": "qs",
+      "image": "pages/qs-01.png",
+      "thumb": "pages/thumbs/qs-01.jpg"
+    },
+    {
+      "id": "qs-02",
+      "doc": "qs",
+      "doc_title": "Quick Start Guide",
+      "page": 2,
+      "citation": "Quick Start p. 2",
+      "section": "qs",
+      "image": "pages/qs-02.png",
+      "thumb": "pages/thumbs/qs-02.jpg"
+    },
+    {
+      "id": "sc-01",
+      "doc": "sc",
+      "doc_title": "Welding Process Selection Chart",
+      "page": 1,
+      "citation": "Selection Chart",
+      "section": "sc",
+      "image": "pages/sc-01.png",
+      "thumb": "pages/thumbs/sc-01.jpg"
+    }
+  ],
+  "figures": [
+    {
+      "id": "front-panel-controls",
+      "page_id": "om-08",
+      "title": "Front panel controls",
+      "caption": "The front panel: LCD display, the two adjustment knobs, process/parameter buttons, and the two output sockets.",
+      "keywords": [
+        "front panel",
+        "controls",
+        "knob",
+        "display",
+        "LCD",
+        "buttons",
+        "sockets"
+      ],
+      "answers": [
+        "What do the knobs on the front do?",
+        "Where is the display?"
+      ],
+      "file": "figures/front-panel-controls.png",
+      "thumb": "figures/thumbs/front-panel-controls.jpg",
+      "px": [
+        936,
+        1229
+      ],
+      "bbox_pt": [
+        38,
+        22,
+        595.3,
+        805
+      ]
+    },
+    {
+      "id": "interior-controls",
+      "page_id": "om-09",
+      "title": "Interior controls and wire feed mechanism",
+      "caption": "Inside the wire compartment: wire spool and spool knob, wire feed mechanism, feed tensioner, idler arm, feed roller knob, wire inlet liner, cold wire feed switch, and the foot pedal / wire feed control sockets.",
+      "keywords": [
+        "interior",
+        "wire feed",
+        "tensioner",
+        "idler arm",
+        "feed roller",
+        "spool knob",
+        "cold wire feed",
+        "foot pedal socket"
+      ],
+      "answers": [
+        "Where is the tension knob?",
+        "What does the idler arm look like?",
+        "Where does the foot pedal plug in?"
+      ],
+      "file": "figures/interior-controls.png",
+      "thumb": "figures/thumbs/interior-controls.jpg",
+      "px": [
+        1248,
+        922
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "wire-spool-installation",
+      "page_id": "om-11",
+      "title": "Wire spool installation (10\u201312 lb spool)",
+      "caption": "Mounting a 10\u201312 lb wire spool on the spindle and routing the wire.",
+      "keywords": [
+        "spool",
+        "install",
+        "10 lb",
+        "12 lb",
+        "spindle",
+        "wire"
+      ],
+      "answers": [
+        "How do I install a wire spool?",
+        "Which way does the spool go on?"
+      ],
+      "file": "figures/wire-spool-installation.png",
+      "thumb": "figures/thumbs/wire-spool-installation.jpg",
+      "px": [
+        933,
+        1232
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "feed-roller-tension",
+      "page_id": "om-12",
+      "title": "Feed roller and drive tension",
+      "caption": "Feed roller selection and orientation, and setting drive tension on the idler arm.",
+      "keywords": [
+        "feed roller",
+        "drive roll",
+        "tension",
+        "tensioner",
+        "groove",
+        "orientation"
+      ],
+      "answers": [
+        "How tight should the drive tension be?",
+        "Which groove do I use for .030 wire?",
+        "Which way does the drive roll face?"
+      ],
+      "file": "figures/feed-roller-tension.png",
+      "thumb": "figures/thumbs/feed-roller-tension.jpg",
+      "px": [
+        1019,
+        1129
+      ],
+      "bbox_pt": [
+        38,
+        22,
+        595.3,
+        805
+      ]
+    },
+    {
+      "id": "polarity-fluxcore-dcen",
+      "page_id": "om-13",
+      "title": "Flux-cored polarity setup (DCEN)",
+      "caption": "DCEN hookup for self-shielded flux-cored wire: wire feed power cable into the NEGATIVE (\u2212) socket, ground clamp cable into the POSITIVE (+) socket.",
+      "keywords": [
+        "flux-cored",
+        "flux core",
+        "DCEN",
+        "polarity",
+        "negative",
+        "socket",
+        "ground clamp"
+      ],
+      "answers": [
+        "What polarity for flux-core?",
+        "Which socket does the gun go in for flux-cored?",
+        "Do I swap polarity going from MIG to flux-core?"
+      ],
+      "file": "figures/polarity-fluxcore-dcen.png",
+      "thumb": "figures/thumbs/polarity-fluxcore-dcen.jpg",
+      "px": [
+        899,
+        1279
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "polarity-mig-dcep",
+      "page_id": "om-14",
+      "title": "MIG polarity setup (DCEP, solid wire with gas)",
+      "caption": "DCEP hookup for solid-core gas-shielded MIG: wire feed power cable into the POSITIVE (+) socket, ground clamp cable into the NEGATIVE (\u2212) socket.",
+      "keywords": [
+        "MIG",
+        "solid wire",
+        "DCEP",
+        "polarity",
+        "positive",
+        "socket",
+        "ground clamp",
+        "gas shielded"
+      ],
+      "answers": [
+        "What polarity for MIG?",
+        "Which socket does the ground clamp go in for MIG?"
+      ],
+      "file": "figures/polarity-mig-dcep.png",
+      "thumb": "figures/thumbs/polarity-mig-dcep.jpg",
+      "px": [
+        946,
+        1215
+      ],
+      "bbox_pt": [
+        38,
+        22,
+        595.3,
+        805
+      ]
+    },
+    {
+      "id": "spool-gun-setup",
+      "page_id": "om-17",
+      "title": "Optional spool gun setup",
+      "caption": "Connecting the optional spool gun, which is what makes aluminium MIG possible on this machine.",
+      "keywords": [
+        "spool gun",
+        "aluminum",
+        "aluminium",
+        "optional",
+        "setup"
+      ],
+      "answers": [
+        "How do I hook up a spool gun?",
+        "How do I weld aluminium?"
+      ],
+      "file": "figures/spool-gun-setup.png",
+      "thumb": "figures/thumbs/spool-gun-setup.jpg",
+      "px": [
+        897,
+        1282
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "settings-screen",
+      "page_id": "om-20",
+      "title": "Settings screen and synergic controls",
+      "caption": "The LCD settings screen: selecting process, wire diameter and material, and the synergic voltage / wire speed readout.",
+      "keywords": [
+        "settings",
+        "synergic",
+        "LCD",
+        "menu",
+        "wire speed",
+        "voltage",
+        "screen"
+      ],
+      "answers": [
+        "How do I set wire speed and voltage?",
+        "What does synergic mode do?"
+      ],
+      "file": "figures/settings-screen.png",
+      "thumb": "figures/thumbs/settings-screen.jpg",
+      "px": [
+        936,
+        1229
+      ],
+      "bbox_pt": [
+        38,
+        22,
+        595.3,
+        805
+      ]
+    },
+    {
+      "id": "polarity-tig",
+      "page_id": "om-24",
+      "title": "TIG cable connections (DCEN)",
+      "caption": "TIG hookup: ground clamp cable into the POSITIVE (+) socket, TIG torch cable into the NEGATIVE (\u2212) socket, foot pedal into the socket inside the welder.",
+      "keywords": [
+        "TIG",
+        "DCEN",
+        "polarity",
+        "torch",
+        "ground clamp",
+        "positive",
+        "negative",
+        "foot pedal",
+        "socket"
+      ],
+      "answers": [
+        "What polarity do I need for TIG?",
+        "Which socket does the ground clamp go in for TIG?",
+        "Where does the foot pedal connect?"
+      ],
+      "file": "figures/polarity-tig.png",
+      "thumb": "figures/thumbs/polarity-tig.jpg",
+      "px": [
+        922,
+        1247
+      ],
+      "bbox_pt": [
+        38,
+        22,
+        595.3,
+        805
+      ]
+    },
+    {
+      "id": "tungsten-and-torch",
+      "page_id": "om-26",
+      "title": "Sharpening the tungsten and assembling the TIG torch",
+      "caption": "Grinding the tungsten electrode to a point and assembling the TIG torch collet, cup and electrode.",
+      "keywords": [
+        "tungsten",
+        "sharpen",
+        "grind",
+        "electrode",
+        "collet",
+        "cup",
+        "torch assembly"
+      ],
+      "answers": [
+        "How do I sharpen the tungsten?",
+        "How do I assemble the TIG torch?"
+      ],
+      "file": "figures/tungsten-and-torch.png",
+      "thumb": "figures/thumbs/tungsten-and-torch.jpg",
+      "px": [
+        1097,
+        1049
+      ],
+      "bbox_pt": [
+        38,
+        22,
+        595.3,
+        805
+      ]
+    },
+    {
+      "id": "polarity-stick",
+      "page_id": "om-27",
+      "title": "Stick cable connections (DCEP)",
+      "caption": "Stick hookup: ground clamp cable into the NEGATIVE (\u2212) socket, electrode holder cable into the POSITIVE (+) socket.",
+      "keywords": [
+        "stick",
+        "SMAW",
+        "electrode holder",
+        "polarity",
+        "DCEP",
+        "ground clamp",
+        "socket"
+      ],
+      "answers": [
+        "What polarity for stick welding?",
+        "Which socket does the stinger go in?"
+      ],
+      "file": "figures/polarity-stick.png",
+      "thumb": "figures/thumbs/polarity-stick.jpg",
+      "px": [
+        908,
+        1266
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "wiring-schematic",
+      "page_id": "om-45",
+      "title": "Wiring schematic",
+      "caption": "Full electrical schematic: AC input through PFC and rectifier, the IGBT inverter and output transformer to OUT+/OUT\u2212, and the MCU board's connectors to the LCD, wire feeder, solenoid valves and fans.",
+      "keywords": [
+        "wiring",
+        "schematic",
+        "electrical",
+        "diagram",
+        "MCU",
+        "IGBT",
+        "PFC",
+        "connector",
+        "CN"
+      ],
+      "answers": [
+        "Do you have the wiring diagram?",
+        "What does the MCU board connect to?"
+      ],
+      "file": "figures/wiring-schematic.png",
+      "thumb": "figures/thumbs/wiring-schematic.jpg",
+      "px": [
+        893,
+        1288
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "assembly-diagram",
+      "page_id": "om-47",
+      "title": "Assembly diagram (exploded view)",
+      "caption": "Exploded view of the whole welder with 61 numbered callouts keyed to the parts list.",
+      "keywords": [
+        "assembly",
+        "exploded",
+        "parts",
+        "diagram",
+        "callout",
+        "part number"
+      ],
+      "answers": [
+        "Where is part 34?",
+        "Show me the exploded diagram"
+      ],
+      "file": "figures/assembly-diagram.png",
+      "thumb": "figures/thumbs/assembly-diagram.jpg",
+      "px": [
+        1077,
+        1068
+      ],
+      "bbox_pt": [
+        0,
+        22,
+        557,
+        805
+      ]
+    },
+    {
+      "id": "process-selection-chart",
+      "page_id": "sc-01",
+      "title": "How to choose a welding process",
+      "caption": "Six-criterion selection matrix across flux-cored, MIG, stick and TIG: skill level, shielding gas, material, thickness, applications and weld cleanliness \u2014 including that aluminium requires AC TIG.",
+      "keywords": [
+        "choose",
+        "selection",
+        "which process",
+        "compare",
+        "skill",
+        "thickness",
+        "material",
+        "AC TIG",
+        "aluminum",
+        "aluminium"
+      ],
+      "answers": [
+        "Which process should I use?",
+        "MIG or flux-core?",
+        "Can I TIG aluminium?",
+        "What thickness can each process handle?"
+      ],
+      "file": "figures/process-selection-chart.png",
+      "thumb": "figures/thumbs/process-selection-chart.jpg",
+      "px": [
+        1777,
+        647
+      ],
+      "bbox_pt": [
+        0,
+        0,
+        1200.0,
+        1200.0
+      ]
+    },
+    {
+      "id": "cable-setup-quick-reference",
+      "page_id": "qs-02",
+      "title": "Cable setup for all four processes (quick start)",
+      "caption": "One-page hookup reference: stick, MIG, flux-cored and TIG cable connections side by side, including which terminal each lead goes to.",
+      "keywords": [
+        "quick start",
+        "cable setup",
+        "hookup",
+        "all processes",
+        "terminal",
+        "polarity",
+        "reference"
+      ],
+      "answers": [
+        "How do I hook up the cables?",
+        "Compare the polarity for each process"
+      ],
+      "file": "figures/cable-setup-quick-reference.png",
+      "thumb": "figures/thumbs/cable-setup-quick-reference.jpg",
+      "px": [
+        900,
+        1277
+      ],
+      "bbox_pt": [
+        0,
+        0,
+        419.5,
+        595.3
+      ]
+    },
+    {
+      "id": "weld-mig-porosity",
+      "page_id": "om-37",
+      "title": "Wire weld defect \u2014 porosity",
+      "caption": "Photo of a porous MIG/flux-cored bead (small cavities and holes) with its causes and solutions.",
+      "keywords": [
+        "porosity",
+        "pinholes",
+        "cavities",
+        "holes",
+        "MIG",
+        "wire",
+        "flux-cored",
+        "defect"
+      ],
+      "answers": [
+        "Why is my MIG weld porous?",
+        "What does porosity look like?"
+      ],
+      "file": "figures/weld-mig-porosity.png",
+      "thumb": "figures/thumbs/weld-mig-porosity.jpg",
+      "px": [
+        819,
+        1404
+      ],
+      "bbox_pt": [
+        30,
+        24,
+        296,
+        480
+      ]
+    },
+    {
+      "id": "weld-mig-spatter",
+      "page_id": "om-37",
+      "title": "Wire weld defect \u2014 excessive spatter",
+      "caption": "Photo of excessive spatter on a wire weld with its causes and solutions.",
+      "keywords": [
+        "spatter",
+        "splatter",
+        "MIG",
+        "wire",
+        "defect",
+        "grainy"
+      ],
+      "answers": [
+        "Why is my MIG weld spattering so much?"
+      ],
+      "file": "figures/weld-mig-spatter.png",
+      "thumb": "figures/thumbs/weld-mig-spatter.jpg",
+      "px": [
+        819,
+        1404
+      ],
+      "bbox_pt": [
+        300,
+        24,
+        566,
+        480
+      ]
+    },
+    {
+      "id": "weld-mig-crooked",
+      "page_id": "om-37",
+      "title": "Wire weld defect \u2014 crooked / wavy bead",
+      "caption": "Photo of a crooked or wavy wire-weld bead with its causes and solutions.",
+      "keywords": [
+        "crooked",
+        "wavy",
+        "bead",
+        "wander",
+        "MIG",
+        "wire",
+        "defect"
+      ],
+      "answers": [
+        "Why is my bead wavy?"
+      ],
+      "file": "figures/weld-mig-crooked.png",
+      "thumb": "figures/thumbs/weld-mig-crooked.jpg",
+      "px": [
+        974,
+        1180
+      ],
+      "bbox_pt": [
+        30,
+        478,
+        296,
+        800
+      ]
+    },
+    {
+      "id": "weld-mig-burnthrough",
+      "page_id": "om-37",
+      "title": "Wire weld defect \u2014 burn-through",
+      "caption": "Photo of burn-through on a wire weld, where the base metal melts away leaving a hole, with its causes and solutions.",
+      "keywords": [
+        "burn-through",
+        "burn through",
+        "hole",
+        "melted",
+        "thin",
+        "MIG",
+        "wire",
+        "defect"
+      ],
+      "answers": [
+        "Why am I blowing holes in the metal?"
+      ],
+      "file": "figures/weld-mig-burnthrough.png",
+      "thumb": "figures/thumbs/weld-mig-burnthrough.jpg",
+      "px": [
+        974,
+        1180
+      ],
+      "bbox_pt": [
+        300,
+        478,
+        566,
+        800
+      ]
+    },
+    {
+      "id": "weld-mig-penetration",
+      "page_id": "om-36",
+      "title": "Wire weld penetration (heat control)",
+      "caption": "Comparison of too-cold, correct, and too-hot wire welds, showing how penetration and bead shape change with heat.",
+      "keywords": [
+        "penetration",
+        "heat",
+        "too cold",
+        "too hot",
+        "workpiece heat control",
+        "MIG",
+        "wire"
+      ],
+      "answers": [
+        "Is my weld penetrating enough?",
+        "How do I know if my heat is right?"
+      ],
+      "file": "figures/weld-mig-penetration.png",
+      "thumb": "figures/thumbs/weld-mig-penetration.jpg",
+      "px": [
+        1374,
+        837
+      ],
+      "bbox_pt": [
+        28,
+        24,
+        566,
+        352
+      ]
+    },
+    {
+      "id": "weld-stick-slag",
+      "page_id": "om-40",
+      "title": "Stick weld \u2014 coat of slag over weld",
+      "caption": "Photo of the slag coat on a stick weld, partially chipped away to show the bead underneath.",
+      "keywords": [
+        "slag",
+        "stick",
+        "chipping hammer",
+        "coat"
+      ],
+      "answers": [
+        "Is slag on my stick weld normal?"
+      ],
+      "file": "figures/weld-stick-slag.png",
+      "thumb": "figures/thumbs/weld-stick-slag.jpg",
+      "px": [
+        2198,
+        523
+      ],
+      "bbox_pt": [
+        28,
+        24,
+        566,
+        152
+      ]
+    },
+    {
+      "id": "weld-stick-porosity",
+      "page_id": "om-40",
+      "title": "Stick weld defect \u2014 porosity",
+      "caption": "Photo of a porous stick bead (small cavities or holes) with its causes and solutions.",
+      "keywords": [
+        "porosity",
+        "stick",
+        "pinholes",
+        "cavities",
+        "defect"
+      ],
+      "answers": [
+        "Why is my stick weld porous?"
+      ],
+      "file": "figures/weld-stick-porosity.png",
+      "thumb": "figures/thumbs/weld-stick-porosity.jpg",
+      "px": [
+        2102,
+        547
+      ],
+      "bbox_pt": [
+        28,
+        150,
+        566,
+        290
+      ]
+    },
+    {
+      "id": "weld-stick-crooked",
+      "page_id": "om-40",
+      "title": "Stick weld defect \u2014 crooked / wavy bead",
+      "caption": "Photo of a crooked or wavy stick bead with its causes and solutions.",
+      "keywords": [
+        "crooked",
+        "wavy",
+        "stick",
+        "bead",
+        "defect"
+      ],
+      "answers": [
+        "Why is my stick bead crooked?"
+      ],
+      "file": "figures/weld-stick-crooked.png",
+      "thumb": "figures/thumbs/weld-stick-crooked.jpg",
+      "px": [
+        2045,
+        562
+      ],
+      "bbox_pt": [
+        28,
+        288,
+        566,
+        436
+      ]
+    },
+    {
+      "id": "weld-stick-spatter",
+      "page_id": "om-40",
+      "title": "Stick weld defect \u2014 excessive spatter",
+      "caption": "Photo of excessive spatter around a stick weld with its causes and solutions.",
+      "keywords": [
+        "spatter",
+        "stick",
+        "grainy",
+        "defect"
+      ],
+      "answers": [
+        "Why is my stick weld spattering?"
+      ],
+      "file": "figures/weld-stick-spatter.png",
+      "thumb": "figures/thumbs/weld-stick-spatter.jpg",
+      "px": [
+        2116,
+        543
+      ],
+      "bbox_pt": [
+        28,
+        434,
+        566,
+        572
+      ]
+    },
+    {
+      "id": "weld-stick-burnthrough",
+      "page_id": "om-40",
+      "title": "Stick weld defect \u2014 burn-through",
+      "caption": "Photo of burn-through on a stick weld with its causes and solutions.",
+      "keywords": [
+        "burn-through",
+        "burn through",
+        "hole",
+        "stick",
+        "defect"
+      ],
+      "answers": [
+        "Why am I burning through with stick?"
+      ],
+      "file": "figures/weld-stick-burnthrough.png",
+      "thumb": "figures/thumbs/weld-stick-burnthrough.jpg",
+      "px": [
+        1814,
+        634
+      ],
+      "bbox_pt": [
+        28,
+        572,
+        566,
+        760
+      ]
+    },
+    {
+      "id": "weld-stick-penetration",
+      "page_id": "om-39",
+      "title": "Stick weld penetration (heat control)",
+      "caption": "Comparison of too-cold, correct, and too-hot stick welds and what each looks like.",
+      "keywords": [
+        "penetration",
+        "heat",
+        "stick",
+        "too cold",
+        "too hot"
+      ],
+      "answers": [
+        "Is my stick weld penetrating?",
+        "Is my amperage right for stick?"
+      ],
+      "file": "figures/weld-stick-penetration.png",
+      "thumb": "figures/thumbs/weld-stick-penetration.jpg",
+      "px": [
+        1263,
+        911
+      ],
+      "bbox_pt": [
+        28,
+        24,
+        566,
+        412
+      ]
+    }
+  ]
+}

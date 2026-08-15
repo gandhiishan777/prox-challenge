@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "source_pages": ["om-20", "om-21", "sc-01"],
+    "verified_by_human": true,
+    "note": "IMPORTANT: this file deliberately contains no wire-speed/voltage lookup table, because the manual does not publish one. See `no_printed_settings_table`. Its job is to stop the agent inventing a table that does not exist."
+  },
+
+  "no_printed_settings_table": {
+    "fact": "The owner's manual publishes no chart of recommended wire feed speed and voltage by material and thickness. The machine derives those settings itself in synergic mode once you enter process, wire diameter and material thickness. The printed Settings Chart the manual refers to is a label on the inside of the welder's door, not a page in the manual.",
+    "implication": "If a user asks for specific voltage / wire-speed numbers for a material and thickness, do not state numbers as if they came from the manual. Walk them through the synergic setup so the machine computes it, and point them at the Settings Chart inside the door.",
+    "pages": ["om-14", "om-20"]
+  },
+
+  "synergic_procedure": {
+    "summary": "Set the process, then the consumable and the material thickness; the welder computes the starting wire feed speed and voltage for you.",
+    "steps": [
+      { "step": 1, "text": "Press the HOME button on the control panel.", "page": "om-20" },
+      { "step": 2, "text": "Turn the Main Control Knob until the desired process appears on the LCD, then press the knob to select it.", "page": "om-20" },
+      { "step": 3, "text": "Follow the polarity and gas screen: plug the cables in according to the screen, connect gas according to the screen, and set gas flow between 20 and 30 SCFH.", "page": "om-20" },
+      { "step": 4, "text": "Set wire diameter with the Left Knob and material thickness with the Right Knob, then confirm.", "page": "om-20" },
+      { "step": 5, "text": "On the weld screen, the Left Knob adjusts Wire Feed Speed (amperage) and the Right Knob adjusts Voltage. If you adjust them manually, the white mark on the line shows the recommended setting for your wire/electrode diameter and workpiece thickness.", "page": "om-20" }
+    ],
+    "navigation_note": "Press the Main Control Knob to go to the next screen; press the BACK button to return to the previous screen.",
+    "figure_id": "settings-screen"
+  },
+
+  "example_screen_from_manual": {
+    "_note": "The one concrete set of numbers printed in the manual, shown as an example of the settings screen. It is an illustration of the screen, not a recommendation table.",
+    "process": "MIG Steel",
+    "gas": "C25",
+    "wire_diameter_in": 0.03,
+    "material_thickness": "24 Ga",
+    "wire_feed_speed_ipm": 121,
+    "voltage_v": 13.8,
+    "page": "om-20"
+  },
+
+  "optional_settings": [
+    { "name": "Run-In WFS", "description": "Adjusts wire speed before the wire contacts the workpiece. Expressed as a percentage of the pre-set wire feed speed.", "page": "om-21" },
+    { "name": "Inductance", "description": "Adjusts the length of the arc. Increase for a more fluid puddle and flatter bead; decrease for a colder puddle.", "page": "om-21" },
+    { "name": "Spot Timer", "description": "Sets a timer for spot welding.", "page": "om-21" },
+    { "name": "Recall Setting", "description": "Retrieves saved settings.", "page": "om-21" },
+    { "name": "Save Setting", "description": "Programs up to 5 different configurations across 5 memory slots.", "page": "om-21" }
+  ],
+
+  "gas_flow": { "value_scfh": [20, 30], "page": "om-20" },
+
+  "thickness_capability": {
+    "_note": "What each process can handle, from the selection chart. Use this to sanity-check whether a job is in range before discussing settings.",
+    "FLUX_CORED": { "range": "18 Gauge to 5/16\"", "page": "sc-01" },
+    "MIG": { "range": "22 Gauge to 3/8\"", "page": "sc-01" },
+    "STICK": { "range": "10 Gauge to 1/2\"", "page": "sc-01" },
+    "TIG": { "range": "24 Gauge to 3/16\"", "page": "sc-01" }
+  },
+
+  "consumable_sizes": {
+    "solid_wire_in": [0.025, 0.03, 0.035],
+    "flux_cored_wire_in": [0.03, 0.035, 0.045],
+    "page": "om-07"
+  },
+
+  "practice_note": {
+    "text": "The initial settings may need to be adjusted after stopping and carefully inspecting the weld. Proper welding takes experience.",
+    "page": "om-21"
+  }
+}

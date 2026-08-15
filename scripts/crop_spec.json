@@ -1,0 +1,272 @@
+{
+  "_comment": [
+    "Curated figure catalogue. This file is the reproducibility record for the",
+    "figures the agent can show a user: re-running 05_extract_figures.py against",
+    "it reproduces knowledge/figures/ exactly.",
+    "",
+    "Coordinates are PDF points measured from the top-left of the page.",
+    "",
+    "mode 'page' crops away the repeated furniture (the vertical section tabs down",
+    "the right margin and the footer) and then trims whitespace, which yields a",
+    "tight figure for the many pages that ARE a single labelled diagram.",
+    "",
+    "mode 'rect' is used where one page holds several independent answers - the",
+    "weld-diagnosis pages, where showing the whole sheet when someone asks about",
+    "porosity would bury the answer among four other defects. Those rects come",
+    "from the printed heading positions, so each crop is a self-contained unit of",
+    "defect photo + its causes and solutions.",
+    "",
+    "'answers' entries are matched against user questions to help the agent pick a",
+    "figure, and double as documentation of why each figure earns its place."
+  ],
+  "content_box_pt": [28, 22, 566, 805],
+  "figures": [
+    {
+      "id": "front-panel-controls",
+      "page_id": "om-08",
+      "mode": "page",
+      "title": "Front panel controls",
+      "caption": "The front panel: LCD display, the two adjustment knobs, process/parameter buttons, and the two output sockets.",
+      "keywords": ["front panel", "controls", "knob", "display", "LCD", "buttons", "sockets"],
+      "answers": ["What do the knobs on the front do?", "Where is the display?"]
+    },
+    {
+      "id": "interior-controls",
+      "page_id": "om-09",
+      "mode": "page",
+      "title": "Interior controls and wire feed mechanism",
+      "caption": "Inside the wire compartment: wire spool and spool knob, wire feed mechanism, feed tensioner, idler arm, feed roller knob, wire inlet liner, cold wire feed switch, and the foot pedal / wire feed control sockets.",
+      "keywords": ["interior", "wire feed", "tensioner", "idler arm", "feed roller", "spool knob", "cold wire feed", "foot pedal socket"],
+      "answers": ["Where is the tension knob?", "What does the idler arm look like?", "Where does the foot pedal plug in?"]
+    },
+    {
+      "id": "wire-spool-installation",
+      "page_id": "om-11",
+      "mode": "page",
+      "title": "Wire spool installation (10–12 lb spool)",
+      "caption": "Mounting a 10–12 lb wire spool on the spindle and routing the wire.",
+      "keywords": ["spool", "install", "10 lb", "12 lb", "spindle", "wire"],
+      "answers": ["How do I install a wire spool?", "Which way does the spool go on?"]
+    },
+    {
+      "id": "feed-roller-tension",
+      "page_id": "om-12",
+      "mode": "page",
+      "title": "Feed roller and drive tension",
+      "caption": "Feed roller selection and orientation, and setting drive tension on the idler arm.",
+      "keywords": ["feed roller", "drive roll", "tension", "tensioner", "groove", "orientation"],
+      "answers": ["How tight should the drive tension be?", "Which groove do I use for .030 wire?", "Which way does the drive roll face?"]
+    },
+    {
+      "id": "polarity-fluxcore-dcen",
+      "page_id": "om-13",
+      "mode": "page",
+      "title": "Flux-cored polarity setup (DCEN)",
+      "caption": "DCEN hookup for self-shielded flux-cored wire: wire feed power cable into the NEGATIVE (−) socket, ground clamp cable into the POSITIVE (+) socket.",
+      "keywords": ["flux-cored", "flux core", "DCEN", "polarity", "negative", "socket", "ground clamp"],
+      "answers": ["What polarity for flux-core?", "Which socket does the gun go in for flux-cored?", "Do I swap polarity going from MIG to flux-core?"]
+    },
+    {
+      "id": "polarity-mig-dcep",
+      "page_id": "om-14",
+      "mode": "page",
+      "title": "MIG polarity setup (DCEP, solid wire with gas)",
+      "caption": "DCEP hookup for solid-core gas-shielded MIG: wire feed power cable into the POSITIVE (+) socket, ground clamp cable into the NEGATIVE (−) socket.",
+      "keywords": ["MIG", "solid wire", "DCEP", "polarity", "positive", "socket", "ground clamp", "gas shielded"],
+      "answers": ["What polarity for MIG?", "Which socket does the ground clamp go in for MIG?"]
+    },
+    {
+      "id": "spool-gun-setup",
+      "page_id": "om-17",
+      "mode": "page",
+      "title": "Optional spool gun setup",
+      "caption": "Connecting the optional spool gun, which is what makes aluminium MIG possible on this machine.",
+      "keywords": ["spool gun", "aluminum", "aluminium", "optional", "setup"],
+      "answers": ["How do I hook up a spool gun?", "How do I weld aluminium?"]
+    },
+    {
+      "id": "settings-screen",
+      "page_id": "om-20",
+      "mode": "page",
+      "title": "Settings screen and synergic controls",
+      "caption": "The LCD settings screen: selecting process, wire diameter and material, and the synergic voltage / wire speed readout.",
+      "keywords": ["settings", "synergic", "LCD", "menu", "wire speed", "voltage", "screen"],
+      "answers": ["How do I set wire speed and voltage?", "What does synergic mode do?"]
+    },
+    {
+      "id": "polarity-tig",
+      "page_id": "om-24",
+      "mode": "page",
+      "title": "TIG cable connections (DCEN)",
+      "caption": "TIG hookup: ground clamp cable into the POSITIVE (+) socket, TIG torch cable into the NEGATIVE (−) socket, foot pedal into the socket inside the welder.",
+      "keywords": ["TIG", "DCEN", "polarity", "torch", "ground clamp", "positive", "negative", "foot pedal", "socket"],
+      "answers": ["What polarity do I need for TIG?", "Which socket does the ground clamp go in for TIG?", "Where does the foot pedal connect?"]
+    },
+    {
+      "id": "tungsten-and-torch",
+      "page_id": "om-26",
+      "mode": "page",
+      "title": "Sharpening the tungsten and assembling the TIG torch",
+      "caption": "Grinding the tungsten electrode to a point and assembling the TIG torch collet, cup and electrode.",
+      "keywords": ["tungsten", "sharpen", "grind", "electrode", "collet", "cup", "torch assembly"],
+      "answers": ["How do I sharpen the tungsten?", "How do I assemble the TIG torch?"]
+    },
+    {
+      "id": "polarity-stick",
+      "page_id": "om-27",
+      "mode": "page",
+      "title": "Stick cable connections (DCEP)",
+      "caption": "Stick hookup: ground clamp cable into the NEGATIVE (−) socket, electrode holder cable into the POSITIVE (+) socket.",
+      "keywords": ["stick", "SMAW", "electrode holder", "polarity", "DCEP", "ground clamp", "socket"],
+      "answers": ["What polarity for stick welding?", "Which socket does the stinger go in?"]
+    },
+    {
+      "id": "wiring-schematic",
+      "page_id": "om-45",
+      "mode": "page",
+      "title": "Wiring schematic",
+      "caption": "Full electrical schematic: AC input through PFC and rectifier, the IGBT inverter and output transformer to OUT+/OUT−, and the MCU board's connectors to the LCD, wire feeder, solenoid valves and fans.",
+      "keywords": ["wiring", "schematic", "electrical", "diagram", "MCU", "IGBT", "PFC", "connector", "CN"],
+      "answers": ["Do you have the wiring diagram?", "What does the MCU board connect to?"]
+    },
+    {
+      "id": "assembly-diagram",
+      "page_id": "om-47",
+      "mode": "page",
+      "title": "Assembly diagram (exploded view)",
+      "caption": "Exploded view of the whole welder with 61 numbered callouts keyed to the parts list.",
+      "keywords": ["assembly", "exploded", "parts", "diagram", "callout", "part number"],
+      "answers": ["Where is part 34?", "Show me the exploded diagram"]
+    },
+    {
+      "id": "process-selection-chart",
+      "page_id": "sc-01",
+      "mode": "page",
+      "title": "How to choose a welding process",
+      "caption": "Six-criterion selection matrix across flux-cored, MIG, stick and TIG: skill level, shielding gas, material, thickness, applications and weld cleanliness — including that aluminium requires AC TIG.",
+      "keywords": ["choose", "selection", "which process", "compare", "skill", "thickness", "material", "AC TIG", "aluminum", "aluminium"],
+      "answers": ["Which process should I use?", "MIG or flux-core?", "Can I TIG aluminium?", "What thickness can each process handle?"]
+    },
+    {
+      "id": "cable-setup-quick-reference",
+      "page_id": "qs-02",
+      "mode": "page",
+      "title": "Cable setup for all four processes (quick start)",
+      "caption": "One-page hookup reference: stick, MIG, flux-cored and TIG cable connections side by side, including which terminal each lead goes to.",
+      "keywords": ["quick start", "cable setup", "hookup", "all processes", "terminal", "polarity", "reference"],
+      "answers": ["How do I hook up the cables?", "Compare the polarity for each process"]
+    },
+
+    {
+      "id": "weld-mig-porosity",
+      "page_id": "om-37",
+      "mode": "rect",
+      "bbox_pt": [30, 24, 296, 480],
+      "title": "Wire weld defect — porosity",
+      "caption": "Photo of a porous MIG/flux-cored bead (small cavities and holes) with its causes and solutions.",
+      "keywords": ["porosity", "pinholes", "cavities", "holes", "MIG", "wire", "flux-cored", "defect"],
+      "answers": ["Why is my MIG weld porous?", "What does porosity look like?"]
+    },
+    {
+      "id": "weld-mig-spatter",
+      "page_id": "om-37",
+      "mode": "rect",
+      "bbox_pt": [300, 24, 566, 480],
+      "title": "Wire weld defect — excessive spatter",
+      "caption": "Photo of excessive spatter on a wire weld with its causes and solutions.",
+      "keywords": ["spatter", "splatter", "MIG", "wire", "defect", "grainy"],
+      "answers": ["Why is my MIG weld spattering so much?"]
+    },
+    {
+      "id": "weld-mig-crooked",
+      "page_id": "om-37",
+      "mode": "rect",
+      "bbox_pt": [30, 478, 296, 800],
+      "title": "Wire weld defect — crooked / wavy bead",
+      "caption": "Photo of a crooked or wavy wire-weld bead with its causes and solutions.",
+      "keywords": ["crooked", "wavy", "bead", "wander", "MIG", "wire", "defect"],
+      "answers": ["Why is my bead wavy?"]
+    },
+    {
+      "id": "weld-mig-burnthrough",
+      "page_id": "om-37",
+      "mode": "rect",
+      "bbox_pt": [300, 478, 566, 800],
+      "title": "Wire weld defect — burn-through",
+      "caption": "Photo of burn-through on a wire weld, where the base metal melts away leaving a hole, with its causes and solutions.",
+      "keywords": ["burn-through", "burn through", "hole", "melted", "thin", "MIG", "wire", "defect"],
+      "answers": ["Why am I blowing holes in the metal?"]
+    },
+    {
+      "id": "weld-mig-penetration",
+      "page_id": "om-36",
+      "mode": "rect",
+      "bbox_pt": [28, 24, 566, 352],
+      "title": "Wire weld penetration (heat control)",
+      "caption": "Comparison of too-cold, correct, and too-hot wire welds, showing how penetration and bead shape change with heat.",
+      "keywords": ["penetration", "heat", "too cold", "too hot", "workpiece heat control", "MIG", "wire"],
+      "answers": ["Is my weld penetrating enough?", "How do I know if my heat is right?"]
+    },
+
+    {
+      "id": "weld-stick-slag",
+      "page_id": "om-40",
+      "mode": "rect",
+      "bbox_pt": [28, 24, 566, 152],
+      "title": "Stick weld — coat of slag over weld",
+      "caption": "Photo of the slag coat on a stick weld, partially chipped away to show the bead underneath.",
+      "keywords": ["slag", "stick", "chipping hammer", "coat"],
+      "answers": ["Is slag on my stick weld normal?"]
+    },
+    {
+      "id": "weld-stick-porosity",
+      "page_id": "om-40",
+      "mode": "rect",
+      "bbox_pt": [28, 150, 566, 290],
+      "title": "Stick weld defect — porosity",
+      "caption": "Photo of a porous stick bead (small cavities or holes) with its causes and solutions.",
+      "keywords": ["porosity", "stick", "pinholes", "cavities", "defect"],
+      "answers": ["Why is my stick weld porous?"]
+    },
+    {
+      "id": "weld-stick-crooked",
+      "page_id": "om-40",
+      "mode": "rect",
+      "bbox_pt": [28, 288, 566, 436],
+      "title": "Stick weld defect — crooked / wavy bead",
+      "caption": "Photo of a crooked or wavy stick bead with its causes and solutions.",
+      "keywords": ["crooked", "wavy", "stick", "bead", "defect"],
+      "answers": ["Why is my stick bead crooked?"]
+    },
+    {
+      "id": "weld-stick-spatter",
+      "page_id": "om-40",
+      "mode": "rect",
+      "bbox_pt": [28, 434, 566, 572],
+      "title": "Stick weld defect — excessive spatter",
+      "caption": "Photo of excessive spatter around a stick weld with its causes and solutions.",
+      "keywords": ["spatter", "stick", "grainy", "defect"],
+      "answers": ["Why is my stick weld spattering?"]
+    },
+    {
+      "id": "weld-stick-burnthrough",
+      "page_id": "om-40",
+      "mode": "rect",
+      "bbox_pt": [28, 572, 566, 760],
+      "title": "Stick weld defect — burn-through",
+      "caption": "Photo of burn-through on a stick weld with its causes and solutions.",
+      "keywords": ["burn-through", "burn through", "hole", "stick", "defect"],
+      "answers": ["Why am I burning through with stick?"]
+    },
+    {
+      "id": "weld-stick-penetration",
+      "page_id": "om-39",
+      "mode": "rect",
+      "bbox_pt": [28, 24, 566, 412],
+      "title": "Stick weld penetration (heat control)",
+      "caption": "Comparison of too-cold, correct, and too-hot stick welds and what each looks like.",
+      "keywords": ["penetration", "heat", "stick", "too cold", "too hot"],
+      "answers": ["Is my stick weld penetrating?", "Is my amperage right for stick?"]
+    }
+  ]
+}
