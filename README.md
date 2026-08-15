@@ -245,10 +245,22 @@ eval/                      gold set + graded runner
 
 Two checks re-verify the knowledge pack, both without an API key:
 
+- `python3 scripts/09_verify_facts.py` — **works on a fresh clone.** 21
+  load-bearing claims checked against the manual's own phrasing: the duty-cycle
+  points per process and voltage, every polarity and socket assignment, the
+  AC-TIG-for-aluminium limit, the consumable ranges.
 - `python3 scripts/08_qa.py` — every numeric value in the curated data must appear
-  on the page it cites (183 tokens). It earned its keep during the build by
-  catching an item number taken from the product page rather than the manual, and
-  a receptacle spec attributed to the wrong page.
+  on the page it cites (183 tokens). This one needs the transcripts in `build/`,
+  which are an intermediate artifact and not committed, so it exits non-zero on a
+  clone rather than passing vacuously. Rebuild them with `./scripts/run_pipeline.sh`.
+  It earned its keep during the build by catching an item number taken from the
+  product page rather than the manual, and a receptacle spec attributed to the
+  wrong page.
+
+Worth knowing what the numeric gate **cannot** catch: an independent review found
+gas flow being reported as the MIG figure for every process. The number was real
+and was printed on the page cited — just for a different process. `09_verify_facts.py`
+exists partly because of that class of error.
 - `python3 scripts/09_verify_facts.py` — the same idea for claims that contain no
   distinctive number. "The ground clamp goes in the POSITIVE socket for TIG" would
   pass a numeric check even if it were transposed, and getting that backwards is

@@ -100,7 +100,26 @@ def main() -> int:
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
 
+    BUILD.mkdir(parents=True, exist_ok=True)
+
     tx = transcripts()
+    # Without this the script false-greens on a fresh clone: `build/` is
+    # gitignored, pathlib.glob on a missing directory returns empty rather than
+    # raising, and every transcript-grounded assertion would pass vacuously —
+    # printing "0 failures" on exactly the gate meant to prove the numbers are
+    # grounded. A gate that cannot fail is worse than no gate.
+    if not tx:
+        print(
+            "ERROR: no transcripts in build/transcripts/.\n"
+            "This check compares curated data against the transcribed pages, which are\n"
+            "an intermediate build artifact and are not committed. Regenerate them with\n"
+            "  ./scripts/run_pipeline.sh   (stage 3 needs ANTHROPIC_API_KEY)\n"
+            "To verify the committed pack without an API key, use 09_verify_facts.py,\n"
+            "which reads knowledge/manual_full.md instead.",
+            file=sys.stderr,
+        )
+        return 1
+
     tx_norm = {k: normalize(v) for k, v in tx.items()}
     report: list[str] = ["# Knowledge pack QA\n"]
     failures: list[str] = []
