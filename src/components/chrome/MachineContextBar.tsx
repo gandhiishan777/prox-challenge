@@ -119,17 +119,13 @@ export function MachineContextBar() {
         const key = chip.key;
         const current = machine[key];
         const isSet = current !== null;
-        // No process means no honest wire list, so the chip sits inert.
-        const inert = key === "wire" && !machine.process;
         const options = optionsFor(key, machine.process);
 
-        const tone = inert
-          ? "cursor-default bg-transparent text-muted-dark"
-          : isSet
-            ? key === "process"
-              ? "bg-ink-700 text-rust-light"
-              : "bg-ink-700 text-paper"
-            : "bg-transparent text-muted-dark hover:text-paper";
+        const tone = isSet
+          ? key === "process"
+            ? "bg-ink-700 text-rust-light"
+            : "bg-ink-700 text-paper"
+          : "bg-transparent text-muted-dark hover:text-paper";
 
         return (
           <div key={key} className="relative flex">
@@ -137,16 +133,13 @@ export function MachineContextBar() {
               type="button"
               aria-haspopup="listbox"
               aria-expanded={open === key}
-              onClick={() => {
-                if (inert) return;
-                setOpen((prev) => (prev === key ? null : key));
-              }}
+              onClick={() => setOpen((prev) => (prev === key ? null : key))}
               className={`border-0 border-r border-ink-800 px-3.5 py-[9px] font-mono text-[12px] tracking-[.06em] transition-colors ${tone}`}
             >
               {chip.label}
             </button>
 
-            {open === key && !inert && (
+            {open === key && (
               <div
                 role="listbox"
                 className="absolute left-0 top-full z-30 flex min-w-full flex-col border border-ink-700 bg-ink-800 animate-rise"

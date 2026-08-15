@@ -46,6 +46,14 @@ export const WIRE_OPTIONS: Record<ProcessId, string[]> = {
   STICK: ['1/16 in', '3/32 in', '1/8 in'],
 };
 
+/** What the sized consumable is called for each process — a stick runs rods, not wire. */
+export const CONSUMABLE_NOUN: Record<ProcessId, string> = {
+  MIG: "WIRE",
+  FLUX_CORED: "WIRE",
+  TIG: "TUNGSTEN",
+  STICK: "ROD",
+};
+
 export const GAS_OPTIONS = ["C25", "C100", "Argon", "Tri-Mix", "None"];
 
 /** True when the process runs gasless, so the gas chip should not be offered. */
@@ -61,18 +69,30 @@ export function describeMachine(m: MachineContext): string | null {
   const parts: string[] = [];
   if (m.voltage) parts.push(`input voltage ${m.voltage}V`);
   if (m.process) parts.push(`process ${PROCESS_LABEL[m.process]}`);
-  if (m.wire) parts.push(`consumable ${m.wire}`);
+  if (m.wire && m.process) {
+    parts.push(`${CONSUMABLE_NOUN[m.process].toLowerCase()} ${m.wire}`);
+  }
   if (m.gas && !isGasless(m.process)) parts.push(`shielding gas ${m.gas}`);
   if (!parts.length) return null;
   return parts.join(", ");
 }
 
-/** Short chips for the header strip. */
+/**
+ * Short chips for the header strip.
+ *
+ * The consumable chip only exists once a process is chosen: its size list and
+ * even its name (wire / tungsten / rod) depend on the process, so before that
+ * there is nothing honest to offer — and a chip that renders but ignores clicks
+ * reads as broken, not as waiting.
+ */
 export function machineChips(m: MachineContext): { key: keyof MachineContext; label: string }[] {
   const chips: { key: keyof MachineContext; label: string }[] = [];
   chips.push({ key: "voltage", label: m.voltage ? `${m.voltage} V` : "SET VOLTAGE" });
   chips.push({ key: "process", label: m.process ? PROCESS_LABEL[m.process] : "SET PROCESS" });
-  chips.push({ key: "wire", label: m.wire ? `${m.wire} WIRE` : "SET WIRE" });
+  if (m.process) {
+    const noun = CONSUMABLE_NOUN[m.process];
+    chips.push({ key: "wire", label: m.wire ? `${m.wire} ${noun}` : `SET ${noun}` });
+  }
   if (!isGasless(m.process)) {
     chips.push({ key: "gas", label: m.gas ? m.gas : "+ gas" });
   }
