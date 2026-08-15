@@ -24,7 +24,7 @@ Other commands:
 
 ```bash
 npm run ask -- "What's the duty cycle for MIG at 200A on 240V?"   # CLI, prints the tool trace
-npm test                                                          # 54 unit tests, no API key needed
+npm test                                                          # 59 unit tests, no API key needed
 npm run eval                                                      # graded gold set
 ```
 
@@ -233,13 +233,13 @@ eval/                      gold set + graded runner
 
 ## Testing
 
-`npm test` — 54 unit tests, no API key required:
+`npm test` — 59 unit tests, no API key required:
 
 - **Lookups (22)** pin the headline facts. MIG at 200A/240V is 25%. 190A brackets
   to 115A/200A with a 25% bound and no fabricated percentage. TIG is DCEN with the
   clamp positive. MIG and flux-cored are exact polarity opposites. Flux-cored
   porosity drops the MIG-only gas causes.
-- **Parser (24)** — byte-offset invariance, described above.
+- **Parser (29)** — byte-offset invariance across 7 fixtures, plus adversarial cases: attribute values containing `>`, CRLF content, and an artifact whose content mentions its own closing tag.
 - **Compiler (8)** — JSX, hooks, `@/components/ui/*` resolution, unknown imports
   rejected with a useful message, host globals not leaked into artifact scope.
 
