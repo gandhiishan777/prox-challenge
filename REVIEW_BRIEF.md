@@ -19,6 +19,28 @@ figures plus claude.ai-style interactive artifacts in a sandboxed iframe.
 
 ---
 
+## Read this first: the suite was green and two critical bugs were live
+
+An independent adversarial review found **2 critical and 9 high** findings against
+a system with 59 passing tests, a green numeric QA gate, and my own attack pass
+already done. Both criticals were the exact failure this architecture claims to
+prevent — a wrong number shown to the user *with a citation attached*:
+
+- `parseVoltage("120 VAC 20 amp circuit")` concatenated digits to `12020` and
+  resolved to **240V**, telling a user on a 120V circuit they could weld
+  continuously at a current the manual rates at 40% duty.
+- Gas flow was returned as the MIG figure (20–30 SCFH, p. 20) for **every**
+  process. TIG is 10–25 SCFH (p. 30); stick and flux-cored use none.
+
+Both are fixed with regression tests (PHASE_LOG "Phase 6"). The lesson worth
+carrying into your review: **the tests asserted the happy path, and every bug
+lived just outside it.** Two were actively misleading — the "returns nothing for
+an unrelated query" test passed only because it omitted the `process` argument
+that production always passes, and the CRLF test called `parseComplete` instead of
+replaying at every offset, so it read as coverage while the property was broken.
+
+Assume the same is still true somewhere. Sections 1–3 below are where I would look.
+
 ## Review this first
 
 Ordered by how likely I think a problem is, times how much it would matter.
@@ -154,6 +176,25 @@ served. The guard uses `resolve() + path.sep`, which is what defeats a
 
 ---
 
+## Known, unfixed, and deliberately recorded
+
+An independent adversarial review ran against the finished system. Its critical
+and high findings are fixed (see PHASE_LOG "Phase 6"). These remain open — none
+block a demo, all are real:
+
+| # | Issue | Why it matters | Why not fixed |
+|---|---|---|---|
+| 1 | `parseThickness` reads `"10mm"` as 10 **inches** | ~25× error in a capability check ("MIG is rated 22 ga to 3/8\", compare against the 10\" you described") | Needs a unit-aware parser; the manual is imperial throughout, so metric input is off the documented path. Fix before any non-US use. |
+| 2 | `"1 1/2 inch"` parses as `0.5"`; `"3/8 galvanized"` parses as `"8 Ga"` | Wrong thickness silently accepted | Same parser. The gauge regex lacks a word boundary and runs before the fraction branch. |
+| 3 | SVG and mermaid artifacts render in the **parent origin**, not the sandbox | Two of six artifact types bypass the iframe entirely; DOMPurify and mermaid `securityLevel: "strict"` are the only barrier | Architectural change. The mitigations are real but the asymmetry is undocumented outside this table. |
+| 4 | `permissionMode: "bypassPermissions"` makes a hand-maintained denylist the only barrier | A future SDK built-in not on the list would run unprompted | A `canUseTool` allow-list callback is the right fix; the denylist was the fast one after `repl` appeared with no root cause found. |
+| 5 | Several troubleshooting entries drop printed causes | `no-arc-ignition` has one placeholder where om-43 prints four; `no-power` drops "tripped thermal protection" with its cross-link to the duty-cycle page — the manual's best cross-reference | Data completeness pass over om-43/om-44, which are cited as sources but contribute no causes. |
+| 6 | Eval parses complete messages, not stream deltas | It never exercises chunk boundaries — the class of bug that produced two real parser defects | The unit suite covers boundaries directly; the eval would need to consume SSE. |
+| 7 | Eval gates prove a tool was *called*, not that its result was used | A model could call the lookup and still state a fabricated number | Only the hand-written `must_not_contain` traps catch this today. |
+| 8 | `require` shim uses `name in scope`, so `require("constructor")` resolves | Contradicts the README's "an import we do not stock cannot resolve"; not an escape, since `new Function` already grants `globalThis` inside the frame | One-line fix (`hasOwnProperty`), left with the finding recorded. |
+| 9 | An artifact containing `</antArtifact>` truncates but reports `complete: true` | Truncation is defensible and matches claude.ai; presenting it as clean is not | The panel's "incomplete" badge exists but is not triggered. |
+| 10 | No Python dependency manifest for the pipeline | Undercuts "reproducible"; `fitz`, `PIL`, `dotenv`, `anthropic` are assumed present | Evaluators never run the pipeline — the pack is committed. |
+
 ## Judgement calls made under uncertainty
 
 Flagged honestly rather than presented as settled:
@@ -202,7 +243,7 @@ Flagged honestly rather than presented as settled:
 | 4 — eval | **pass, with a caveat** | 15/18 on the full run; all 3 failures investigated (1 real gap fixed, 2 flawed assertions corrected) and re-verified 3/3. **The full suite has not been re-run end to end since.** |
 | 5 — docs, deploy config | **partial** | README, DECISIONS, PHASE_LOG, this file, Dockerfile written; clean-clone verified (clone + install + production build + 59 tests). **Not deployed. No video.** |
 
-Across the whole repo: **59/59 unit tests**, `npx tsc --noEmit` clean, production
+Across the whole repo: **78/78 unit tests**, `npx tsc --noEmit` clean, production
 build succeeds from a fresh clone.
 
 Phase 0's Spike B (SDK → SSE → browser) was folded into Phases 2–3 rather than
@@ -216,7 +257,7 @@ the SSE path is verified by curl and in the browser.
 ```bash
 npm install
 cp .env.example .env      # add ANTHROPIC_API_KEY
-npm test                  # 59 unit tests, no API key needed, ~0.5s
+npm test                  # 78 unit tests, no API key needed, ~0.5s
 
 python3 scripts/08_qa.py  # knowledge pack integrity, no API key needed
 
