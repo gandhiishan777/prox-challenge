@@ -247,3 +247,33 @@ CSP. Production is the mode that matters for the deployed app, and it is closed.
 
 Accepted and unsolved, same as claude.ai: an artifact can spin the CPU and freeze
 its own frame.
+
+## 14. The interactive machine diagram is a hotspot map, not a 3D model
+
+**Context.** The wish was a 3D (or 2D) model of the machine the agent could point
+at during troubleshooting — pull it up, highlight the part.
+
+**Decision.** A curated hotspot map over the manual's own line-art drawings, not a
+built 3D model.
+
+**Why.** No 3D model of this machine exists, so a three.js version would be a
+sculpted approximation — and a fabricated machine visualization is the one thing
+in this repo that would *not* trace back to the manual, which is the property the
+whole design defends. The manual already contains clean isometric drawings of the
+front panel (om-08) and the interior wire compartment (om-09), fully labelled. So
+the "model" is the manual's own art, and the interactivity is a coordinate map on
+top of it: `knowledge/machine_map.json`, normalized 0..1 hotspots, verified by the
+same overlay-and-eyeball loop the figure crops used (the two output sockets and
+the feed tensioner were checked to land dead-on, because a highlight ring on the
+wrong socket is a polarity error).
+
+**How it reaches the user.** `show_machine_view(view, highlight[])` is a tool; a
+side-effect SSE event renders `MachineDiagram` in the chat with pulsing rings on
+the named parts. The same component is exposed in the artifact sandbox under
+`@/components/machine`, so a generated step-by-step fix can highlight a different
+part each step — the machine images load through the sandbox CSP's `img-src`.
+
+**Cost.** Two committed PNGs (~0.8 MB) and ~8 KB of map data bundled into the
+runner. `MachineDiagram` uses core Tailwind classes only (slate/orange, not the
+app's custom palette) precisely so it renders identically in the app and inside
+the sandbox, where only the default Tailwind theme exists.

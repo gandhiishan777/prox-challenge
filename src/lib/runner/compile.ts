@@ -30,6 +30,9 @@ export interface CompileResult {
 /** Import specifiers we accept as aliases of the shadcn-style ui kit. */
 const UI_PREFIXES = ["@/components/ui/", "components/ui/", "@/ui/", "./components/ui/"];
 
+/** The machine diagram is exposed at a stable specifier, with a couple of aliases. */
+const MACHINE_ALIASES = ["@/components/machine/MachineDiagram", "components/machine"];
+
 function formatUnknownModule(name: string, available: string[]): string {
   return (
     `Module "${name}" is not available inside artifacts. ` +
@@ -66,6 +69,10 @@ export function compileArtifact(
     // model can split imports across files the way shadcn projects do.
     const uiPrefix = UI_PREFIXES.find((p) => name.startsWith(p));
     if (uiPrefix && scope["@/components/ui"]) return scope["@/components/ui"];
+
+    if (MACHINE_ALIASES.includes(name) && scope["@/components/machine"]) {
+      return scope["@/components/machine"];
+    }
 
     throw new Error(formatUnknownModule(name, moduleNames));
   };

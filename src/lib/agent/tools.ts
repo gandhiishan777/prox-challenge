@@ -9,6 +9,7 @@ import {
   parts,
   readImageBase64,
 } from "./knowledge";
+import { getPart, getView, MACHINE_MAP, MACHINE_VIEWS } from "../machine/map";
 import {
   getAllConnections,
   getConnections,
@@ -292,6 +293,56 @@ const showFigureTool = tool(
   },
 );
 
+const machineViewTool = tool(
+  "show_machine_view",
+  "Display an interactive diagram of the machine with specific parts highlighted, and point the user at exactly what to touch. Use this during setup and troubleshooting: 'the tensioner is here', 'plug the ground clamp into this socket', 'check the drive roll'. Views: 'front-panel' (display, knobs, power switch, output sockets) and 'interior' (wire spool, feed mechanism, tensioner, drive roll, feed-control sockets). Prefer this over describing a location in words.",
+  {
+    view: z
+      .enum(["front-panel", "interior"])
+      .describe("Which diagram: the front panel or the interior wire compartment."),
+    highlight: z
+      .array(z.string())
+      .describe("Part ids to highlight, from the machine part catalogue in your instructions."),
+    reason: z.string().optional().describe("One short phrase on what you are pointing at and why."),
+  },
+  async (args) => {
+    const view = getView(args.view);
+    if (!view) {
+      return {
+        content: [{ type: "text", text: `Unknown view "${args.view}". Use 'front-panel' or 'interior'.` }],
+        isError: true,
+      };
+    }
+    const resolved = args.highlight.map((id) => ({ id, part: getPart(args.view, id) }));
+    const unknown = resolved.filter((r) => !r.part).map((r) => r.id);
+    if (unknown.length) {
+      const known = view.parts.map((p) => p.id).join(", ");
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Unknown part id(s) for ${args.view}: ${unknown.join(", ")}. Valid ids: ${known}.`,
+          },
+        ],
+        isError: true,
+      };
+    }
+    const detail = resolved
+      .map((r) => `- ${r.part!.label}: ${r.part!.note}`)
+      .join("\n");
+    return {
+      content: [
+        {
+          type: "text",
+          text:
+            `Displayed the ${view.title} diagram to the user with these parts highlighted (${cite(view.page)}):\n${detail}\n\n` +
+            `Describe only what these highlighted parts are and how they relate; the user can see the diagram.`,
+        },
+      ],
+    };
+  },
+);
+
 export const TOOLS = [
   dutyCycleTool,
   connectionsTool,
@@ -301,6 +352,7 @@ export const TOOLS = [
   partsTool,
   viewPageTool,
   showFigureTool,
+  machineViewTool,
 ];
 
 export const SERVER_NAME = "omnipro";
@@ -321,6 +373,7 @@ export const ALLOWED_TOOLS = [
   "lookup_part",
   "view_page",
   "show_figure",
+  "show_machine_view",
 ].map((name) => `mcp__${SERVER_NAME}__${name}`);
 
 /** Short label for a tool call, shown in the UI as the agent works. */
@@ -345,6 +398,10 @@ export function describeToolCall(name: string, input: Record<string, unknown>): 
       return `Reading ${cite(String(input.page_id))}`;
     case "show_figure":
       return `Showing ${figuresById.get(String(input.figure_id))?.title ?? input.figure_id}`;
+    case "show_machine_view": {
+      const n = Array.isArray(input.highlight) ? input.highlight.length : 0;
+      return `Pointing at ${n} part${n === 1 ? "" : "s"} on the ${input.view} diagram`;
+    }
     default:
       return bare;
   }
@@ -365,4 +422,34 @@ export function figureSideEffect(
     src: `/api/knowledge/${figure.file}`,
     citation: cite(figure.page_id),
   };
+}
+
+export interface MachineSideEffect {
+  view: string;
+  highlight: string[];
+  title: string;
+  citation: string;
+}
+
+/** If this tool call should surface the interactive machine diagram, describe it. */
+export function machineSideEffect(
+  name: string,
+  input: Record<string, unknown>,
+): MachineSideEffect | null {
+  if (name !== `mcp__${SERVER_NAME}__show_machine_view`) return null;
+  const view = getView(String(input.view));
+  if (!view) return null;
+  const highlight = Array.isArray(input.highlight)
+    ? input.highlight.map(String).filter((id) => getPart(String(input.view), id))
+    : [];
+  return { view: String(input.view), highlight, title: view.title, citation: cite(view.page) };
+}
+
+/** Machine part catalogue for the system prompt, so the model knows the ids. */
+export function machineCatalog(): string {
+  return MACHINE_VIEWS.map((viewId) => {
+    const view = MACHINE_MAP.views[viewId];
+    const parts = view.parts.map((p) => `    ${p.id} — ${p.label}`).join("\n");
+    return `  ${viewId} (${view.title}):\n${parts}`;
+  }).join("\n");
 }

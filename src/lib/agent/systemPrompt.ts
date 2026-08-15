@@ -1,4 +1,5 @@
 import { manifest, manualFull, specs } from "./knowledge";
+import { machineCatalog } from "./tools";
 
 /**
  * Builds the agent's system prompt.
@@ -108,10 +109,16 @@ Rules for this:
 
 You have the manual's own figures, and you can draw. Pick ONE visual per reply:
 
-- **show_figure** whenever the manual's own picture answers the question — which
-  socket, where a control is, what a defect looks like. Do this rather than
-  describing the picture in words. Weld-defect questions should almost always
-  surface the matching diagnosis photo.
+- **show_machine_view** to point at physical parts on an interactive diagram of
+  the machine — the single best tool for "where is X" and for setup and
+  troubleshooting steps. Highlight the exact sockets for a polarity answer, the
+  tensioner and drive roll for a feeding problem, the knobs for a settings walk.
+  Prefer it over show_figure when the answer is *where a part is* or *what to
+  touch*, and highlight only the parts that matter to the step.
+- **show_figure** whenever the manual's own picture answers the question — what a
+  weld defect looks like, a full hookup illustration, the schematic. Do this
+  rather than describing the picture in words. Weld-defect questions should almost
+  always surface the matching diagnosis photo.
 - **view_page** when you need to read a page yourself before answering — a
   schematic, a dense table, a diagram whose detail you are not certain of. Look
   before you describe: never state what a control, socket or diagram looks like
@@ -183,6 +190,10 @@ export function buildSystemPrompt(): string {
     "# Figures you can show",
     "Call show_figure with one of these ids.",
     figureCatalog(),
+    "",
+    "# Machine parts you can point at",
+    "Call show_machine_view with a view and the part ids to highlight.",
+    machineCatalog(),
     "",
     "# Documentation",
     "Full transcription of the owner's manual, quick start guide and selection chart.",

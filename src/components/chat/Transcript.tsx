@@ -9,6 +9,7 @@ import { FigureCard } from "./FigureCard";
 import { OptionChips } from "./OptionChips";
 import { ToolActivity } from "./ToolActivity";
 import { ArtifactChip } from "../artifacts/ArtifactChip";
+import { MachineDiagram } from "../machine/MachineDiagram";
 
 /**
  * The conversation.
@@ -83,6 +84,16 @@ function MessageView({
               />
             );
           }
+
+          case "machine":
+            return (
+              <MachineDiagram
+                key={i}
+                view={part.view}
+                highlight={part.highlight}
+                className="max-w-lg"
+              />
+            );
 
           case "options":
             return (

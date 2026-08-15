@@ -166,11 +166,19 @@ you enter process, wire diameter and thickness, and the printed chart lives on t
 inside of the welder's door. `settings.json` states that absence explicitly, so the
 agent walks the user through setup instead of fabricating a lookup table.
 
-### 5. Multimodal, in three registers
+### 5. Multimodal, in four registers
 
 - **The manual's own figures.** `show_figure` both displays an image to the user
   *and* returns it to the model, so the agent never describes a diagram it has not
   looked at. `view_page` lets it read a full page when it needs to check detail.
+- **An interactive machine diagram.** `show_machine_view` points at physical parts
+  on the manual's own line art — pulsing rings on the exact sockets for a polarity
+  answer, on the tensioner and drive roll for a feeding problem. The hotspot map is
+  curated coordinates over the manual's front-panel and interior drawings (nothing
+  fabricated — a made-up 3D model would be the one thing here that doesn't trace to
+  the manual), verified the same way the figure crops were. The `MachineDiagram`
+  component is also exposed **inside the artifact sandbox**, so a generated
+  troubleshooting flow can highlight the right part at each step.
 - **Drawn diagrams.** SVG artifacts for hookups the manual does not illustrate.
 - **Interactive artifacts.** Calculators, flowcharts, configurators.
 

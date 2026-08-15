@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { encodeEvent, type AgentEvent } from "@/lib/events";
 import { ArtifactStreamParser } from "@/lib/artifacts/parser";
 import { runAgent, type ModelChoice } from "@/lib/agent/run";
-import { describeToolCall, figureSideEffect } from "@/lib/agent/tools";
+import { describeToolCall, figureSideEffect, machineSideEffect } from "@/lib/agent/tools";
 
 /**
  * Bridges the Claude Agent SDK to the browser over SSE.
@@ -117,9 +117,11 @@ export async function POST(request: NextRequest) {
                 id: block.id,
                 label: describeToolCall(block.name, input),
               });
-              // show_figure is the agent telling the UI to display an image.
+              // show_figure and show_machine_view tell the UI to display something.
               const figure = figureSideEffect(block.name, input);
               if (figure) send({ type: "figure", ...figure });
+              const machine = machineSideEffect(block.name, input);
+              if (machine) send({ type: "machine", ...machine });
               send({ type: "tool_end", id: block.id });
             }
           }

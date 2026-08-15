@@ -5,6 +5,7 @@ import * as Recharts from "recharts";
 import * as LucideAll from "lucide-react";
 
 import { UI_KIT } from "./ui-kit";
+import { MachineDiagram } from "@/components/machine/MachineDiagram";
 
 /**
  * The module allow-list available to artifact code.
@@ -80,6 +81,11 @@ export const ARTIFACT_SCOPE: Record<string, unknown> = {
   "lucide-react": lucideProxy,
   recharts: withAnimationDisabled(Recharts),
   "@/components/ui": UI_KIT,
+  // The interactive machine diagram is available to artifacts too, so a generated
+  // troubleshooting flow can highlight the exact part for each step:
+  //   import { MachineDiagram } from "@/components/machine";
+  //   <MachineDiagram view="interior" highlight={["feed-tensioner"]} />
+  "@/components/machine": { MachineDiagram },
 };
 
 /** Human-readable list used in error messages and the system prompt. */

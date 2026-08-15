@@ -16,6 +16,7 @@ export type MessagePart =
   | { kind: "text"; text: string }
   | { kind: "artifact"; identifier: string }
   | { kind: "figure"; figureId: string; title: string; caption: string; src: string; citation: string }
+  | { kind: "machine"; view: string; highlight: string[]; title: string; citation: string }
   | { kind: "options"; question: string; options: string[] };
 
 export interface Message {
@@ -154,6 +155,22 @@ export const useChat = create<ChatState>((set, get) => ({
               title: event.title,
               caption: event.caption,
               src: event.src,
+              citation: event.citation,
+            },
+          ],
+        };
+        break;
+
+      case "machine":
+        messages[index] = {
+          ...current,
+          parts: [
+            ...current.parts,
+            {
+              kind: "machine",
+              view: event.view,
+              highlight: event.highlight,
+              title: event.title,
               citation: event.citation,
             },
           ],

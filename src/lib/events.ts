@@ -28,6 +28,13 @@ export type AgentEvent =
       src: string;
       citation: string;
     }
+  | {
+      type: "machine";
+      view: string;
+      highlight: string[];
+      title: string;
+      citation: string;
+    }
   | { type: "error"; message: string }
   | { type: "done"; costUsd?: number };
 

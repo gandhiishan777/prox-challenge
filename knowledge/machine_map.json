@@ -1,0 +1,370 @@
+{
+  "_comment": [
+    "Interactive hotspot map over the manual's own machine diagrams.",
+    "Coordinates are normalized (0-1) against the image, so they hold at any",
+    "render size. Circles use cx/cy/r (r as a fraction of image WIDTH); rects use",
+    "x/y/w/h. Each part carries the page it is labelled on, keywords the agent and",
+    "the troubleshooting layer match against, and a one-line note.",
+    "Verified by overlaying these boxes on the source figures and eyeballing the",
+    "fit, the same loop used for the figure crops."
+  ],
+  "views": {
+    "front-panel": {
+      "title": "Front panel",
+      "image": "machine/front-panel.png",
+      "page": "om-08",
+      "caption": "The front of the welder: display, control knobs, power switch and the output sockets.",
+      "parts": [
+        {
+          "id": "lcd-display",
+          "label": "LCD Display",
+          "shape": "rect",
+          "x": 0.36,
+          "y": 0.02,
+          "w": 0.24,
+          "h": 0.15,
+          "keywords": [
+            "lcd",
+            "display",
+            "screen",
+            "menu"
+          ],
+          "note": "The 4.3\" synergic control screen."
+        },
+        {
+          "id": "home-button",
+          "label": "Home Button",
+          "shape": "circle",
+          "cx": 0.3,
+          "cy": 0.085,
+          "r": 0.035,
+          "keywords": [
+            "home",
+            "button"
+          ],
+          "note": "Returns to the process-selection screen."
+        },
+        {
+          "id": "back-button",
+          "label": "Back Button",
+          "shape": "circle",
+          "cx": 0.645,
+          "cy": 0.085,
+          "r": 0.035,
+          "keywords": [
+            "back",
+            "button"
+          ],
+          "note": "Steps back to the previous screen."
+        },
+        {
+          "id": "left-knob",
+          "label": "Left Knob (Wire Feed Speed / Amperage)",
+          "shape": "circle",
+          "cx": 0.335,
+          "cy": 0.235,
+          "r": 0.05,
+          "keywords": [
+            "left knob",
+            "wire feed speed",
+            "amperage",
+            "amps",
+            "wfs"
+          ],
+          "note": "Sets wire diameter, then wire feed speed / amperage."
+        },
+        {
+          "id": "control-knob",
+          "label": "Main Control Knob",
+          "shape": "circle",
+          "cx": 0.465,
+          "cy": 0.235,
+          "r": 0.06,
+          "keywords": [
+            "control knob",
+            "main knob",
+            "select",
+            "navigate"
+          ],
+          "note": "Turn to move through menus, press to select."
+        },
+        {
+          "id": "right-knob",
+          "label": "Right Knob (Voltage / Thickness)",
+          "shape": "circle",
+          "cx": 0.605,
+          "cy": 0.235,
+          "r": 0.05,
+          "keywords": [
+            "right knob",
+            "voltage",
+            "volts",
+            "thickness"
+          ],
+          "note": "Sets material thickness, then voltage."
+        },
+        {
+          "id": "power-switch",
+          "label": "Power Switch",
+          "shape": "circle",
+          "cx": 0.43,
+          "cy": 0.49,
+          "r": 0.055,
+          "keywords": [
+            "power switch",
+            "on off",
+            "rocker"
+          ],
+          "note": "Main on/off. Leave ON while the machine cools after a thermal trip."
+        },
+        {
+          "id": "mig-socket",
+          "label": "MIG Gun / Spool Gun Cable Socket",
+          "shape": "circle",
+          "cx": 0.275,
+          "cy": 0.485,
+          "r": 0.06,
+          "keywords": [
+            "mig gun",
+            "spool gun",
+            "gun socket",
+            "cable socket"
+          ],
+          "note": "Where the MIG gun (or optional spool gun) connects."
+        },
+        {
+          "id": "storage",
+          "label": "Storage Compartment",
+          "shape": "rect",
+          "x": 0.47,
+          "y": 0.34,
+          "w": 0.31,
+          "h": 0.24,
+          "keywords": [
+            "storage",
+            "compartment",
+            "vents"
+          ],
+          "note": "Behind the vented door \u2014 holds the door-mounted settings chart."
+        },
+        {
+          "id": "spool-gun-gas-outlet",
+          "label": "Spool Gun Gas Outlet",
+          "shape": "circle",
+          "cx": 0.3,
+          "cy": 0.685,
+          "r": 0.05,
+          "keywords": [
+            "spool gun gas",
+            "gas outlet"
+          ],
+          "note": "Gas fitting for the optional spool gun."
+        },
+        {
+          "id": "negative-socket",
+          "label": "Negative (\u2212) Socket",
+          "shape": "circle",
+          "cx": 0.46,
+          "cy": 0.685,
+          "r": 0.055,
+          "keywords": [
+            "negative",
+            "minus",
+            "dcen",
+            "ground negative",
+            "work negative"
+          ],
+          "note": "The (\u2212) output socket. Ground clamp here for MIG and stick; torch here for TIG; wire feed power here for flux-cored."
+        },
+        {
+          "id": "wire-feed-power",
+          "label": "Wire Feed Power Cable",
+          "shape": "circle",
+          "cx": 0.565,
+          "cy": 0.72,
+          "r": 0.035,
+          "keywords": [
+            "wire feed power",
+            "feed power cable"
+          ],
+          "note": "Short internal lead that plugs into (+) for MIG or (\u2212) for flux-cored."
+        },
+        {
+          "id": "positive-socket",
+          "label": "Positive (+) Socket",
+          "shape": "circle",
+          "cx": 0.665,
+          "cy": 0.685,
+          "r": 0.055,
+          "keywords": [
+            "positive",
+            "plus",
+            "dcep",
+            "ground positive",
+            "work positive"
+          ],
+          "note": "The (+) output socket. Wire feed power here for MIG; electrode holder here for stick; ground clamp here for TIG and flux-cored."
+        }
+      ],
+      "px": [
+        1300,
+        1181
+      ]
+    },
+    "interior": {
+      "title": "Wire compartment (interior)",
+      "image": "machine/interior.png",
+      "page": "om-09",
+      "caption": "Inside the wire-drive door: spool, feed mechanism, tensioner and the feed-control sockets.",
+      "parts": [
+        {
+          "id": "wire-spool",
+          "label": "Wire Spool",
+          "shape": "circle",
+          "cx": 0.37,
+          "cy": 0.565,
+          "r": 0.11,
+          "keywords": [
+            "wire spool",
+            "spool",
+            "reel",
+            "tangle",
+            "cross wind"
+          ],
+          "note": "Holds up to a 12 lb spool. Check here for tangles or cross-winding."
+        },
+        {
+          "id": "spool-knob",
+          "label": "Spool Tension Knob",
+          "shape": "circle",
+          "cx": 0.37,
+          "cy": 0.55,
+          "r": 0.05,
+          "keywords": [
+            "spool knob",
+            "spool tension",
+            "spindle"
+          ],
+          "note": "Sets spool drag so it does not overspin."
+        },
+        {
+          "id": "feed-mechanism",
+          "label": "Wire Feed Mechanism",
+          "shape": "rect",
+          "x": 0.565,
+          "y": 0.4,
+          "w": 0.2,
+          "h": 0.3,
+          "keywords": [
+            "wire feed mechanism",
+            "drive",
+            "feeder"
+          ],
+          "note": "The drive assembly that pushes wire to the gun."
+        },
+        {
+          "id": "feed-tensioner",
+          "label": "Feed Tensioner",
+          "shape": "circle",
+          "cx": 0.635,
+          "cy": 0.415,
+          "r": 0.045,
+          "keywords": [
+            "feed tensioner",
+            "tension",
+            "tensioner",
+            "pressure",
+            "drive tension"
+          ],
+          "note": "Sets how hard the drive grips the wire. Too tight bird-nests; too loose slips."
+        },
+        {
+          "id": "idler-arm",
+          "label": "Idler Arm",
+          "shape": "circle",
+          "cx": 0.705,
+          "cy": 0.52,
+          "r": 0.045,
+          "keywords": [
+            "idler arm",
+            "pressure arm"
+          ],
+          "note": "Swings the pressure roller onto the wire."
+        },
+        {
+          "id": "feed-roller-knob",
+          "label": "Feed Roller Knob",
+          "shape": "circle",
+          "cx": 0.65,
+          "cy": 0.6,
+          "r": 0.05,
+          "keywords": [
+            "feed roller",
+            "drive roll",
+            "roller",
+            "groove"
+          ],
+          "note": "Holds the drive roll. Flip it for the correct groove and wire size."
+        },
+        {
+          "id": "wire-inlet-liner",
+          "label": "Wire Inlet Liner",
+          "shape": "circle",
+          "cx": 0.52,
+          "cy": 0.51,
+          "r": 0.04,
+          "keywords": [
+            "inlet liner",
+            "liner",
+            "guide"
+          ],
+          "note": "Guides wire from the spool into the drive."
+        },
+        {
+          "id": "cold-wire-switch",
+          "label": "Cold Wire Feed Switch",
+          "shape": "circle",
+          "cx": 0.6,
+          "cy": 0.315,
+          "r": 0.035,
+          "keywords": [
+            "cold wire feed",
+            "jog",
+            "inch wire"
+          ],
+          "note": "Feeds wire without power, to thread the gun."
+        },
+        {
+          "id": "foot-pedal-socket",
+          "label": "Foot Pedal Socket",
+          "shape": "circle",
+          "cx": 0.605,
+          "cy": 0.785,
+          "r": 0.035,
+          "keywords": [
+            "foot pedal socket",
+            "pedal"
+          ],
+          "note": "TIG foot pedal connects here, inside the machine."
+        },
+        {
+          "id": "wire-feed-control-socket",
+          "label": "Wire Feed Control Socket",
+          "shape": "circle",
+          "cx": 0.68,
+          "cy": 0.785,
+          "r": 0.035,
+          "keywords": [
+            "wire feed control socket",
+            "control socket"
+          ],
+          "note": "The MIG gun's control lead connects here."
+        }
+      ],
+      "px": [
+        1253,
+        870
+      ]
+    }
+  }
+}
