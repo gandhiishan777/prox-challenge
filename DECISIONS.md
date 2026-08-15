@@ -277,3 +277,59 @@ part each step — the machine images load through the sandbox CSP's `img-src`.
 runner. `MachineDiagram` uses core Tailwind classes only (slate/orange, not the
 app's custom palette) precisely so it renders identically in the app and inside
 the sandbox, where only the default Tailwind theme exists.
+
+## 15. The interface is paper, and it earned three new capabilities
+
+**Context.** A design was authored in Claude Design ("OmniPro Bench") and imported.
+It replaced the dark garage-workbench theme with warm paper and ink.
+
+**Why the palette flip is functional, not taste.** Every figure this app shows is
+black line art on white — that is what the manual is. Against dark chrome each one
+read as a hole punched in the page, and the eye had to re-adjust between the
+answer and its evidence. On paper stock the source material sits in the layout
+instead of fighting it. The rest follows from the same idea: square corners, hard
+offset shadows with no blur, and mono micro-labels, so the chrome reads as printed
+matter rather than as a floating app.
+
+**Fonts are self-hosted** through next/font rather than linked from Google. The
+design depends on tight tracking at small sizes; a webfont that failed to load
+would silently fall back and change every measurement. Same reasoning as the
+vendored Tailwind build for the sandbox.
+
+**Three capabilities came with the design, and they are the actual value.**
+
+*The machine context strip.* The agent's clarification protocol was correct but
+tiring: most real questions ("what settings for 1/8 steel", "what's my duty
+cycle") genuinely have no answer until you know process and input voltage, so it
+had to keep asking. The user now states their bench once and it rides along with
+every message inside a `<machine_setup>` block that the system prompt tells the
+agent to treat as given. The clarifying question is reserved for genuinely new
+information. Two things keep it honest: the strip is always visible, so an answer
+scoped to 240V flux-cored never reads as a general claim; and the options follow
+the machine's reality — wire sizes track the selected process, and the gas chip is
+removed entirely for flux-cored and stick, because offering a shielding gas there
+is not a UI default, it is wrong advice.
+
+*The manual page viewer.* Until now "(p. 37)" was a claim the user had to take on
+trust. Any citation or figure now opens the actual rendered page beside the
+conversation, with page navigation and a filmstrip of every page cited this
+session. The knowledge pack already had all 51 page renders; this is the first
+thing that lets a skeptical user check one.
+
+*The reference rail.* Figures and generated tools collect on the left with live
+lookup, figure and cost counters. Answers pull figures constantly and in a
+single-column chat all of it scrolls away at the next question.
+
+**Answer headers** put the settled lookup count and cited pages above the prose
+rather than after it, so the audit trail can be read before the claim rather than
+used to check it afterwards.
+
+**One correction to the design.** Its product card read "MAX OUT 200 A". The
+machine's published maximum is 220 A on 240V (p. 7). The implementation shows
+220 A — a design mock may round, this app may not.
+
+**Sandbox caveat carried forward.** `MachineDiagram` is bundled into the artifact
+sandbox, which builds its CSS with the Tailwind Play script and no config, so the
+paper/ink/rust tokens do not resolve there. That one file spells its palette out
+as literal hex and sets its shadow inline. A missing font utility degrades
+harmlessly; a missing colour utility would have left the caption bar unpainted.

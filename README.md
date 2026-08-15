@@ -166,6 +166,26 @@ you enter process, wire diameter and thickness, and the printed chart lives on t
 inside of the welder's door. `settings.json` states that absence explicitly, so the
 agent walks the user through setup instead of fabricating a lookup table.
 
+### 4b. The machine context strip
+
+Most real questions have no answer until you know the process and input voltage,
+so the agent had to keep asking. The user sets their bench once in the header —
+voltage, process, consumable, gas — and it travels with every message, so the
+clarifying question is reserved for genuinely new information.
+
+It is deliberately always visible: an answer scoped to 240V flux-cored must never
+read as a general claim. And the options follow the machine rather than the UI —
+wire sizes track the selected process, and the gas chip is **removed** for
+flux-cored and stick, because offering a shielding gas for a self-shielded process
+is not a harmless default, it is wrong advice.
+
+### 4c. Citations you can open
+
+Any page reference or figure opens the actual rendered manual page in a side
+panel, with page navigation and a filmstrip of every page cited this session. The
+knowledge pack already held all 51 page renders; this is what turns "(p. 37)" from
+a claim into something checkable without leaving the conversation.
+
 ### 5. Multimodal, in four registers
 
 - **The manual's own figures.** `show_figure` both displays an image to the user
