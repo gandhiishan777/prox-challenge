@@ -47,7 +47,7 @@ export function ArtifactChip({
         <span className="mb-0.5 block truncate font-display text-[15.5px] font-bold">
           {artifact.title}
         </span>
-        <span className="block font-mono text-[11.5px] text-[#8b7f70]">
+        <span className="block font-mono text-[11.5px] text-muted">
           {streaming
             ? "Building…"
             : `${artifactKindLabel(artifact.type, artifact.language)} · v${

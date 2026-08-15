@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { PAGES } from "@/lib/pages";
 import { MachineContextBar } from "./MachineContextBar";
 
 /**
@@ -46,7 +47,12 @@ export function AppHeader({
 
         <div className="flex items-center gap-2 font-mono text-[11px] tracking-[.08em] text-muted-ondark">
           <span aria-hidden className="h-1.5 w-1.5 bg-live" />
-          <span className="whitespace-nowrap">MANUAL LOADED · 51 pp</span>
+          {/* Derived, not typed in. This number is a claim about what the agent
+              can actually read, so it has to follow the knowledge pack rather
+              than drift away from it. It counts all three source documents,
+              whereas the manual viewer's "37 / 48" stepper counts the owner's
+              manual alone — different numbers because they mean different things. */}
+          <span className="whitespace-nowrap">MANUAL LOADED · {PAGES.length} pp</span>
         </div>
 
         {showNew && (

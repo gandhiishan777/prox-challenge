@@ -121,7 +121,7 @@ function ArtifactPull({ pull, onOpen }: { pull: Pull; onOpen: (id: string) => vo
         <span className="block truncate font-display text-[12.5px] font-bold uppercase tracking-[.03em]">
           {pull.title}
         </span>
-        <span className="block font-mono text-[10px] text-[#a2856c]">GENERATED</span>
+        <span className="block font-mono text-[10px] text-muted">GENERATED</span>
       </span>
     </button>
   );

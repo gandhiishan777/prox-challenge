@@ -50,7 +50,7 @@ export function FigureCard({
           <button
             type="button"
             onClick={onOpenPage}
-            className="flex-shrink-0 self-start border border-[#e0d4c4] bg-transparent px-2 py-[5px] font-mono text-[10.5px] tracking-[.1em] text-rust hover:border-rust"
+            className="flex-shrink-0 self-start border border-line bg-transparent px-2 py-[5px] font-mono text-[10.5px] tracking-[.1em] text-rust hover:border-rust"
           >
             OPEN PAGE
           </button>

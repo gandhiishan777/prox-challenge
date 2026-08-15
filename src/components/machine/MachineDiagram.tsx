@@ -97,7 +97,10 @@ export function MachineDiagram({
             const isHover = hover === p.id;
             if (!isOn && !showAll) return null;
             const u = toUnits(p);
-            const stroke = isOn ? "#f97316" : "#64748b";
+            // rust / muted, spelled literally for the same reason as the caption
+            // bar below: these must paint inside the sandbox, where the tokens
+            // do not resolve.
+            const stroke = isOn ? "#c24000" : "#8b8579";
             const opacity = isOn ? 1 : isHover ? 0.9 : 0.35;
 
             return (
@@ -116,27 +119,55 @@ export function MachineDiagram({
                         <animate attributeName="opacity" values="0.9;0;0.9" dur="1.6s" repeatCount="indefinite" />
                       </circle>
                     )}
+                    {/* Halo first, ring on top. Rust alone disappears against the
+                        black socket panel on page 8 — and the sockets are the most
+                        important thing this diagram ever points at, since a ring on
+                        the wrong one is a polarity error. The pale underlay means
+                        the marker survives whatever the line art puts behind it. */}
+                    {isOn && (
+                      <circle
+                        cx={u.cx}
+                        cy={u.cy}
+                        r={u.r}
+                        fill="none"
+                        stroke="#f4f1ec"
+                        strokeWidth={2.6}
+                      />
+                    )}
                     <circle
                       cx={u.cx}
                       cy={u.cy}
                       r={u.r}
-                      fill={isOn ? "rgba(249,115,22,0.18)" : "transparent"}
+                      fill={isOn ? "rgba(194,64,0,0.18)" : "transparent"}
                       stroke={stroke}
-                      strokeWidth={isOn ? 1.2 : 0.6}
+                      strokeWidth={isOn ? 1.3 : 0.6}
                     />
                   </>
                 ) : (
-                  <rect
-                    x={u.x}
-                    y={u.y}
-                    width={u.w}
-                    height={u.h}
-                    // Square corners: the marker is the one place a stray rx
-                    // would sneak a rounded edge into a design that has none.
-                    fill={isOn ? "rgba(249,115,22,0.14)" : "transparent"}
-                    stroke={stroke}
-                    strokeWidth={isOn ? 1.2 : 0.6}
-                  />
+                  <>
+                    {isOn && (
+                      <rect
+                        x={u.x}
+                        y={u.y}
+                        width={u.w}
+                        height={u.h}
+                        fill="none"
+                        stroke="#f4f1ec"
+                        strokeWidth={2.6}
+                      />
+                    )}
+                    <rect
+                      x={u.x}
+                      y={u.y}
+                      width={u.w}
+                      height={u.h}
+                      // Square corners: the marker is the one place a stray rx
+                      // would sneak a rounded edge into a design that has none.
+                      fill={isOn ? "rgba(194,64,0,0.14)" : "transparent"}
+                      stroke={stroke}
+                      strokeWidth={isOn ? 1.3 : 0.6}
+                    />
+                  </>
                 )}
               </g>
             );

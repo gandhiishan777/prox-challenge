@@ -121,8 +121,14 @@ export function ReactArtifactFrame({
       />
       {!painted && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white">
-          <span className="flex items-center gap-2 text-sm text-slate-400">
-            <span className="h-3 w-3 animate-spin rounded-full border-2 border-slate-300 border-t-slate-500" />
+          {/* Same bullet metrics as the transcript's "Reading the manual…" line:
+              a pulsing square, not a spinner — a circle is the one shape this
+              design never draws. */}
+          <span className="flex items-center gap-[9px] font-mono text-[12px] uppercase tracking-[.1em] text-muted">
+            <span
+              aria-hidden="true"
+              className="h-[5px] w-[5px] shrink-0 animate-pulse bg-rust"
+            />
             Starting sandbox…
           </span>
         </div>
