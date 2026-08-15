@@ -369,6 +369,7 @@ export function parseThickness(input?: string | null): {
 
 export interface SettingsGuidance {
   no_printed_table: string;
+  where_the_chart_is: string;
   implication: string;
   procedure: { step: number; text: string; citation: string }[];
   navigation_note: string;
@@ -407,6 +408,11 @@ export function getWeldSettings(
 
   return {
     no_printed_table: settings.no_printed_settings_table.fact,
+    // Surfaced as its own field rather than left inside the longer explanation:
+    // "the manual has no table" reads as a dead end, when in fact the user has a
+    // chart on the machine in front of them. Answers were dropping that pointer.
+    where_the_chart_is:
+      "A printed Settings Chart is on the INSIDE OF THE WELDER'S DOOR. Tell the user to open the wire compartment and read it — it is the chart the manual refers to for gas type and settings. Always mention this when discussing settings.",
     implication: settings.no_printed_settings_table.implication,
     procedure: settings.synergic_procedure.steps.map(
       (s: { step: number; text: string; page: string }) => ({

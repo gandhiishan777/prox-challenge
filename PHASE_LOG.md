@@ -185,3 +185,61 @@ question difficulty.
 - The artifact panel is a hard split below `lg`: the chat column hides while an
   artifact is open. Deliberate (a half-width artifact on a phone is worse), but
   it is the layout decision most worth a second opinion.
+
+---
+
+## Phase 4 — Eval
+
+**Status: complete, with one caveat recorded below.**
+
+### Result
+Full run: **15/18 passed** (`eval/results/2026-08-15T09-00-07-706Z.json`, $2.74).
+
+All three failures were investigated individually. **One was a real gap in the
+agent; two were bad assertions of mine.** Each was fixed and re-verified:
+
+1. **`settings-ambiguous` — real gap.** Asked for settings for 1/8" steel, the
+   agent correctly asked one clarifying question, then on the follow-up said
+   "There's no printed chart for this". True of the manual, but misleading: there
+   IS a Settings Chart on the inside of the welder's door, which is actionable for
+   someone standing at the machine. The fact was in `settings.json` but buried
+   inside a longer sentence, and answers were dropping it. Fixed by surfacing
+   `where_the_chart_is` as its own field in the tool result. Coverage went
+   **0.50 → 0.95**.
+
+2. **`birdnest` — bad assertion.** Gate required the word "pressure". The agent
+   said "feed tension" and "Feed Tensioner knob" — which is what is actually
+   printed on the machine, and better for the user. Judge scored coverage 1.00,
+   tone 5. Gate replaced with `must_contain_any: ["pressure", "tension"]`.
+
+3. **`extension-cord` — bad assertion.** Gate required the substring "not". The
+   agent opened with "No — two separate no's there", refused correctly, and went
+   further than the gold facts by also catching that outdoor use is prohibited
+   (p. 4). A substring check on "not" was testing word choice, not correctness.
+   Replaced with a refusal-phrase set plus a `must_not_contain` on affirmative
+   phrasings, which is the actual requirement.
+
+Re-run of those three after the fixes: **3/3 pass** (coverage 95%, 95%, 100%).
+
+**Caveat, stated plainly:** the full 18-case suite has not been re-run end to end
+since those fixes, because the API budget for this session was nearly exhausted
+($3.49 total across eval runs). 15 cases passed unchanged and the 3 fixed ones
+were each verified individually, so the expected full-suite result is 18/18 — but
+that specific number has not been observed in one run. Re-running `npm run eval`
+costs roughly $2.50 and would confirm it.
+
+### Cost per case
+$0.04–0.18 warm; the first case of a run pays the cache write (observed $0.76).
+The artifact-generation case is the most expensive at $0.37, because the agent
+makes a lookup call per rated point before writing any numbers into the artifact.
+
+### Notable behaviours observed
+- The off-table 190A case passed: no interpolated percentage was presented as a
+  manual figure.
+- The TIG-aluminium trap passed: the agent refused and pointed at the spool gun
+  rather than inventing AC settings.
+- The flux-cored porosity case passed with the MIG-only gas causes correctly
+  excluded.
+- Tone on `settings-ambiguous` dropped from 4 to 3 after the door-chart fix, i.e.
+  the answer got slightly wordier in exchange for being more accurate. Worth
+  watching if that instruction is tuned further.

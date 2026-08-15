@@ -32,6 +32,7 @@ interface GoldCase {
   must_show_figure?: string;
   must_cite_pages?: string[];
   must_contain?: string[];
+  must_contain_any?: string[];
   must_not_contain?: string[];
   must_ask_options?: boolean;
   must_emit_artifact?: boolean;
@@ -141,6 +142,15 @@ function checkGates(c: GoldCase, turn: TurnResult): Gate[] {
   }
   for (const needle of c.must_contain ?? []) {
     gates.push({ name: `says "${needle}"`, ok: text.includes(needle.toLowerCase()) });
+  }
+  // `must_contain_any` exists because a single required substring tests the
+  // agent's word choice rather than whether it is right — a correct refusal that
+  // opens with "No —" should not fail a check for the word "not".
+  if (c.must_contain_any?.length) {
+    gates.push({
+      name: `says one of [${c.must_contain_any.join(" | ")}]`,
+      ok: c.must_contain_any.some((n) => text.includes(n.toLowerCase())),
+    });
   }
   for (const needle of c.must_not_contain ?? []) {
     gates.push({

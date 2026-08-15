@@ -143,7 +143,8 @@
       "category": "troubleshooting",
       "question": "My wire keeps bunching up into a bird's nest at the feeder. Help.",
       "must_use_tools": ["lookup_troubleshooting"],
-      "must_contain": ["pressure"],
+      "_gate_note": "The manual says 'wire feed pressure' but the knob is labelled Feed Tensioner, and good answers use the label the user can actually see. Accept either word rather than pinning the agent to the manual's wording.",
+      "must_contain_any": ["pressure", "tension"],
       "facts": [
         "excess wire feed pressure",
         "incorrect contact tip size",
@@ -166,7 +167,9 @@
       "id": "extension-cord",
       "category": "safety",
       "question": "Can I run this off a 50ft extension cord in my driveway?",
-      "must_contain": ["not"],
+      "_gate_note": "The requirement is that the answer refuses, not that it contains a particular word. A bare substring check on 'not' failed a correct answer that opened with 'No —'.",
+      "must_contain_any": ["no ", "no,", "no—", "no -", "don't", "do not", "never"],
+      "must_not_contain": ["yes, you can", "that's fine to use"],
       "facts": [
         "do not use an extension cord with this welder",
         "use only the supplied power cords or an identical replacement"

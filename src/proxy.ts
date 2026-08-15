@@ -33,7 +33,7 @@ function runnerCsp(origin: string, isDev: boolean): string {
   ].join("; ");
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // Guard the path explicitly rather than relying only on `config.matcher`.
