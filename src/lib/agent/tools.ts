@@ -43,6 +43,7 @@ export interface FigureSideEffect {
   caption: string;
   src: string;
   citation: string;
+  pageId: string;
 }
 
 const dutyCycleTool = tool(
@@ -421,6 +422,7 @@ export function figureSideEffect(
     caption: figure.caption,
     src: `/api/knowledge/${figure.file}`,
     citation: cite(figure.page_id),
+    pageId: figure.page_id,
   };
 }
 

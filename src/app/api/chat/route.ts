@@ -4,6 +4,7 @@ import { encodeEvent, type AgentEvent } from "@/lib/events";
 import { ArtifactStreamParser } from "@/lib/artifacts/parser";
 import { runAgent, type ModelChoice } from "@/lib/agent/run";
 import { describeToolCall, figureSideEffect, machineSideEffect } from "@/lib/agent/tools";
+import { describeMachine, type MachineContext } from "@/lib/machineContext";
 
 /**
  * Bridges the Claude Agent SDK to the browser over SSE.
@@ -19,10 +20,11 @@ interface ChatRequest {
   message: string;
   sessionId?: string;
   model?: ModelChoice;
+  machine?: MachineContext;
 }
 
 export async function POST(request: NextRequest) {
-  const { message, sessionId, model } = (await request.json()) as ChatRequest;
+  const { message, sessionId, model, machine } = (await request.json()) as ChatRequest;
 
   if (!message?.trim()) {
     return new Response(JSON.stringify({ error: "message is required" }), {
@@ -80,9 +82,21 @@ export async function POST(request: NextRequest) {
         }
       };
 
+      // The user's machine setup rides along with the question so the agent can
+      // answer directly instead of opening with "which process are you running?".
+      // It is stated as the user's own configuration, not as an assumption the
+      // agent may generalise from.
+      const setup = machine ? describeMachine(machine) : null;
+      const prompt = setup
+        ? `<machine_setup>The user has told us their machine is set up as: ${setup}. ` +
+          `Treat this as given — do not ask them to confirm it. If the answer would ` +
+          `differ on a different setup, say so in one line rather than asking.` +
+          `</machine_setup>\n\n${message}`
+        : message;
+
       try {
         for await (const sdkMessage of runAgent({
-          prompt: message,
+          prompt,
           model,
           resume: sessionId,
           abortController,

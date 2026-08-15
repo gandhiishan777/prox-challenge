@@ -13,6 +13,9 @@ import * as React from "react";
  * the moment this component was server-rendered. Waiting for mount also means
  * the server and the first client render agree on empty, so injecting markup
  * never fights hydration.
+ *
+ * The figure sizes to its content rather than claiming full height, so it sits
+ * correctly whether it is mounted on the panel's paper plate or on its own.
  */
 export function SvgArtifact({ code }: { code: string }) {
   const [sanitized, setSanitized] = React.useState("");
@@ -35,10 +38,11 @@ export function SvgArtifact({ code }: { code: string }) {
   }, [code]);
 
   return (
-    <div className="flex h-full w-full items-center justify-center overflow-auto bg-steel-950 p-4">
-      {/* The agent draws dark-on-light, so the panel is white regardless of theme. */}
+    <div className="flex w-full items-center justify-center overflow-auto">
+      {/* The agent draws dark-on-light line art, so the figure keeps a white
+          stock and a hairline keyline — the manual's own treatment. */}
       <div
-        className="rounded-xl bg-white p-4 [&_svg]:h-auto [&_svg]:max-w-full"
+        className="border border-line-mid bg-white p-4 [&_svg]:h-auto [&_svg]:max-w-full"
         dangerouslySetInnerHTML={{ __html: sanitized }}
       />
     </div>

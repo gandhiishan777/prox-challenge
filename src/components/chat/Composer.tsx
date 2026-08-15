@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { ArrowUp, Square } from "lucide-react";
 
 /**
  * The input box.
@@ -11,10 +10,47 @@ import { ArrowUp, Square } from "lucide-react";
  * it still leaves the transcript visible. Second, the send button turns into a
  * stop button while the agent is talking, because the most common reason to
  * touch it mid-answer is "that's not what I meant, stop".
+ *
+ * It is drawn as a slip of white stock resting on the paper surface: hard
+ * offset shadow, square corners, the controls sitting under a hairline rule so
+ * the writing area stays the only thing that looks writable.
  */
 
 /** Grow to about eight lines, then scroll instead of eating the transcript. */
 const MAX_HEIGHT = 160;
+
+/**
+ * Spelled out rather than pulled from lucide: at 14px the icon set's stroke
+ * geometry reads soft next to Archivo's caps, and these two marks are the only
+ * ones the composer needs.
+ */
+function ArrowRightGlyph() {
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      aria-hidden="true"
+    >
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+
+function StopGlyph() {
+  return (
+    <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <rect x={7} y={7} width={10} height={10} />
+    </svg>
+  );
+}
+
+const MODEL_HINT =
+  "Sonnet is faster and cheaper for everyday questions. Opus is for the hardest cross-referencing questions, where an answer has to be pieced together from several parts of the manual.";
 
 export function Composer({
   onSend,
@@ -68,37 +104,37 @@ export function Composer({
   };
 
   return (
-    <div className="rounded-2xl border border-steel-800 bg-steel-900 p-2 transition-shadow focus-within:ring-2 focus-within:ring-arc-500/40">
-      <textarea
-        ref={textareaRef}
-        rows={1}
-        value={text}
-        disabled={disabled}
-        onChange={(event) => setText(event.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Ask about setup, settings, or a weld that's going wrong…"
-        style={{ maxHeight: MAX_HEIGHT }}
-        className="w-full resize-none overflow-y-auto bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-steel-100 placeholder:text-steel-500 focus:outline-none disabled:opacity-50"
-      />
+    <div className="border border-ink bg-white shadow-hard-sm">
+      <div className="px-4 pb-1.5 pt-3.5">
+        <textarea
+          ref={textareaRef}
+          rows={1}
+          value={text}
+          disabled={disabled}
+          onChange={(event) => setText(event.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Ask about setup, settings, or a weld that's going wrong…"
+          style={{ maxHeight: MAX_HEIGHT }}
+          className="w-full resize-none overflow-y-auto bg-transparent text-[16px] leading-[1.55] text-ink outline-none placeholder:text-muted-light disabled:opacity-50"
+        />
+      </div>
 
-      <div className="mt-1 flex items-center justify-between gap-2 px-1">
-        <div
-          className="flex items-center rounded-full border border-steel-800 bg-steel-950 p-0.5 text-xs"
-          title="Sonnet is faster and cheaper for everyday questions. Opus is for the hardest cross-referencing questions, where an answer has to be pieced together from several parts of the manual."
-        >
+      <div className="flex items-center justify-between gap-3 border-t border-line-hair px-3 pb-2.5 pt-2">
+        <div className="flex items-center gap-0.5" title={MODEL_HINT}>
           {(["sonnet", "opus"] as const).map((option) => (
             <button
               key={option}
               type="button"
               aria-pressed={model === option}
+              title={MODEL_HINT}
               onClick={() => onModelChange(option)}
-              className={`rounded-full px-2.5 py-1 transition-colors ${
+              className={`px-2.5 py-[7px] font-mono text-[11px] tracking-[.08em] transition-colors ${
                 model === option
-                  ? "bg-steel-700 text-white"
-                  : "text-steel-400 hover:text-steel-200"
+                  ? "bg-ink text-paper"
+                  : "bg-transparent text-muted hover:text-ink"
               }`}
             >
-              {option === "sonnet" ? "Sonnet" : "Opus"}
+              {option === "sonnet" ? "SONNET" : "OPUS"}
             </button>
           ))}
         </div>
@@ -107,22 +143,22 @@ export function Composer({
           <button
             type="button"
             onClick={onStop}
-            aria-label="Stop generating"
             title="Stop generating"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-arc-500 text-white transition-colors hover:bg-arc-600"
+            className="flex items-center gap-2 bg-rust px-4 py-2.5 font-display text-[12px] font-bold uppercase tracking-[.1em] text-white transition-colors hover:bg-rust-dark"
           >
-            <Square className="h-3 w-3" fill="currentColor" aria-hidden="true" />
+            <StopGlyph />
+            Stop
           </button>
         ) : (
           <button
             type="button"
             onClick={submit}
             disabled={!canSend}
-            aria-label="Send"
             title="Send"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-arc-500 text-white transition-colors hover:bg-arc-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-arc-500"
+            className="flex items-center gap-2 bg-rust px-4 py-2.5 font-display text-[12px] font-bold uppercase tracking-[.1em] text-white transition-colors hover:bg-rust-dark disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-rust"
           >
-            <ArrowUp className="h-4 w-4" aria-hidden="true" />
+            Ask
+            <ArrowRightGlyph />
           </button>
         )}
       </div>

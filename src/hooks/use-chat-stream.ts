@@ -33,6 +33,7 @@ export function useChatStream() {
           message: text,
           sessionId: store.sessionId ?? undefined,
           model: store.model,
+          machine: store.machine,
         }),
         signal: controller.signal,
       });

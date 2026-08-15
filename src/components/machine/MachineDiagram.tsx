@@ -17,6 +17,14 @@ import { getView } from "@/lib/machine/map";
  * Coordinates in the map are normalized 0..1. The SVG uses a viewBox of
  * 100 x 100*(H/W) so that a radius expressed as a fraction of width stays a
  * circle regardless of the render size.
+ *
+ * Every colour here is written as a literal arbitrary value — bg-[#14120f]
+ * rather than bg-ink — and the hard shadow as an inline style. That exposure to
+ * the sandbox is the reason: the sandbox builds its CSS with the Tailwind Play
+ * script and no config, so the app's paper/ink/rust tokens do not resolve there.
+ * A missing font utility degrades to the inherited face and costs nothing; a
+ * missing colour utility would leave the caption bar unpainted, which is why the
+ * palette is spelled out in this file and nowhere else.
  */
 
 export interface MachineDiagramProps {
@@ -40,12 +48,9 @@ export function MachineDiagram({
   const v = getView(view);
   const [hover, setHover] = React.useState<string | null>(null);
 
-  // Core Tailwind classes only (slate/orange, not the app's custom steel/arc),
-  // because this same component is bundled into the artifact sandbox, where only
-  // the default Tailwind theme is available.
   if (!v) {
     return (
-      <div className="rounded-lg border border-slate-300 bg-slate-100 p-3 text-sm text-slate-500">
+      <div className="border border-[#cdc5b8] bg-[#f4f1ec] p-3 font-mono text-[11px] uppercase tracking-[.1em] text-[#8b8579]">
         Unknown machine view: {view}
       </div>
     );
@@ -71,7 +76,10 @@ export function MachineDiagram({
   };
 
   return (
-    <figure className={`overflow-hidden rounded-xl border border-slate-700 bg-white ${className ?? ""}`}>
+    <figure
+      className={`overflow-hidden border border-[#14120f] bg-white ${className ?? ""}`}
+      style={{ boxShadow: "6px 6px 0 #e0dacd" }}
+    >
       <div className="relative">
         <img
           src={`${imageBase}/${v.image}`}
@@ -123,7 +131,8 @@ export function MachineDiagram({
                     y={u.y}
                     width={u.w}
                     height={u.h}
-                    rx={1}
+                    // Square corners: the marker is the one place a stray rx
+                    // would sneak a rounded edge into a design that has none.
                     fill={isOn ? "rgba(249,115,22,0.14)" : "transparent"}
                     stroke={stroke}
                     strokeWidth={isOn ? 1.2 : 0.6}
@@ -135,20 +144,24 @@ export function MachineDiagram({
         </svg>
       </div>
 
-      <figcaption className="border-t border-slate-800 bg-slate-900 px-3 py-2">
+      <figcaption className="border-t border-[#14120f] bg-[#14120f] px-3 py-2 text-[#f4f1ec]">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-slate-100">{v.title}</span>
-          <span className="rounded bg-slate-800 px-1.5 py-0.5 font-mono text-[11px] text-orange-400">
-            p. {v.page.replace(/^om-0?/, "")}
+          <span className="font-display text-[13px] font-bold uppercase tracking-[.02em]">
+            {v.title}
+          </span>
+          <span className="font-mono text-[10.5px] tracking-[.1em] text-[#ffb283]">
+            {v.page.replace(/^om-0?/, "P. ")}
           </span>
         </div>
         {activePart ? (
-          <p className="mt-1 text-xs text-slate-300">
-            <span className="font-medium text-orange-400">{activePart.label}.</span>{" "}
+          <p className="mt-1 text-[12px] leading-snug text-[#8d8779]">
+            <span className="font-medium text-[#ff8a4d]">{activePart.label}.</span>{" "}
             {activePart.note}
           </p>
         ) : (
-          <p className="mt-1 text-xs text-slate-400">{v.caption} Hover a marker for detail.</p>
+          <p className="mt-1 text-[12px] leading-snug text-[#8d8779]">
+            {v.caption} Hover a marker for detail.
+          </p>
         )}
       </figcaption>
     </figure>

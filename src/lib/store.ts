@@ -4,6 +4,7 @@ import { create } from "zustand";
 
 import type { AgentEvent } from "./events";
 import type { Artifact } from "./artifacts/types";
+import { EMPTY_MACHINE, type MachineContext } from "./machineContext";
 
 /**
  * Chat state.
@@ -15,7 +16,15 @@ import type { Artifact } from "./artifacts/types";
 export type MessagePart =
   | { kind: "text"; text: string }
   | { kind: "artifact"; identifier: string }
-  | { kind: "figure"; figureId: string; title: string; caption: string; src: string; citation: string }
+  | {
+      kind: "figure";
+      figureId: string;
+      title: string;
+      caption: string;
+      src: string;
+      citation: string;
+      pageId: string;
+    }
   | { kind: "machine"; view: string; highlight: string[]; title: string; citation: string }
   | { kind: "options"; question: string; options: string[] };
 
@@ -29,6 +38,17 @@ export interface Message {
   error?: string;
 }
 
+/** Something the session surfaced, listed in the reference rail. */
+export interface Pull {
+  kind: "figure" | "artifact";
+  id: string;
+  title: string;
+  /** Figures carry a thumbnail; artifacts get a TOOL tile instead. */
+  thumb?: string;
+  citation?: string;
+  pageId?: string;
+}
+
 interface ChatState {
   messages: Message[];
   artifacts: Record<string, Artifact>;
@@ -36,23 +56,40 @@ interface ChatState {
   model: "sonnet" | "opus";
   busy: boolean;
   lastCostUsd: number | null;
+  sessionCostUsd: number;
+
+  /** What the user's welder is set to. Sent with every message. */
+  machine: MachineContext;
+
+  /** Everything pulled up this session, newest last, deduplicated. */
+  pulls: Pull[];
+  /** Page ids cited so far, in first-cited order — drives the manual filmstrip. */
+  citedPages: string[];
+  lookups: number;
+  figureCount: number;
 
   panel: {
     open: boolean;
+    /** The right-hand panel shows either a generated tool or a manual page. */
+    mode: "artifact" | "manual";
     identifier: string | null;
     version: number;
     view: "preview" | "code";
     /** Set once the user picks a view, so streaming stops overriding them. */
     pinned: boolean;
+    /** Page id when mode is "manual". */
+    page: string | null;
   };
 
   setModel: (model: "sonnet" | "opus") => void;
+  setMachine: (patch: Partial<MachineContext>) => void;
   addUserMessage: (text: string) => void;
   beginAssistant: () => void;
   applyEvent: (event: AgentEvent) => void;
   finishAssistant: () => void;
   failAssistant: (message: string) => void;
   openArtifact: (identifier: string, version?: number) => void;
+  openManual: (pageId: string) => void;
   closePanel: () => void;
   setView: (view: "preview" | "code") => void;
   setVersion: (version: number) => void;
@@ -71,6 +108,18 @@ function appendText(parts: MessagePart[], text: string): MessagePart[] {
   return [...parts, { kind: "text", text }];
 }
 
+/** Page ids the assistant cited in a chunk of prose, e.g. "(p. 7, p. 19)". */
+function citedIn(text: string): string[] {
+  return [...text.matchAll(/\bp\.\s*(\d{1,2})\b/g)].map(
+    (m) => `om-${m[1].padStart(2, "0")}`,
+  );
+}
+
+/** Add without duplicating, preserving first-seen order. */
+function pushUnique<T>(list: T[], item: T, key: (x: T) => string): T[] {
+  return list.some((x) => key(x) === key(item)) ? list : [...list, item];
+}
+
 /** Close the current paragraph so following text starts a new one. */
 function endParagraph(parts: MessagePart[]): MessagePart[] {
   const last = parts[parts.length - 1];
@@ -87,9 +136,33 @@ export const useChat = create<ChatState>((set, get) => ({
   model: "sonnet",
   busy: false,
   lastCostUsd: null,
-  panel: { open: false, identifier: null, version: 0, view: "preview", pinned: false },
+  sessionCostUsd: 0,
+  machine: EMPTY_MACHINE,
+  pulls: [],
+  citedPages: [],
+  lookups: 0,
+  figureCount: 0,
+  panel: {
+    open: false,
+    mode: "artifact",
+    identifier: null,
+    version: 0,
+    view: "preview",
+    pinned: false,
+    page: null,
+  },
 
   setModel: (model) => set({ model }),
+
+  setMachine: (patch) =>
+    set((state) => {
+      const machine = { ...state.machine, ...patch };
+      // Changing process invalidates a consumable that process cannot take.
+      if (patch.process && patch.process !== state.machine.process) {
+        machine.wire = null;
+      }
+      return { machine };
+    }),
 
   addUserMessage: (text) =>
     set((state) => ({
@@ -120,11 +193,21 @@ export const useChat = create<ChatState>((set, get) => ({
         set({ sessionId: event.sessionId });
         return;
 
-      case "text":
+      case "text": {
         messages[index] = { ...current, parts: appendText(current.parts, event.delta) };
+        // Citations are collected as they stream so the manual filmstrip fills
+        // in during the answer rather than after it.
+        const cited = citedIn(event.delta);
+        if (cited.length) {
+          const next = [...state.citedPages];
+          for (const page of cited) if (!next.includes(page)) next.push(page);
+          if (next.length !== state.citedPages.length) set({ citedPages: next });
+        }
         break;
+      }
 
       case "tool_start":
+        set({ lookups: state.lookups + 1 });
         messages[index] = {
           ...current,
           activity: [...current.activity, { id: event.id, label: event.label, done: false }],
@@ -144,7 +227,7 @@ export const useChat = create<ChatState>((set, get) => ({
         };
         break;
 
-      case "figure":
+      case "figure": {
         messages[index] = {
           ...current,
           parts: [
@@ -156,10 +239,31 @@ export const useChat = create<ChatState>((set, get) => ({
               caption: event.caption,
               src: event.src,
               citation: event.citation,
+              pageId: event.pageId,
             },
           ],
         };
+        const citedPages = state.citedPages.includes(event.pageId)
+          ? state.citedPages
+          : [...state.citedPages, event.pageId];
+        set({
+          figureCount: state.figureCount + 1,
+          citedPages,
+          pulls: pushUnique(
+            state.pulls,
+            {
+              kind: "figure",
+              id: event.figureId,
+              title: event.title,
+              thumb: event.src,
+              citation: event.citation,
+              pageId: event.pageId,
+            },
+            (p) => `${p.kind}:${p.id}`,
+          ),
+        });
         break;
+      }
 
       case "machine":
         messages[index] = {
@@ -215,8 +319,15 @@ export const useChat = create<ChatState>((set, get) => ({
 
         set({
           artifacts: { ...state.artifacts, [event.identifier]: artifact },
+          pulls: pushUnique(
+            state.pulls,
+            { kind: "artifact", id: event.identifier, title: event.title },
+            (p) => `${p.kind}:${p.id}`,
+          ),
           panel: {
+            ...state.panel,
             open: true,
+            mode: "artifact",
             identifier: event.identifier,
             version: artifact.versions.length - 1,
             // Show the code streaming in, unless the user has chosen a view.
@@ -266,7 +377,10 @@ export const useChat = create<ChatState>((set, get) => ({
         break;
 
       case "done":
-        set({ lastCostUsd: event.costUsd ?? null });
+        set({
+          lastCostUsd: event.costUsd ?? null,
+          sessionCostUsd: state.sessionCostUsd + (event.costUsd ?? 0),
+        });
         break;
     }
 
@@ -296,7 +410,9 @@ export const useChat = create<ChatState>((set, get) => ({
   openArtifact: (identifier, version) =>
     set((state) => ({
       panel: {
+        ...state.panel,
         open: true,
+        mode: "artifact",
         identifier,
         version: version ?? (state.artifacts[identifier]?.versions.length ?? 1) - 1,
         view: "preview",
@@ -304,17 +420,42 @@ export const useChat = create<ChatState>((set, get) => ({
       },
     })),
 
+  openManual: (pageId) =>
+    set((state) => ({
+      panel: { ...state.panel, open: true, mode: "manual", page: pageId },
+      // Opening a page counts as citing it, so it joins the filmstrip.
+      citedPages: state.citedPages.includes(pageId)
+        ? state.citedPages
+        : [...state.citedPages, pageId],
+    })),
+
   closePanel: () => set((state) => ({ panel: { ...state.panel, open: false } })),
   setView: (view) => set((state) => ({ panel: { ...state.panel, view, pinned: true } })),
   setVersion: (version) => set((state) => ({ panel: { ...state.panel, version } })),
 
   reset: () =>
-    set({
+    set((state) => ({
       messages: [],
       artifacts: {},
       sessionId: null,
       busy: false,
       lastCostUsd: null,
-      panel: { open: false, identifier: null, version: 0, view: "preview", pinned: false },
-    }),
+      sessionCostUsd: 0,
+      pulls: [],
+      citedPages: [],
+      lookups: 0,
+      figureCount: 0,
+      // The machine setup survives a new session — it describes the user's
+      // bench, not the conversation.
+      machine: state.machine,
+      panel: {
+        open: false,
+        mode: "artifact",
+        identifier: null,
+        version: 0,
+        view: "preview",
+        pinned: false,
+        page: null,
+      },
+    })),
 }));

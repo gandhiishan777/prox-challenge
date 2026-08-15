@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Check, Copy } from "lucide-react";
 
 /**
  * The source side of the artifact panel.
@@ -12,6 +11,10 @@ import { Check, Copy } from "lucide-react";
  * something oddly. That property is what makes it safe to run against
  * half-arrived code while the artifact is still streaming; a partially typed
  * string literal simply fails to match and renders plain.
+ *
+ * This is the one ink-on-paper inversion in the app. Code is the only content
+ * here that is genuinely a machine surface rather than a page of the manual, so
+ * it gets the ink slab and the palette's on-ink accents.
  */
 
 /** Languages the JS-family tokenizer actually understands. Everything else renders plain. */
@@ -56,12 +59,12 @@ function tokenize(code: string): React.ReactNode[] {
     if (match.index > cursor) nodes.push(code.slice(cursor, match.index));
 
     const className = match[1]
-      ? "text-steel-500 italic"
+      ? "text-muted-ondark italic"
       : match[2]
-        ? "text-emerald-300"
+        ? "text-live"
         : match[3]
-          ? "text-arc-400"
-          : "text-sky-300";
+          ? "text-rust-pale"
+          : "text-rust-light";
 
     nodes.push(
       <span key={match.index} className={className}>
@@ -122,18 +125,14 @@ export function CodeView({
         onClick={copy}
         aria-label={copied ? "Copied" : "Copy code"}
         title={copied ? "Copied" : "Copy code"}
-        className="absolute right-3 top-3 z-10 rounded-md border border-steel-800 bg-steel-900/90 p-1.5 text-steel-400 transition-colors hover:border-steel-700 hover:text-steel-100"
+        className="absolute right-3 top-3 z-10 bg-ink-700 px-2 py-1 font-mono text-[10.5px] uppercase tracking-[.1em] text-paper transition-colors hover:bg-ink-600"
       >
-        {copied ? (
-          <Check className="h-3.5 w-3.5 text-arc-400" aria-hidden="true" />
-        ) : (
-          <Copy className="h-3.5 w-3.5" aria-hidden="true" />
-        )}
+        {copied ? "Copied" : "Copy"}
       </button>
 
       <pre
         ref={scrollRef}
-        className="h-full overflow-auto bg-steel-950 p-4 font-mono text-[13px] leading-relaxed text-steel-200"
+        className="h-full overflow-auto bg-ink p-4 font-mono text-[13px] leading-relaxed text-paper"
       >
         <code>
           {highlighted}

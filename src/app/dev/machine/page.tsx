@@ -6,8 +6,10 @@ import { MACHINE_MAP } from "@/lib/machine/map";
 import { MachineDiagram } from "@/components/machine/MachineDiagram";
 
 /**
- * Dev harness for the machine diagram. Lets me click each part and confirm its
- * hotspot lands on the right component before the agent can point at them.
+ * Dev harness for the machine diagram. Lets me toggle each part and confirm its
+ * hotspot lands on the right component before the agent can point at them — a
+ * highlight ring on the wrong socket would be a polarity error, so this gets
+ * checked by eye rather than trusted.
  */
 export default function DevMachinePage() {
   const views = Object.keys(MACHINE_MAP.views);
@@ -16,9 +18,15 @@ export default function DevMachinePage() {
   const parts = MACHINE_MAP.views[view].parts;
 
   return (
-    <div className="min-h-screen bg-steel-950 p-6 text-steel-100">
-      <h1 className="mb-4 text-lg font-semibold">Machine diagram harness</h1>
-      <div className="mb-4 flex gap-2">
+    <div className="min-h-screen bg-paper p-6 text-ink">
+      <h1 className="mb-1 font-display text-lg font-extrabold uppercase tracking-[.04em]">
+        Machine diagram harness
+      </h1>
+      <p className="mb-5 font-mono text-[11px] tracking-[.12em] text-muted">
+        HOTSPOT VERIFICATION · NO API CALLS
+      </p>
+
+      <div className="mb-4 flex gap-px bg-line">
         {views.map((v) => (
           <button
             key={v}
@@ -26,8 +34,8 @@ export default function DevMachinePage() {
               setView(v);
               setHighlight([]);
             }}
-            className={`rounded-md px-3 py-1.5 text-sm ${
-              view === v ? "bg-arc-500 text-white" : "bg-steel-800 text-steel-300"
+            className={`px-3.5 py-2 font-mono text-[11px] tracking-[.1em] uppercase ${
+              view === v ? "bg-ink text-paper" : "bg-paper text-muted hover:text-ink"
             }`}
           >
             {v}
@@ -47,10 +55,10 @@ export default function DevMachinePage() {
                   h.includes(p.id) ? h.filter((x) => x !== p.id) : [...h, p.id],
                 )
               }
-              className={`rounded-full border px-3 py-1 text-xs ${
+              className={`border px-3 py-1.5 text-xs ${
                 highlight.includes(p.id)
-                  ? "border-arc-500 text-arc-400"
-                  : "border-steel-700 text-steel-300"
+                  ? "border-rust bg-tint text-rust"
+                  : "border-line text-muted-body hover:border-ink hover:text-ink"
               }`}
             >
               {p.label}
@@ -58,7 +66,7 @@ export default function DevMachinePage() {
           ))}
           <button
             onClick={() => setHighlight([])}
-            className="rounded-full border border-steel-700 px-3 py-1 text-xs text-steel-500"
+            className="border border-line px-3 py-1.5 font-mono text-xs text-muted-light hover:border-ink hover:text-ink"
           >
             clear
           </button>

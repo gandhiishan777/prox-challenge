@@ -23,22 +23,26 @@ export default function DevArtifactsPage() {
   }, [active]);
 
   return (
-    <div className="flex h-screen flex-col bg-steel-950 text-steel-100">
-      <header className="flex items-center gap-2 border-b border-steel-800 px-4 py-3">
-        <span className="text-sm font-semibold">Artifact runtime harness</span>
-        <span className="text-xs text-steel-400">fixtures → sandbox, no API calls</span>
+    <div className="flex h-screen flex-col bg-paper text-ink">
+      <header className="flex items-center gap-3 border-b border-line px-4 py-3">
+        <span className="font-display text-sm font-extrabold uppercase tracking-[.04em]">
+          Artifact runtime harness
+        </span>
+        <span className="font-mono text-[11px] tracking-[.1em] text-muted">
+          FIXTURES → SANDBOX · NO API CALLS
+        </span>
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <nav className="w-64 shrink-0 space-y-1 border-r border-steel-800 p-3">
+        <nav className="w-64 shrink-0 space-y-px border-r border-line p-3">
           {FIXTURES.map((f) => (
             <button
               key={f.id}
               onClick={() => setActive(f)}
-              className={`block w-full rounded-md px-3 py-2 text-left text-sm ${
+              className={`block w-full px-3 py-2 text-left text-sm ${
                 active.id === f.id
-                  ? "bg-arc-500 text-white"
-                  : "text-steel-300 hover:bg-steel-800"
+                  ? "bg-ink text-paper"
+                  : "text-muted-body hover:bg-paper-rail hover:text-ink"
               }`}
             >
               {f.title}
@@ -47,8 +51,8 @@ export default function DevArtifactsPage() {
         </nav>
 
         <main className="flex min-h-0 flex-1 flex-col">
-          <div className="flex items-center gap-3 border-b border-steel-800 px-4 py-2 text-xs">
-            <span className={rendered ? "text-emerald-400" : "text-steel-400"}>
+          <div className="flex items-center gap-3 border-b border-line px-4 py-2 font-mono text-[11px]">
+            <span className={rendered ? "text-emerald-600" : "text-muted"}>
               {rendered ? "● rendered" : "○ waiting"}
             </span>
             {error && (

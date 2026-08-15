@@ -1,20 +1,26 @@
 "use client";
 
 import * as React from "react";
-import { Flame, PanelRightClose, RotateCcw } from "lucide-react";
 
 import { useChat } from "@/lib/store";
 import { useChatStream } from "@/hooks/use-chat-stream";
+import { AppHeader } from "@/components/chrome/AppHeader";
+import { ReferenceRail } from "@/components/chrome/ReferenceRail";
 import { Transcript } from "@/components/chat/Transcript";
 import { Composer } from "@/components/chat/Composer";
 import { Welcome } from "@/components/chat/Welcome";
 import { ArtifactPanel } from "@/components/artifacts/ArtifactPanel";
+import { ManualPanel } from "@/components/manual/ManualPanel";
 
 /**
- * Chat, with the artifact panel sliding in beside it.
+ * The bench: reference rail, conversation, and a right-hand panel that holds
+ * either a generated tool or the manual page behind a citation.
  *
- * Two columns on a wide screen; below `lg` the panel takes over the viewport,
- * since a half-width artifact on a phone is worse than a full-screen one.
+ * The three-column arrangement is the point of the layout. Answers cite pages
+ * and pull figures constantly, and in a single-column chat all of that scrolls
+ * away the moment the next question is asked. Keeping references parked on the
+ * left and the source page open on the right means the user can check a claim
+ * without losing the thread.
  */
 export default function ChatPage() {
   const messages = useChat((s) => s.messages);
@@ -22,88 +28,61 @@ export default function ChatPage() {
   const model = useChat((s) => s.model);
   const setModel = useChat((s) => s.setModel);
   const panel = useChat((s) => s.panel);
-  const closePanel = useChat((s) => s.closePanel);
   const reset = useChat((s) => s.reset);
-  const lastCostUsd = useChat((s) => s.lastCostUsd);
+  const openManual = useChat((s) => s.openManual);
 
   const { send, stop } = useChatStream();
-  const panelOpen = panel.open && panel.identifier !== null;
+
+  const started = messages.length > 0;
+  const panelOpen =
+    panel.open &&
+    ((panel.mode === "artifact" && panel.identifier !== null) ||
+      (panel.mode === "manual" && panel.page !== null));
 
   return (
-    <div className="flex h-full flex-col">
-      <header className="flex shrink-0 items-center gap-3 border-b border-steel-800 px-4 py-2.5">
-        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-arc-500/15 text-arc-500">
-          <Flame className="h-4 w-4" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate text-sm font-semibold text-white">
-            OmniPro 220 Assistant
-          </h1>
+    <div className="flex h-full flex-col overflow-hidden">
+      <AppHeader onNewSession={reset} showNew={started} />
+
+      <div className="flex min-h-0 flex-1">
+        {/* Reference rail — hidden on narrow screens, where the conversation
+            needs the whole width more than the shortcuts do. */}
+        <div className="hidden lg:flex">
+          <ReferenceRail />
         </div>
 
-        {lastCostUsd !== null && (
-          <span
-            className="hidden font-mono text-[11px] text-steel-600 sm:block"
-            title="Cost of the last answer"
-          >
-            ${lastCostUsd.toFixed(3)}
-          </span>
-        )}
+        {/* Conversation column. Hidden on small screens while a panel is open,
+            because a half-width artifact on a phone is worse than a full one. */}
+        <div
+          className={`min-w-0 flex-1 flex-col border-r border-line ${
+            panelOpen ? "hidden lg:flex" : "flex"
+          }`}
+        >
+          {started ? (
+            <Transcript onPick={send} onOpenPage={openManual} />
+          ) : (
+            <Welcome onPick={send} />
+          )}
 
-        {messages.length > 0 && (
-          <button
-            onClick={reset}
-            className="flex items-center gap-1.5 rounded-lg border border-steel-800 px-2 py-1 text-xs text-steel-400 hover:border-steel-700 hover:text-steel-200"
-            title="Start a new conversation"
-          >
-            <RotateCcw className="h-3.5 w-3.5" /> New
-          </button>
-        )}
-
-        {panelOpen && (
-          <button
-            onClick={closePanel}
-            className="rounded-lg border border-steel-800 p-1.5 text-steel-400 hover:text-steel-200 lg:hidden"
-            title="Close artifact"
-          >
-            <PanelRightClose className="h-4 w-4" />
-          </button>
-        )}
-      </header>
-
-      <div
-        className={`grid min-h-0 flex-1 ${
-          panelOpen ? "lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)]" : "grid-cols-1"
-        }`}
-      >
-          {/* Chat column. Hidden on small screens while an artifact is open. */}
-          <div className={`flex min-h-0 flex-col ${panelOpen ? "hidden lg:flex" : "flex"}`}>
-            {messages.length === 0 ? (
-              <Welcome onPick={send} />
-            ) : (
-              <Transcript onPick={send} />
-            )}
-
-            <div className="shrink-0 px-4 pb-4">
-              <div className="mx-auto w-full max-w-3xl">
-                <Composer
-                  onSend={send}
-                  onStop={stop}
-                  busy={busy}
-                  model={model}
-                  onModelChange={setModel}
-                />
-                <p className="mt-2 text-center text-[11px] text-steel-600">
-                  Answers cite the manual page. Always follow the safety
-                  instructions printed in the manual.
-                </p>
-              </div>
+          <div className="flex-shrink-0 px-8 pb-5 pt-3.5">
+            <div className="mx-auto w-full max-w-[700px]">
+              <Composer
+                onSend={send}
+                onStop={stop}
+                busy={busy}
+                model={model}
+                onModelChange={setModel}
+              />
+              <p className="mt-2.5 font-mono text-[10.5px] uppercase tracking-[.06em] text-muted-light">
+                Every number read from a cited page. Follow the printed safety
+                instructions.
+              </p>
             </div>
           </div>
+        </div>
 
         {panelOpen && (
-          <div className="min-h-0">
-            <ArtifactPanel onFix={send} />
+          <div className="flex min-h-0 w-full flex-col lg:w-[46%] lg:flex-shrink-0">
+            {panel.mode === "manual" ? <ManualPanel /> : <ArtifactPanel onFix={send} />}
           </div>
         )}
       </div>

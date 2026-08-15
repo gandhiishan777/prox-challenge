@@ -11,6 +11,9 @@ import * as React from "react";
  * path: the agent streams these in, so most of the time the parser is being
  * handed an unfinished diagram. That must show as a quiet error with the source
  * underneath, never as a thrown exception that takes the panel with it.
+ *
+ * The theme is "neutral" rather than "dark" because these land on paper stock;
+ * a dark diagram reads as a hole punched in the page.
  */
 export function MermaidArtifact({ code, id }: { code: string; id: string }) {
   const [svg, setSvg] = React.useState("");
@@ -25,7 +28,11 @@ export function MermaidArtifact({ code, id }: { code: string; id: string }) {
         const mermaid = (await import("mermaid")).default;
         if (cancelled) return;
 
-        mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "dark" });
+        mermaid.initialize({
+          startOnLoad: false,
+          securityLevel: "strict",
+          theme: "neutral",
+        });
         const { svg: rendered } = await mermaid.render(renderId, code);
         if (cancelled) return;
 
@@ -49,9 +56,11 @@ export function MermaidArtifact({ code, id }: { code: string; id: string }) {
 
   if (error) {
     return (
-      <div className="h-full overflow-auto bg-steel-950 p-4">
-        <p className="mb-2 font-mono text-xs text-red-400">Diagram failed to render: {error}</p>
-        <pre className="overflow-x-auto rounded-lg border border-steel-800 bg-steel-900 p-3 font-mono text-xs text-steel-300">
+      <div className="w-full overflow-auto">
+        <p className="mb-2.5 font-mono text-[11px] uppercase tracking-[.12em] text-rust-dark">
+          Diagram failed to render: {error}
+        </p>
+        <pre className="overflow-x-auto border border-line bg-paper-card p-3 font-mono text-[11.5px] leading-relaxed text-muted-body">
           {code}
         </pre>
       </div>
@@ -59,10 +68,9 @@ export function MermaidArtifact({ code, id }: { code: string; id: string }) {
   }
 
   return (
-    <div className="flex h-full w-full items-center justify-center overflow-auto bg-steel-950 p-4">
-      {/* Mermaid's dark theme is drawn for exactly this kind of panel. */}
+    <div className="flex w-full items-center justify-center overflow-auto">
       <div
-        className="rounded-xl border border-steel-800 bg-steel-900 p-4 [&_svg]:h-auto [&_svg]:max-w-full"
+        className="border border-line-mid bg-white p-4 [&_svg]:h-auto [&_svg]:max-w-full"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
     </div>

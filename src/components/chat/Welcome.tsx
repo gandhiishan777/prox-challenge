@@ -1,78 +1,126 @@
 "use client";
 
 import * as React from "react";
-import { Flame, Gauge, Cable, Bug, Sparkles } from "lucide-react";
 
 /**
  * The empty state.
  *
- * The starter questions are chosen to show, in one screen, that this is not a
- * text-only FAQ bot: one pulls a number out of a table, one surfaces a diagram
- * from the manual, one diagnoses a bad weld, and one builds something
- * interactive.
+ * This screen has one job: convince someone standing at their machine, phone in
+ * a greasy hand, that this is not a generic chatbot with a welding coat of
+ * paint. So the four starters are not "example questions" — each one is a
+ * different capability, labelled as such, in the order a skeptic would test
+ * them: pull a number out of a rated table, show the manual's own diagram,
+ * diagnose a bad bead, then build a working tool. The category label carries
+ * that claim; the question is just the proof.
+ *
+ * The spec card exists for one line on it. Everyone assumes a multiprocess
+ * welder does AC TIG, and this one does not. Stating it before the first
+ * question is asked is cheaper than correcting it after aluminium has been
+ * bought.
  */
-const STARTERS = [
+
+type Starter = { category: string; question: string };
+
+const STARTERS: Starter[] = [
   {
-    icon: Gauge,
-    text: "What's the duty cycle for MIG welding at 200A on 240V?",
-    hint: "reads the rated table",
+    category: "READS A TABLE",
+    question: "What's the duty cycle for MIG at 200 A on 240 V?",
   },
   {
-    icon: Cable,
-    text: "What polarity do I need for TIG, and which socket does the ground clamp go in?",
-    hint: "shows the hookup diagram",
+    category: "SHOWS A DIAGRAM",
+    question: "What polarity for TIG, and which socket takes the ground clamp?",
   },
   {
-    icon: Bug,
-    text: "I'm getting porosity in my flux-cored welds. What should I check?",
-    hint: "diagnoses with photos",
+    category: "DIAGNOSES",
+    question:
+      "I'm getting porosity in my flux-cored welds. What should I check?",
   },
   {
-    icon: Sparkles,
-    text: "Build me a duty cycle calculator for all four processes.",
-    hint: "generates an interactive tool",
+    category: "BUILDS A TOOL",
+    question: "Build me a duty cycle calculator for all four processes.",
   },
+];
+
+/** Value is rust when the spec is the one people get wrong. */
+type Spec = { label: string; value: string; warn?: boolean };
+
+const SPECS: Spec[] = [
+  { label: "MAX OUT", value: "220 A" },
+  { label: "INPUT", value: "120 / 240 V" },
+  { label: "PROCESSES", value: "4" },
+  { label: "AC TIG", value: "NOT CAPABLE", warn: true },
 ];
 
 export function Welcome({ onPick }: { onPick: (text: string) => void }) {
   return (
-    <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-4 py-10">
-      <div className="w-full max-w-2xl">
-        <div className="mb-8 flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-arc-500/15 text-arc-500">
-            <Flame className="h-6 w-6" />
-          </span>
-          <div>
-            <h1 className="text-xl font-semibold text-white">OmniPro 220 Assistant</h1>
-            <p className="text-sm text-steel-400">
-              Vulcan multiprocess welder · MIG, flux-cored, TIG and stick · item 57812
-            </p>
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div className="flex flex-1 items-center justify-center px-8 py-10">
+        <div className="w-full max-w-[880px]">
+          <div className="grid grid-cols-1 items-start gap-9 lg:grid-cols-[minmax(0,1fr)_260px]">
+            {/* Left: the pitch, then the proof. */}
+            <div>
+              <p className="mb-3.5 font-mono text-[11px] tracking-[.18em] text-rust">
+                SUPPORT BENCH · MIG · FLUX-CORED · TIG · STICK
+              </p>
+
+              <h1 className="mb-4 text-balance font-display text-[40px] font-extrabold leading-[.98] tracking-[-.02em] sm:text-[52px]">
+                Ask the manual
+                <br />
+                like it can talk.
+              </h1>
+
+              <p className="mb-7 max-w-[52ch] text-pretty text-[17.5px] leading-[1.55] text-muted-body">
+                Every answer is read out of the owner&apos;s manual, the quick
+                start guide and the process selection chart — with the page
+                cited, the manual&apos;s own diagram shown where a picture is
+                faster than a paragraph, and a tool built for you when a number
+                needs working out.
+              </p>
+
+              <div className="flex flex-col gap-px border-b border-t border-line bg-line">
+                {STARTERS.map(({ category, question }) => (
+                  <button
+                    key={question}
+                    type="button"
+                    onClick={() => onPick(question)}
+                    className="flex items-center gap-4 border-0 bg-paper px-1 py-[15px] text-left transition-colors hover:bg-white"
+                  >
+                    <span className="w-[118px] flex-shrink-0 font-mono text-[10.5px] tracking-[.12em] text-rust">
+                      {category}
+                    </span>
+                    <span className="flex-1 text-[16px]">{question}</span>
+                    <span className="pr-1.5 font-mono text-[13px] text-muted">
+                      →
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: the machine, and the spec that stops the wrong question. */}
+            <aside className="border border-ink bg-white shadow-hard">
+              <img
+                src="/product.webp"
+                alt="Vulcan OmniPro 220 welder"
+                className="block h-[230px] w-full object-cover object-center"
+              />
+              <div className="border-t border-ink p-3">
+                <h2 className="mb-2 font-display text-[15px] font-extrabold uppercase tracking-[.02em]">
+                  OmniPro 220
+                </h2>
+                <dl className="flex flex-col gap-[5px] font-mono text-[11px] text-muted-deep">
+                  {SPECS.map(({ label, value, warn }) => (
+                    <div key={label} className="flex justify-between">
+                      <dt>{label}</dt>
+                      <dd className={warn ? "text-rust" : "text-ink"}>
+                        {value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </aside>
           </div>
-        </div>
-
-        <p className="mb-5 text-steel-300">
-          Ask anything about setting the machine up or fixing a weld that is going
-          wrong. Answers come from the owner&apos;s manual, quick start guide and
-          selection chart, with the page cited — and with the manual&apos;s own
-          diagrams and photos where a picture explains it better.
-        </p>
-
-        <div className="grid gap-2 sm:grid-cols-2">
-          {STARTERS.map(({ icon: Icon, text, hint }) => (
-            <button
-              key={text}
-              onClick={() => onPick(text)}
-              className="group rounded-xl border border-steel-800 bg-steel-900 p-3 text-left transition-colors hover:border-arc-500/50 hover:bg-steel-850"
-            >
-              <span className="mb-1.5 flex items-center gap-2 text-xs uppercase tracking-wide text-steel-500">
-                <Icon className="h-3.5 w-3.5 text-arc-500/70" />
-                {hint}
-              </span>
-              <span className="block text-sm leading-snug text-steel-200 group-hover:text-white">
-                {text}
-              </span>
-            </button>
-          ))}
         </div>
       </div>
     </div>

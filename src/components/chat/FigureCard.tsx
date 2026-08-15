@@ -1,47 +1,60 @@
 "use client";
 
 import * as React from "react";
-import { Maximize2 } from "lucide-react";
 
 /**
- * A figure lifted straight out of the OmniPro manual.
+ * A figure lifted straight out of the OmniPro manual, framed like a plate in a
+ * printed book.
  *
- * These are scans of printed pages, so the image sits on white no matter how
- * dark the rest of the app is -- on a dark panel the paper margins read as a
- * rendering bug. The citation rides along as a badge because a hobbyist about
- * to change a setting should be able to check the claim against their own copy
- * of the manual, and clicking through opens the full-size scan.
+ * The crop is only ever a fragment of a page, so the frame has to make its
+ * provenance obvious: the ink bar names the source before the eye reaches the
+ * drawing, and the whole image is a button because the first thing a hobbyist
+ * wants after seeing a diagram is the page it came from — the surrounding
+ * warnings and torque figures are usually the part that matters.
  */
 export function FigureCard({
   title,
   caption,
   src,
   citation,
+  onOpenPage,
 }: {
   title: string;
   caption: string;
   src: string;
   citation: string;
+  onOpenPage?: () => void;
 }) {
   return (
-    <figure className="overflow-hidden rounded-xl border border-steel-800 bg-steel-900">
-      <a href={src} target="_blank" rel="noreferrer" className="group relative block bg-white">
+    <figure className="my-6 border border-ink bg-white shadow-hard">
+      <div className="flex items-center justify-between gap-3 bg-ink px-3 py-[7px] text-paper">
+        <span className="font-mono text-[10.5px] tracking-[.16em]">◤ FROM THE MANUAL</span>
+        <span className="truncate font-mono text-[10.5px] tracking-[.1em] text-rust-pale">
+          {`${citation} · ${title}`.toUpperCase()}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => onOpenPage?.()}
+        className="block w-full bg-white px-3.5 pb-1.5 pt-3.5"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element -- manual scans are
             served from the knowledge route at unknown intrinsic sizes. */}
-        <img src={src} alt={title} className="max-h-[420px] w-full object-contain" />
-        <span className="pointer-events-none absolute right-2 top-2 rounded-md bg-steel-950/70 p-1.5 text-steel-100 opacity-0 transition-opacity group-hover:opacity-100">
-          <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />
-        </span>
-      </a>
+        <img src={src} alt={title} className="block max-h-[300px] w-full object-contain" />
+      </button>
 
-      <figcaption className="space-y-1 border-t border-steel-800 px-3 py-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-sm font-medium text-steel-100">{title}</span>
-          <span className="shrink-0 rounded bg-steel-800 px-1.5 py-0.5 font-mono text-[11px] text-arc-400">
-            {citation}
-          </span>
-        </div>
-        <p className="text-xs text-steel-400">{caption}</p>
+      <figcaption className="flex justify-between gap-4 border-t border-line-hair px-3.5 pb-3 pt-2.5 text-[13px] leading-[1.5] text-muted-deep">
+        <span>{caption}</span>
+        {onOpenPage ? (
+          <button
+            type="button"
+            onClick={onOpenPage}
+            className="flex-shrink-0 self-start border border-[#e0d4c4] bg-transparent px-2 py-[5px] font-mono text-[10.5px] tracking-[.1em] text-rust hover:border-rust"
+          >
+            OPEN PAGE
+          </button>
+        ) : null}
       </figcaption>
     </figure>
   );

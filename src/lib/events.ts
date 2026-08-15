@@ -27,6 +27,8 @@ export type AgentEvent =
       caption: string;
       src: string;
       citation: string;
+      /** Source page, so the viewer can open the whole sheet behind the crop. */
+      pageId: string;
     }
   | {
       type: "machine";
