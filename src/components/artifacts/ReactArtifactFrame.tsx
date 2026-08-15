@@ -35,6 +35,10 @@ export function ReactArtifactFrame({
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
   const seqRef = React.useRef(0);
   const readyRef = React.useRef(false);
+  // The runner bundle carries React, the compiler and the chart/icon libraries,
+  // so its first load is not instant. Without this the panel is simply blank for
+  // a beat and looks broken rather than busy.
+  const [painted, setPainted] = React.useState(false);
 
   // Keep callbacks in refs so the message listener never needs re-binding.
   const onErrorRef = React.useRef(onError);
@@ -65,12 +69,14 @@ export function ReactArtifactFrame({
         readyRef.current = true;
         send(codeRef.current);
       } else if (data.kind === "error") {
+        setPainted(true);
         onErrorRef.current?.({
           phase: data.phase,
           message: data.message,
           line: data.line,
         });
       } else if (data.kind === "rendered") {
+        setPainted(true);
         onRenderedRef.current?.();
       }
     };
@@ -83,14 +89,24 @@ export function ReactArtifactFrame({
   }, [code, send]);
 
   return (
-    <iframe
-      ref={iframeRef}
-      src="/runner/index.html"
-      // No allow-same-origin: that is what forces the opaque origin which keeps
-      // artifact code away from the parent document, our cookies, and our API.
-      sandbox="allow-scripts"
-      title="Artifact preview"
-      className="h-full w-full border-0 bg-white"
-    />
+    <div className="relative h-full w-full bg-white">
+      <iframe
+        ref={iframeRef}
+        src="/runner/index.html"
+        // No allow-same-origin: that is what forces the opaque origin which keeps
+        // artifact code away from the parent document, our cookies, and our API.
+        sandbox="allow-scripts"
+        title="Artifact preview"
+        className="h-full w-full border-0 bg-white"
+      />
+      {!painted && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white">
+          <span className="flex items-center gap-2 text-sm text-slate-400">
+            <span className="h-3 w-3 animate-spin rounded-full border-2 border-slate-300 border-t-slate-500" />
+            Starting sandbox…
+          </span>
+        </div>
+      )}
+    </div>
   );
 }

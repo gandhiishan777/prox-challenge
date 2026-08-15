@@ -36,9 +36,31 @@ export function agentOptions(opts: RunOptions) {
     // Built-in tools are disabled: this agent has no business touching the
     // filesystem or shell, and every unused tool definition is wasted context.
     tools: [],
+    // Belt and braces. `tools: []` is the documented way to drop the built-ins,
+    // but a harness-provided `repl` tool was still observed executing, so the
+    // dangerous ones are also named explicitly — disallowedTools removes a tool
+    // from the model's context entirely rather than merely leaving it unapproved.
+    disallowedTools: [
+      "repl",
+      "Bash",
+      "BashOutput",
+      "KillShell",
+      "Read",
+      "Write",
+      "Edit",
+      "NotebookEdit",
+      "Glob",
+      "Grep",
+      "WebFetch",
+      "WebSearch",
+      "Task",
+      "Agent",
+      "TodoWrite",
+      "Skill",
+    ],
     // Do not inherit the developer's local CLAUDE.md or settings — the agent must
     // behave identically on the evaluator's machine.
-    settingSources: [] as const,
+    settingSources: [],
     permissionMode: "bypassPermissions" as const,
     includePartialMessages: true,
     // Enough headroom for look-up, verify-by-viewing, then answer.

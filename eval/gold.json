@@ -1,0 +1,226 @@
+{
+  "_comment": [
+    "Gold set for the agent. Each case is graded two ways:",
+    "  1. Programmatic gates read the tool trace and the answer text. These catch",
+    "     the failure mode that matters most here — a number that was recalled from",
+    "     prose instead of looked up, or a visual question answered without ever",
+    "     looking at the figure.",
+    "  2. An LLM judge scores fact coverage and tone against the notes below.",
+    "",
+    "must_use_tools     : every listed tool must appear in the trace",
+    "must_show_figure   : this figure id must have been displayed",
+    "must_cite_pages    : these page citations must appear in the answer text",
+    "must_contain       : case-insensitive substrings that must be present",
+    "must_not_contain   : substrings that must NOT be present (hallucination traps)",
+    "must_ask_options   : true = the reply must be a single clarifying question",
+    "followup           : sent as a second turn on the same session"
+  ],
+  "cases": [
+    {
+      "id": "duty-mig-200-240",
+      "category": "numeric",
+      "question": "What's the duty cycle for MIG welding at 200A on 240V?",
+      "must_use_tools": ["lookup_duty_cycle"],
+      "must_cite_pages": ["p. 7"],
+      "must_contain": ["25%"],
+      "must_not_contain": ["30%", "40%"],
+      "facts": [
+        "25% duty cycle at 200A on 240V input",
+        "that means 2.5 minutes welding and 7.5 minutes resting in a 10 minute period"
+      ]
+    },
+    {
+      "id": "duty-offtable-190",
+      "category": "numeric",
+      "question": "Can I run MIG at 190 amps on 240V for a while? What duty cycle should I plan for?",
+      "must_use_tools": ["lookup_duty_cycle"],
+      "must_contain": ["25%"],
+      "must_not_contain": ["47%", "50%", "62%", "63%"],
+      "facts": [
+        "the manual publishes only two rated points for MIG on 240V: 100% at 115A and 25% at 200A",
+        "190A sits between them and the manual prints no derating curve, so no interpolated percentage should be presented as a manual figure",
+        "plan against the 25% figure as the conservative bound"
+      ]
+    },
+    {
+      "id": "duty-tig-120",
+      "category": "numeric",
+      "question": "TIG duty cycle at 125 amps on a regular 120V outlet?",
+      "must_use_tools": ["lookup_duty_cycle"],
+      "must_contain": ["40%"],
+      "facts": ["40% duty cycle at 125A on 120V", "4 minutes welding, 6 minutes resting"]
+    },
+    {
+      "id": "duty-continuous-120-mig",
+      "category": "cross-reference",
+      "question": "What's the highest amperage I can weld at continuously with MIG on 120V without stopping?",
+      "must_use_tools": ["lookup_duty_cycle"],
+      "must_contain": ["75"],
+      "facts": [
+        "75A is the 100% continuous duty cycle rating for MIG on 120V",
+        "the 120V MIG output range goes up to 140A but not at 100% duty cycle"
+      ]
+    },
+    {
+      "id": "tig-polarity",
+      "category": "visual",
+      "question": "What polarity setup do I need for TIG welding? Which socket does the ground clamp go in?",
+      "must_use_tools": ["get_connections"],
+      "must_show_figure": "polarity-tig",
+      "must_contain": ["DCEN", "positive"],
+      "facts": [
+        "TIG runs DCEN, direct current electrode negative",
+        "the ground clamp cable goes into the POSITIVE (+) socket",
+        "the TIG torch cable goes into the NEGATIVE (-) socket"
+      ]
+    },
+    {
+      "id": "fluxcore-porosity",
+      "category": "troubleshooting",
+      "question": "I'm getting porosity in my flux-cored welds. What should I check?",
+      "must_use_tools": ["lookup_troubleshooting"],
+      "must_contain": ["polarity"],
+      "must_not_contain": ["increase flow of gas", "gas bottle"],
+      "facts": [
+        "check polarity is correct — flux-cored runs DCEN",
+        "clean the workpiece down to bare metal and check the wire is clean",
+        "contact tip to work distance (CTWD) too long",
+        "inconsistent travel speed",
+        "shielding gas causes do not apply because self-shielded flux-cored uses no gas"
+      ]
+    },
+    {
+      "id": "mig-vs-flux-polarity-switch",
+      "category": "cross-reference",
+      "question": "I've been running MIG with gas and want to switch to flux-core wire. What do I need to change?",
+      "must_use_tools": ["get_connections"],
+      "must_contain": ["DCEN"],
+      "facts": [
+        "polarity reverses: MIG is DCEP, flux-cored is DCEN",
+        "the wire feed power cable moves to the NEGATIVE socket and the ground clamp to the POSITIVE socket",
+        "shielding gas is not needed for self-shielded flux-cored wire"
+      ]
+    },
+    {
+      "id": "settings-ambiguous",
+      "category": "clarification",
+      "question": "What settings should I use for 1/8 inch steel?",
+      "must_ask_options": true,
+      "facts": [
+        "the answer depends on which process is being used, so a single clarifying question is the correct response"
+      ],
+      "followup": "MIG with gas, on 240V",
+      "followup_facts": [
+        "the machine sets wire feed speed and voltage synergically once process, wire diameter and material thickness are entered",
+        "the manual does not print a settings table; the settings chart is on the inside of the welder door"
+      ],
+      "followup_must_not_contain": ["the manual's settings chart on page"]
+    },
+    {
+      "id": "no-settings-table",
+      "category": "honesty",
+      "question": "Give me the exact wire feed speed and voltage for .030 wire on 1/4 inch mild steel.",
+      "must_use_tools": ["get_weld_settings"],
+      "facts": [
+        "the manual publishes no wire-speed/voltage lookup table",
+        "the machine computes the settings synergically from process, wire diameter and thickness",
+        "the printed settings chart is on the inside of the welder's door"
+      ]
+    },
+    {
+      "id": "tig-aluminium-trap",
+      "category": "trap",
+      "question": "What settings do I need to TIG weld aluminium with this machine?",
+      "must_contain": ["AC"],
+      "facts": [
+        "this machine is DC TIG only and cannot TIG aluminium, which requires AC TIG",
+        "aluminium can be MIG welded on this machine using the optional spool gun"
+      ],
+      "must_not_contain": ["set the AC balance", "AC frequency"]
+    },
+    {
+      "id": "birdnest",
+      "category": "troubleshooting",
+      "question": "My wire keeps bunching up into a bird's nest at the feeder. Help.",
+      "must_use_tools": ["lookup_troubleshooting"],
+      "must_contain": ["pressure"],
+      "facts": [
+        "excess wire feed pressure",
+        "incorrect contact tip size",
+        "gun cable connector not fully inserted into the wire feed mechanism",
+        "damaged liner"
+      ]
+    },
+    {
+      "id": "thermal-shutdown",
+      "category": "safety",
+      "question": "My welder shut itself off in the middle of a weld and there's a warning on the screen. What happened?",
+      "must_contain": ["duty cycle"],
+      "facts": [
+        "the internal thermal protection tripped because the duty cycle was exceeded",
+        "it returns to service automatically after cooling",
+        "leave the power switch on so the fan keeps running, and rest the gun on a non-conductive heat-proof surface"
+      ]
+    },
+    {
+      "id": "extension-cord",
+      "category": "safety",
+      "question": "Can I run this off a 50ft extension cord in my driveway?",
+      "must_contain": ["not"],
+      "facts": [
+        "do not use an extension cord with this welder",
+        "use only the supplied power cords or an identical replacement"
+      ]
+    },
+    {
+      "id": "wire-sizes",
+      "category": "numeric",
+      "question": "What wire sizes does this take?",
+      "must_use_tools": ["get_specs"],
+      "must_contain": ["0.045", "0.025"],
+      "facts": [
+        "solid core wire: 0.025, 0.030 and 0.035 inch",
+        "flux cored wire: 0.030, 0.035 and 0.045 inch"
+      ]
+    },
+    {
+      "id": "which-process",
+      "category": "visual",
+      "question": "I'm welding rusty gate hinges outdoors in the wind. Which process should I use?",
+      "must_contain": ["flux"],
+      "facts": [
+        "flux-cored is the right choice: it needs no shielding gas so wind does not blow it away",
+        "it is forgiving on rusty or dirty steel and needs minimal surface prep"
+      ]
+    },
+    {
+      "id": "tension-knob-location",
+      "category": "visual",
+      "question": "Where is the wire feed tension adjustment on this machine?",
+      "must_show_figure": "interior-controls",
+      "facts": [
+        "the feed tensioner is on the wire feed mechanism inside the wire compartment",
+        "tension should be just enough to stop the spool spinning on after the trigger is released"
+      ]
+    },
+    {
+      "id": "duty-cycle-calculator-artifact",
+      "category": "artifact",
+      "question": "Build me an interactive duty cycle calculator covering all four processes on both input voltages.",
+      "must_emit_artifact": true,
+      "facts": [
+        "MIG on 240V is 25% at 200A and 100% at 115A",
+        "TIG on 240V is 30% at 175A and 100% at 105A",
+        "stick on 240V is 25% at 175A and 100% at 100A"
+      ]
+    },
+    {
+      "id": "part-lookup",
+      "category": "parts",
+      "question": "What's part number 61 on the assembly diagram?",
+      "must_use_tools": ["lookup_part"],
+      "must_contain": ["power cord"],
+      "facts": ["reference 61 is the 240 VAC power cord"]
+    }
+  ]
+}

@@ -125,3 +125,63 @@ question difficulty.
 ### Flag for human review
 - Model ids are `claude-sonnet-5` / `claude-opus-5`. If those change, `MODEL_IDS`
   in `src/lib/agent/run.ts` is the single place to edit.
+
+---
+
+## Phase 3 — Artifact runtime and chat frontend
+
+**Status: complete.**
+
+### Built
+- `src/lib/artifacts/parser.ts` — streaming parser that lifts `<antArtifact>` and
+  `<options>` markup out of the model's prose. Runs server-side in the relay, so
+  the client only ever receives semantic events.
+- `src/lib/events.ts` — the SSE protocol plus a decoder that tolerates partial frames.
+- `src/app/api/chat/route.ts` — Agent SDK to SSE bridge. Streams text deltas,
+  emits tool activity, and turns a `show_figure` call into a `figure` event that
+  puts the manual's own image in the transcript. Client disconnect aborts the agent.
+- `src/app/api/knowledge/[...path]/route.ts` — serves pack images, with a path
+  traversal guard and an image-extension allow-list.
+- `src/lib/store.ts` (zustand), `src/hooks/use-chat-stream.ts`.
+- Chat UI: `Transcript`, `Markdown`, `FigureCard`, `OptionChips`, `ToolActivity`,
+  `Composer`, `Welcome`.
+- Artifact UI: `ArtifactChip`, `ArtifactPanel` (version stepper, preview/code
+  toggle, download, error card with a "Fix it" button), `CodeView`, `SvgArtifact`,
+  `MermaidArtifact`, `HtmlArtifactFrame`.
+
+### Tested
+- `vitest`: 54/54 pass. The parser suite replays 7 fixtures split at **every byte
+  offset** and at 7 fixed chunk sizes, asserting identical events each time.
+- `npx tsc --noEmit`: clean.
+- SSE relay verified end to end with curl: session, tool_start/tool_end with
+  human-readable labels, streaming text deltas, a `figure` event carrying the
+  right src and citation, and `done` with cost.
+- Image route: 200 for a real figure; 404 for `../../.env` and for a non-image path.
+- **Browser, real Chrome**: full conversation renders — streaming text, tool
+  activity, the manual's TIG hookup diagram inline, correct answer with citation.
+- **Artifact generation end to end**: "Build me a duty cycle calculator" produced
+  a working interactive artifact. Before writing it the agent made 16 lookup calls
+  to get every rated point, saying it would not guess — and the artifact carries
+  page citations in its own UI.
+
+### Problems found and fixed
+1. **Parser: leading newline.** A chunk boundary immediately after the opening
+   tag left the buffer empty, so the formatting newline survived into the code.
+   Fixed with a deferred strip. Caught by the byte-offset suite.
+2. **Parser: trailing newline.** Symmetrically, the newline before the closing tag
+   was emitted as content when the chunk broke there. Now held back until it is
+   known whether content or the close tag follows.
+3. **A `repl` tool executed** despite `tools: []`, which should drop all built-ins.
+   A support agent has no business running code, so the dangerous built-ins are
+   now also named in `disallowedTools`, which removes them from context entirely.
+   Verified gone on a subsequent run.
+4. **Text glued across tool calls** ("...guess at any of it.Now the second..."),
+   because prose written before and after a tool call merged into one part. Tool
+   calls now close the paragraph.
+5. **Artifact panel looked broken on first open** — the 1.6 MB runner bundle takes
+   a moment on cold load. Added a "Starting sandbox…" state until the frame reports.
+
+### Flag for human review
+- The artifact panel is a hard split below `lg`: the chat column hides while an
+  artifact is open. Deliberate (a half-width artifact on a phone is worse), but
+  it is the layout decision most worth a second opinion.

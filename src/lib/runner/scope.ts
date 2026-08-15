@@ -62,17 +62,15 @@ const ANIMATED_SERIES = [
   "Funnel",
 ] as const;
 
+type WithDefaults = { defaultProps?: Record<string, unknown> };
+
 function withAnimationDisabled(recharts: typeof Recharts): typeof Recharts {
+  const bag = recharts as unknown as Record<string, unknown>;
   for (const name of ANIMATED_SERIES) {
-    const component = (recharts as unknown as Record<string, unknown>)[name] as
-      | { defaultProps?: Record<string, unknown> }
-      | undefined;
-    if (component && typeof component === "function") {
-      component.defaultProps = {
-        ...component.defaultProps,
-        isAnimationActive: false,
-      };
-    }
+    const component = bag[name];
+    if (typeof component !== "function") continue;
+    const target = component as unknown as WithDefaults;
+    target.defaultProps = { ...target.defaultProps, isAnimationActive: false };
   }
   return recharts;
 }

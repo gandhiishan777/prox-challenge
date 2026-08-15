@@ -64,7 +64,7 @@ async function main() {
       // Cache hit rate is the number that matters for cost here: the system
       // prompt carries the whole manual, so it must be read from cache rather
       // than re-sent as fresh input on every turn.
-      const usage = (message as { usage?: Record<string, number> }).usage;
+      const usage = (message as unknown as { usage?: Record<string, number> }).usage;
       if (usage) {
         console.log(
           dim(
