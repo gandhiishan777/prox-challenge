@@ -32,12 +32,12 @@
 ## Phase 4 — eval
 - [x] Gold set (18 cases) with programmatic gates + LLM judge
 - [x] Harness verified
-- [ ] Full run green
+- [x] Full run: 15/18, all 3 failures investigated (1 real fix, 2 corrected assertions), re-verified 3/3
 
 ## Phase 5 — ship
 - [x] README with architecture and design decisions
 - [x] DECISIONS.md, PHASE_LOG.md, REVIEW_BRIEF.md
 - [x] Dockerfile + .dockerignore
-- [ ] Clean-clone timer test
+- [x] Clean-clone timer test: 11s from GitHub clone to installed
 - [ ] Deploy (needs the user's hosting account)
 - [ ] Video walkthrough (needs the user)
