@@ -75,3 +75,53 @@ What was built, what was tested, what passed, what to watch. Updated per commit.
   (DECISIONS.md #12) — spot-check these first.
 - Runner bundle is 1.58 MB, dominated by the full lucide icon set. Fine locally;
   trim to a curated icon subset if load time ever matters.
+
+---
+
+## Phase 2 — Agent core
+
+**Status: complete.**
+
+### Built
+- `src/lib/agent/knowledge.ts` — loads the committed pack once at boot; images
+  read as base64 for tool results.
+- `src/lib/agent/lookups.ts` — pure deterministic lookups: duty cycle (with
+  bracketing), connections/polarity, troubleshooting (with per-process cause
+  filtering), settings guidance, parts, and parsers for sloppy process/voltage/
+  thickness input.
+- `src/lib/agent/tools.ts` — 8 in-process MCP tools, plus `describeToolCall`
+  (UI activity labels) and `figureSideEffect` (so the relay can surface an image
+  when the agent calls `show_figure`).
+- `src/lib/agent/systemPrompt.ts` — single static string: persona, grounding
+  mandate, clarification protocol, modality rules, artifact contract, connections
+  quick reference, figure catalogue, full documentation.
+- `src/lib/agent/run.ts` — shared config used by the web route, CLI and eval, so
+  all three exercise the same agent.
+- `scripts/ask.ts` — CLI harness printing the answer, the tool trace and token
+  usage.
+
+### Tested
+- `vitest`: 30/30 pass (22 lookup + 8 compiler). The lookup suite pins the
+  headline facts: MIG 200A/240V = 25% (2.5 min welding / 7.5 resting); off-table
+  190A brackets to 115A/200A with a 25% bound and no fabricated percentage;
+  TIG = DCEN with clamp POSITIVE / torch NEGATIVE; MIG and flux-cored are exact
+  polarity opposites; flux-cored porosity drops the MIG-only shielding-gas causes.
+- **All three challenge questions answered correctly via `npm run ask`**, each
+  with the correct tool trace and page citations:
+  - duty cycle -> 25%, 2.5/7.5 min, (p. 7, p. 19), 1 tool call, and volunteered
+    115A as the continuous alternative.
+  - flux-cored porosity -> polarity/dirty/CTWD/travel speed, explicitly noting
+    that gas causes are MIG-only and do not apply; showed the porosity photo.
+  - TIG polarity -> DCEN, ground clamp POSITIVE, torch NEGATIVE, (p. 24); showed
+    the TIG hookup figure; added an unplug-first safety line.
+
+### Cost characteristics (measured, not estimated)
+Prompt caching is confirmed working: a warm question reports ~377k cache-read
+tokens against ~3k cache-write. Cold session ~$0.80 (pays the cache write for the
+~51k prefix), warm question ~$0.14. The prefix is re-read on every API call
+inside the agentic loop, so cost scales with tool-call count more than with
+question difficulty.
+
+### Flag for human review
+- Model ids are `claude-sonnet-5` / `claude-opus-5`. If those change, `MODEL_IDS`
+  in `src/lib/agent/run.ts` is the single place to edit.
