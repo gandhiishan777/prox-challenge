@@ -47,7 +47,9 @@ async function main() {
           toolCalls.push(block.name);
           console.log(dim(`  ⚙ ${label}`));
         } else if (block.type === "text") {
-          answer += block.text;
+          // Separate blocks are separate paragraphs; joining them bare glues
+          // sentences together across a tool call.
+          answer += (answer && !answer.endsWith("\n") ? "\n\n" : "") + block.text;
         }
       }
     }
