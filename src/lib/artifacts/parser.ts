@@ -55,6 +55,30 @@ function heldBackLength(buffer: string, tokens: string[]): number {
   return longest;
 }
 
+/**
+ * Index of the `>` that ends the tag, skipping any that sit inside a quoted
+ * attribute value. Returns -1 if the tag is still incomplete.
+ *
+ * Naively taking the first `>` corrupts titles silently: `title="Settings for
+ * >1/4 inch"` would end the tag mid-attribute, drop the title, and spill the
+ * remainder (`1/4 inch">`) into the artifact's content. That is a plausible
+ * title in this domain, and the failure produces no error at all.
+ */
+function findTagEnd(buffer: string): number {
+  let quote: '"' | "'" | null = null;
+  for (let i = 0; i < buffer.length; i++) {
+    const ch = buffer[i];
+    if (quote) {
+      if (ch === quote) quote = null;
+    } else if (ch === '"' || ch === "'") {
+      quote = ch;
+    } else if (ch === ">") {
+      return i;
+    }
+  }
+  return -1;
+}
+
 function parseAttributes(tag: string): Record<string, string> {
   const attrs: Record<string, string> = {};
   const re = /(\w+)\s*=\s*("([^"]*)"|'([^']*)')/g;
@@ -133,7 +157,7 @@ export class ArtifactStreamParser {
       }
 
       if (this.state === "artifact_tag" || this.state === "options_tag") {
-        const close = this.buffer.indexOf(">");
+        const close = findTagEnd(this.buffer);
         if (close === -1) {
           if (this.buffer.length > ArtifactStreamParser.MAX_TAG_LENGTH || final) {
             // Not actually a tag. Treat it as prose so nothing is swallowed.
