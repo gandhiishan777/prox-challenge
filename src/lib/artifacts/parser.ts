@@ -40,6 +40,24 @@ const ARTIFACT_CLOSE = "</antArtifact>";
 const OPTIONS_OPEN = "<options";
 const OPTIONS_CLOSE = "</options>";
 
+/**
+ * Index of the next real opening tag: `token` followed by whitespace or `>`.
+ * Returns -1 if absent, or if the only candidate is a prefix still being
+ * streamed (which the hold-back logic will keep buffered).
+ */
+function findTagStart(buffer: string, token: string): number {
+  let from = 0;
+  for (;;) {
+    const at = buffer.indexOf(token, from);
+    if (at === -1) return -1;
+    const next = buffer[at + token.length];
+    // Undefined means the tag name is cut by the chunk boundary; treat it as a
+    // match so the caller waits for the rest rather than emitting a partial tag.
+    if (next === undefined || next === ">" || /\s/.test(next)) return at;
+    from = at + 1;
+  }
+}
+
 /** Longest suffix of `buffer` that is a proper prefix of any of `tokens`. */
 function heldBackLength(buffer: string, tokens: string[]): number {
   let longest = 0;
@@ -66,10 +84,18 @@ function heldBackLength(buffer: string, tokens: string[]): number {
  */
 function findTagEnd(buffer: string): number {
   let quote: '"' | "'" | null = null;
+  // Remembered in case the quote turns out never to close.
+  let firstQuotedGt = -1;
   for (let i = 0; i < buffer.length; i++) {
     const ch = buffer[i];
+    // An opening tag never spans a line. Treating a newline as the hard
+    // boundary means an unbalanced quote degrades to "first '>' wins" — a
+    // mangled title — instead of leaving the scanner stuck in quote mode
+    // forever, which loses the artifact entirely.
+    if (ch === "\n") return firstQuotedGt;
     if (quote) {
       if (ch === quote) quote = null;
+      else if (ch === ">" && firstQuotedGt === -1) firstQuotedGt = i;
     } else if (ch === '"' || ch === "'") {
       quote = ch;
     } else if (ch === ">") {
@@ -104,6 +130,8 @@ export class ArtifactStreamParser {
    * next chunk. The strip is therefore deferred until content actually shows up.
    */
   private stripLeadingNewline = false;
+  /** The opening tag text, kept so a bail-out can re-emit prose verbatim. */
+  private openingTag = "";
   /** Guards against a runaway "tag" that is really just prose containing a `<`. */
   private static readonly MAX_TAG_LENGTH = 4096;
 
@@ -136,8 +164,11 @@ export class ArtifactStreamParser {
 
     for (;;) {
       if (this.state === "text") {
-        const artifactAt = this.buffer.indexOf(ARTIFACT_OPEN);
-        const optionsAt = this.buffer.indexOf(OPTIONS_OPEN);
+        // The tag name must be followed by whitespace or '>', so that
+        // "<antArtifactList>" or "<optionsomething>" appearing in prose is text
+        // rather than an opening tag that swallows the rest of the message.
+        const artifactAt = findTagStart(this.buffer, ARTIFACT_OPEN);
+        const optionsAt = findTagStart(this.buffer, OPTIONS_OPEN);
         const at =
           artifactAt === -1 ? optionsAt : optionsAt === -1 ? artifactAt : Math.min(artifactAt, optionsAt);
 
@@ -186,6 +217,7 @@ export class ArtifactStreamParser {
           this.state = "artifact_body";
         } else {
           this.optionsQuestion = attrs.question || "";
+          this.openingTag = tag;
           this.state = "options_body";
         }
         continue;
@@ -193,9 +225,19 @@ export class ArtifactStreamParser {
 
       if (this.state === "artifact_body") {
         if (this.stripLeadingNewline && this.buffer.length > 0) {
-          if (this.buffer.startsWith("\r\n")) this.buffer = this.buffer.slice(2);
-          else if (this.buffer.startsWith("\n")) this.buffer = this.buffer.slice(1);
-          this.stripLeadingNewline = false;
+          if (this.buffer.startsWith("\r\n")) {
+            this.buffer = this.buffer.slice(2);
+            this.stripLeadingNewline = false;
+          } else if (this.buffer === "\r" && !final) {
+            // Could be the first half of a CRLF. Wait for the next chunk rather
+            // than committing, or the \r leaks into the artifact's first line.
+            return events;
+          } else if (this.buffer.startsWith("\n") || this.buffer.startsWith("\r")) {
+            this.buffer = this.buffer.slice(1);
+            this.stripLeadingNewline = false;
+          } else {
+            this.stripLeadingNewline = false;
+          }
         }
         const end = this.buffer.indexOf(ARTIFACT_CLOSE);
         if (end === -1) {
@@ -207,8 +249,11 @@ export class ArtifactStreamParser {
           // gains a trailing blank line purely because of where a chunk landed.
           if (!final) {
             const kept = this.buffer.slice(0, this.buffer.length - hold);
+            // A lone \r must be held too: it may be the first half of the CRLF
+            // that precedes the closing tag. Holding only "\n" and "\r\n" let a
+            // bare \r escape into artifact content when a chunk split the pair.
             if (kept.endsWith("\r\n")) hold += 2;
-            else if (kept.endsWith("\n")) hold += 1;
+            else if (kept.endsWith("\n") || kept.endsWith("\r")) hold += 1;
           }
           const emit = this.buffer.slice(0, this.buffer.length - hold);
           if (emit) {
@@ -231,12 +276,30 @@ export class ArtifactStreamParser {
       }
 
       if (this.state === "options_body") {
+        // An artifact tag can never occur inside a quick-reply block, so its
+        // presence proves the "<options>" we are sitting in was prose. Bail out
+        // immediately and reprocess from the opening tag, rather than waiting
+        // for a close tag that will never arrive and swallowing the artifact.
+        const strayArtifact = findTagStart(this.buffer, ARTIFACT_OPEN);
+        if (strayArtifact !== -1) {
+          events.push({ type: "text", text: this.openingTag });
+          this.openingTag = "";
+          this.state = "text";
+          continue;
+        }
+
         const end = this.buffer.indexOf(OPTIONS_CLOSE);
         if (end === -1) {
-          if (final) {
-            events.push({ type: "text", text: this.buffer });
+          // The agent's own instructions contain the literal string "<options>",
+          // so it appears in prose whenever the model explains quick replies.
+          // Without a bail-out, one such mention swallows everything after it —
+          // including any artifact — and only surfaces at end of stream.
+          if (final || this.buffer.length > ArtifactStreamParser.MAX_TAG_LENGTH) {
+            events.push({ type: "text", text: this.openingTag + this.buffer });
             this.buffer = "";
+            this.openingTag = "";
             this.state = "text";
+            continue;
           }
           return events;
         }
@@ -246,7 +309,11 @@ export class ArtifactStreamParser {
         );
         if (options.length) {
           events.push({ type: "options", question: this.optionsQuestion, options });
+        } else {
+          // A matched pair with no <option> children is prose, not a control.
+          events.push({ type: "text", text: this.openingTag + body + OPTIONS_CLOSE });
         }
+        this.openingTag = "";
         this.buffer = this.buffer.slice(end + OPTIONS_CLOSE.length);
         this.state = "text";
         continue;

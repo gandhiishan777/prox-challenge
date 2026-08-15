@@ -16,8 +16,8 @@
     "steps": [
       { "step": 1, "text": "Press the HOME button on the control panel.", "page": "om-20" },
       { "step": 2, "text": "Turn the Main Control Knob until the desired process appears on the LCD, then press the knob to select it.", "page": "om-20" },
-      { "step": 3, "text": "Follow the polarity and gas screen: plug the cables in according to the screen, connect gas according to the screen, and set gas flow between 20 and 30 SCFH.", "page": "om-20" },
-      { "step": 4, "text": "Set wire diameter with the Left Knob and material thickness with the Right Knob, then confirm.", "page": "om-20" },
+      { "step": 3, "text": "Follow the polarity and gas screen: plug the cables in according to the screen, then connect gas if the process uses it. Gas flow differs by process — check gas_flow_by_process rather than assuming.", "page": "om-20" },
+      { "step": 4, "text": "Set the consumable diameter with the Left Knob and material thickness with the Right Knob, then confirm. For MIG and flux-cored that is wire diameter; for TIG it is the tungsten/rod; for stick it is the electrode.", "pages": ["om-20", "om-30", "om-32"], "page": "om-20" },
       { "step": 5, "text": "On the weld screen, the Left Knob adjusts Wire Feed Speed (amperage) and the Right Knob adjusts Voltage. If you adjust them manually, the white mark on the line shows the recommended setting for your wire/electrode diameter and workpiece thickness.", "page": "om-20" }
     ],
     "navigation_note": "Press the Main Control Knob to go to the next screen; press the BACK button to return to the previous screen.",
@@ -43,7 +43,21 @@
     { "name": "Save Setting", "description": "Programs up to 5 different configurations across 5 memory slots.", "page": "om-21" }
   ],
 
-  "gas_flow": { "value_scfh": [20, 30], "page": "om-20" },
+  "gas_flow_by_process": {
+    "_note": "Gas flow differs by process and the manual prints the figures on different pages. Returning the MIG value for a TIG question would put a wrong number in front of the user with a citation attached — argon at 30 SCFH on a TIG torch causes turbulence and breaks the shield.",
+    "MIG": { "value_scfh": [20, 30], "page": "om-20" },
+    "FLUX_CORED": {
+      "value_scfh": null,
+      "note": "Self-shielded flux-cored wire uses no shielding gas.",
+      "page": "sc-01"
+    },
+    "TIG": { "value_scfh": [10, 25], "page": "om-30" },
+    "STICK": {
+      "value_scfh": null,
+      "note": "Stick welding requires no shielding gas — the machine's own polarity screen prints 'No Gas Required'.",
+      "page": "om-32"
+    }
+  },
 
   "thickness_capability": {
     "_note": "What each process can handle, from the selection chart. Use this to sanity-check whether a job is in range before discussing settings.",

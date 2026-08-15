@@ -64,6 +64,22 @@ export async function POST(request: NextRequest) {
         }
       };
 
+      /**
+       * Must run on every exit path, not just a clean result. If the stream is
+       * aborted mid-artifact, `artifact_start` and its deltas have already been
+       * sent; without the matching `artifact_end` the client leaves the artifact
+       * marked streaming and its chip spins forever.
+       */
+      let flushed = false;
+      const flushParser = () => {
+        if (flushed) return;
+        flushed = true;
+        for (const event of parser.flush()) {
+          if (event.type === "text") send({ type: "text", delta: event.text });
+          else send(event as AgentEvent);
+        }
+      };
+
       try {
         for await (const sdkMessage of runAgent({
           prompt: message,
@@ -109,10 +125,7 @@ export async function POST(request: NextRequest) {
           }
 
           if (sdkMessage.type === "result") {
-            for (const event of parser.flush()) {
-              if (event.type === "text") send({ type: "text", delta: event.text });
-              else send(event as AgentEvent);
-            }
+            flushParser();
             if (sdkMessage.subtype !== "success") {
               send({
                 type: "error",
@@ -126,6 +139,7 @@ export async function POST(request: NextRequest) {
           }
         }
       } catch (err) {
+        flushParser();
         if (!abortController.signal.aborted) {
           send({
             type: "error",
@@ -134,6 +148,7 @@ export async function POST(request: NextRequest) {
           send({ type: "done" });
         }
       } finally {
+        flushParser();
         closed = true;
         try {
           controller.close();

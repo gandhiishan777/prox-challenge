@@ -4,6 +4,9 @@ import * as React from "react";
 
 import type { ParentToRunner, RunnerToParent } from "@/lib/runner/protocol";
 
+/** Enough for a legitimate re-handshake; far short of a runaway loop. */
+const MAX_READY_HANDSHAKES = 4;
+
 export interface ArtifactError {
   phase: "compile" | "execute" | "render" | "async";
   message: string;
@@ -35,6 +38,7 @@ export function ReactArtifactFrame({
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
   const seqRef = React.useRef(0);
   const readyRef = React.useRef(false);
+  const readyCountRef = React.useRef(0);
   // The runner bundle carries React, the compiler and the chart/icon libraries,
   // so its first load is not instant. Without this the panel is simply blank for
   // a beat and looks broken rather than busy.
@@ -65,10 +69,26 @@ export function ReactArtifactFrame({
       const data = event.data;
       if (!data || typeof data !== "object") return;
 
+      // Artifact code shares the runner's realm, so it can post these itself.
+      // Honouring "ready" unboundedly lets it drive send -> re-render ->
+      // re-execute -> "ready" in a loop that wedges the parent tab. But the
+      // handshake must stay idempotent: React's dev-mode double effect can
+      // detach the listener across a genuine "ready", and a hard block on
+      // repeats leaves the panel permanently blank when that happens. So it is
+      // bounded rather than forbidden.
       if (data.kind === "ready") {
+        if (readyCountRef.current >= MAX_READY_HANDSHAKES) return;
+        readyCountRef.current += 1;
         readyRef.current = true;
         send(codeRef.current);
-      } else if (data.kind === "error") {
+        return;
+      }
+
+      // Everything else carries the sequence number it is answering; anything
+      // else is a stale frame or artifact code impersonating the runner.
+      if (data.seq !== seqRef.current) return;
+
+      if (data.kind === "error") {
         setPainted(true);
         onErrorRef.current?.({
           phase: data.phase,

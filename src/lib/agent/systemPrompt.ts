@@ -18,16 +18,26 @@ function figureCatalog(): string {
     .join("\n");
 }
 
-function specsSnapshot(): string {
-  const c = specs.connections as Record<string, Record<string, string>>;
-  const rows = Object.entries(c)
-    .filter(([k]) => !k.startsWith("_"))
-    .map(
-      ([process, v]) =>
-        `- ${process}: ${v.polarity} — ${v.electrode_lead} into ${v.electrode_socket}, work clamp into ${v.work_clamp_socket}`,
-    )
-    .join("\n");
-  return rows;
+/**
+ * Deliberately NOT a table of polarity and socket assignments.
+ *
+ * An earlier version rendered the full mapping here as "orientation". That put
+ * the complete answer to the highest-traffic question class — which socket does
+ * each lead go in — directly in the prompt, quotable without a tool call, with
+ * only a parenthetical asking the model not to. The design's claim is that
+ * grounding is mechanical rather than an instruction the model may or may not
+ * follow, and a pre-answered prompt quietly makes it the latter.
+ */
+function connectionsPointer(): string {
+  const processes = Object.keys(specs.connections as Record<string, unknown>).filter(
+    (k) => !k.startsWith("_"),
+  );
+  return (
+    `Polarity and socket assignments exist for: ${processes.join(", ")}. ` +
+    `They are NOT listed here on purpose — call get_connections. Getting a socket ` +
+    `backwards is one of the few errors here that damages work or the machine, so ` +
+    `it is answered from verified data every time, never from memory.`
+  );
 }
 
 const INSTRUCTIONS = `
@@ -167,9 +177,8 @@ export function buildSystemPrompt(): string {
   return [
     INSTRUCTIONS,
     "",
-    "# Connections quick reference",
-    "(Still call get_connections before stating these to a user — this is orientation, not a source.)",
-    specsSnapshot(),
+    "# Connections",
+    connectionsPointer(),
     "",
     "# Figures you can show",
     "Call show_figure with one of these ids.",

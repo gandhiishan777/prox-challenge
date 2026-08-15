@@ -53,22 +53,56 @@ export function parseProcess(text?: string | null): Process | null {
   return null;
 }
 
-/** Normalize sloppy voltage input (110/115/120 -> 120, 220/230/240 -> 240). */
+/** Plausible mains voltages; anything outside this is a typo or a different machine. */
+const MIN_VOLTS = 90;
+const MAX_VOLTS = 260;
+
+/**
+ * Normalize sloppy voltage input (110/115/120 -> 120, 220/230/240 -> 240).
+ *
+ * Numbers are matched as separate tokens rather than by stripping non-digits.
+ * Stripping concatenates: "120 VAC 20 amp circuit" became "12020", which is
+ * greater than 160 and so resolved to 240V — telling a user on a 120V circuit
+ * they could weld continuously at a current the manual rates at 40% duty.
+ * Anything that mentions two different voltages is genuinely ambiguous and
+ * returns null so the agent asks rather than picks.
+ */
 export function parseVoltage(input?: string | number | null): {
   voltage: Voltage | null;
   note?: string;
 } {
   if (input === null || input === undefined || input === "") return { voltage: null };
-  const n = typeof input === "number" ? input : parseFloat(String(input).replace(/[^\d.]/g, ""));
-  if (!Number.isFinite(n)) return { voltage: null };
-  if (n <= 160) {
-    return n === 120
-      ? { voltage: 120 }
-      : { voltage: 120, note: `Treating ${n}V as the manual's 120V rating.` };
+
+  let candidates: number[];
+  if (typeof input === "number") {
+    candidates = [input];
+  } else {
+    candidates = [...String(input).matchAll(/\d+(?:\.\d+)?/g)]
+      .map((m) => parseFloat(m[0]))
+      .filter((n) => n >= MIN_VOLTS && n <= MAX_VOLTS);
   }
-  return n === 240
-    ? { voltage: 240 }
-    : { voltage: 240, note: `Treating ${n}V as the manual's 240V rating.` };
+
+  const distinct = [...new Set(candidates.map((n) => (n <= 160 ? 120 : 240)))];
+
+  if (distinct.length === 0) {
+    return {
+      voltage: null,
+      note: `Could not read an input voltage from "${input}". This welder runs on 120V or 240V.`,
+    };
+  }
+  if (distinct.length > 1) {
+    // "120/240" describes the machine, not the socket it is plugged into.
+    return {
+      voltage: null,
+      note: "Both 120V and 240V were mentioned. Ask which power cord is actually plugged in — the ratings differ substantially.",
+    };
+  }
+
+  const voltage = distinct[0] as Voltage;
+  const raw = candidates[0];
+  return raw === voltage
+    ? { voltage }
+    : { voltage, note: `Treating ${raw}V as the manual's ${voltage}V rating.` };
 }
 
 /**
@@ -94,7 +128,10 @@ export interface DutyCycleResult {
   exact?: DutyCycleEntry;
   lower?: DutyCycleEntry;
   upper?: DutyCycleEntry;
+  /** The figure a caller may safely plan against. Absent above the rated range. */
   conservative_pct?: number;
+  /** Only above the rated range: the highest published figure, which is an over-estimate. */
+  max_published_pct?: number;
   guidance: string;
   definition: string;
   thermal_protection: string;
@@ -167,23 +204,33 @@ export function lookupDutyCycle(
       ...base,
       match: "above_range",
       upper: maxRow,
-      conservative_pct: maxRow.duty_cycle_pct,
+      // Deliberately NOT conservative_pct: above the highest rated point, the
+      // true duty cycle is lower than any published figure, so reporting the
+      // maximum here would hand a caller an over-generous bound under the name
+      // of a safe one.
+      max_published_pct: maxRow.duty_cycle_pct,
       pages: maxRow.pages,
       citation: citeAll(maxRow.pages),
-      guidance: `${amps}A is above the highest rated point the manual publishes for this process and input voltage (${maxRow.amps}A at ${maxRow.duty_cycle_pct}%). Check the output range before going further.`,
+      guidance: `${amps}A is above the highest rated point the manual publishes for this process and input voltage (${maxRow.duty_cycle_pct}% at ${maxRow.amps}A). The manual gives no duty cycle up here, and whatever it is must be lower than ${maxRow.duty_cycle_pct}%. Check the published output range before going further.`,
     };
   }
 
   // Between the two published points. The manual prints no derating curve, so
   // the honest answer is the bracket plus the conservative bound.
-  const lower = [...rows].reverse().find((r) => r.amps < amps)!;
-  const upper = rows.find((r) => r.amps > amps)!;
+  const lower = [...rows].reverse().find((r) => r.amps < amps);
+  const upper = rows.find((r) => r.amps > amps);
+  if (!lower || !upper) {
+    return { error: `No bracketing rated points for ${process} at ${voltage}V and ${amps}A.` };
+  }
   return {
     ...base,
     match: "bracketed",
     lower,
     upper,
-    conservative_pct: upper.duty_cycle_pct,
+    // Stated as the minimum rather than "the upper row" so the guarantee is
+    // structural rather than dependent on duty cycle happening to decrease
+    // with amperage in this data.
+    conservative_pct: Math.min(lower.duty_cycle_pct, upper.duty_cycle_pct),
     pages: [...new Set([...lower.pages, ...upper.pages])],
     citation: citeAll([...lower.pages, ...upper.pages]),
     guidance:
@@ -277,16 +324,25 @@ export function lookupTroubleshooting(
       [entry.symptom, ...entry.aliases, ...entry.causes.map((c) => c.cause)].join(" "),
     );
     const aliasText = entry.aliases.join(" ").toLowerCase();
-    let score = 0;
+    let relevance = 0;
     for (const token of queryTokens) {
-      if (haystack.includes(token)) score += 1;
+      if (haystack.includes(token)) relevance += 1;
       // An alias hit is a strong signal ("birdnest", "porosity").
-      if (aliasText.includes(token)) score += 2;
-      if (entry.symptom.toLowerCase().includes(token)) score += 1;
+      if (aliasText.includes(token)) relevance += 2;
+      if (entry.symptom.toLowerCase().includes(token)) relevance += 1;
     }
-    // Prefer entries scoped to the stated process.
-    if (process && entry.applies_to.includes(process)) score += 2;
-    if (process && !entry.applies_to.includes(process)) score -= 3;
+
+    // The process is a tie-breaker among relevant entries, never a source of
+    // relevance on its own. Adding it before this check meant every entry for
+    // the stated process scored above zero, so "how do I make coffee" with
+    // process=MIG returned three confident troubleshooting matches. Likewise the
+    // old flat penalty could annihilate a genuine hit outright.
+    if (relevance === 0) return { entry, score: 0 };
+
+    let score = relevance;
+    if (process) {
+      score = entry.applies_to.includes(process) ? score + 2 : score * 0.4;
+    }
     return { entry, score };
   });
 
@@ -314,7 +370,11 @@ export function lookupTroubleshooting(
             ? `${dropped} cause(s) that the manual marks as applying only to other processes were left out for ${process}.`
             : undefined,
       };
-    });
+    })
+    // An entry whose every cause was filtered out is not an answer. Returning it
+    // with an empty causes array and no citation is the shape most likely to
+    // make the model fill the gap from the manual prose in its context.
+    .filter((m) => m.causes.length > 0);
 }
 
 export interface PartMatch {
@@ -374,7 +434,7 @@ export interface SettingsGuidance {
   procedure: { step: number; text: string; citation: string }[];
   navigation_note: string;
   example: Record<string, unknown>;
-  gas_flow_scfh: number[];
+  gas_flow: { process: string; value_scfh: number[] | null; note?: string; citation: string }[];
   thickness_capability: Record<string, { range: string; citation: string }>;
   in_range?: { process: string; verdict: string };
   figure_id: string;
@@ -423,7 +483,20 @@ export function getWeldSettings(
     ),
     navigation_note: settings.synergic_procedure.navigation_note,
     example: settings.example_screen_from_manual,
-    gas_flow_scfh: settings.gas_flow.value_scfh,
+    // Scoped to the stated process when known. Returning all four unfiltered
+    // invites quoting the MIG figure for a TIG question.
+    gas_flow: Object.entries(settings.gas_flow_by_process)
+      .filter(([key]) => !key.startsWith("_"))
+      .filter(([key]) => !process || key === process)
+      .map(([key, value]) => {
+        const v = value as { value_scfh: number[] | null; note?: string; page: string };
+        return {
+          process: key,
+          value_scfh: v.value_scfh,
+          note: v.note,
+          citation: cite(v.page),
+        };
+      }),
     thickness_capability: capability,
     in_range,
     figure_id: settings.synergic_procedure.figure_id,

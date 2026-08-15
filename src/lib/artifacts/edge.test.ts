@@ -64,6 +64,75 @@ describe("line endings", () => {
     if (delta?.type !== "artifact_delta") throw new Error("expected delta");
     expect(delta.delta).toBe("const a = 1;");
   });
+
+  it("CRLF content survives a split at EVERY byte offset", () => {
+    // The earlier CRLF test called parseComplete only, so it passed while the
+    // split-invariance property was broken: a chunk boundary landing between
+    // \r and \n leaked a bare \r into the artifact's first or last line.
+    // Checking one whole-string parse is not coverage of a streaming parser.
+    const text = `<antArtifact identifier="x" type="application/vnd.ant.code" title="T">\r\nconst a = 1;\r\nconst b = 2;\r\n</antArtifact>`;
+    for (let at = 0; at <= text.length; at++) {
+      const parser = new ArtifactStreamParser();
+      const events = [
+        ...parser.push(text.slice(0, at)),
+        ...parser.push(text.slice(at)),
+        ...parser.flush(),
+      ];
+      const body = events.reduce<string>(
+        (acc, e) => (e.type === "artifact_delta" ? acc + e.delta : acc),
+        "",
+      );
+      expect(body, `split at ${at}`).toBe("const a = 1;\r\nconst b = 2;");
+    }
+  });
+});
+
+describe("markup that only looks like a tag", () => {
+  it("a stray <options> in prose does not swallow the rest of the message", () => {
+    // The agent's own instructions contain the literal "<options>", so it shows
+    // up whenever the model explains quick replies. Previously this consumed
+    // everything after it — including an artifact — and surfaced only at flush.
+    const text =
+      `Quick replies use the <options> block. Here is your chart:\n` +
+      `<antArtifact identifier="c" type="application/vnd.ant.mermaid" title="C">graph TD; MIG-->DCEP;</antArtifact>\n` +
+      `That covers it.`;
+    const events = parseComplete(text);
+    expect(events.some((e) => e.type === "artifact_start")).toBe(true);
+    const body = events.find((e) => e.type === "artifact_delta");
+    if (body?.type !== "artifact_delta") throw new Error("expected delta");
+    expect(body.delta).toContain("graph TD");
+
+    // The prose must round-trip, including the literal token.
+    const prose = events
+      .filter((e) => e.type === "text")
+      .map((e) => (e.type === "text" ? e.text : ""))
+      .join("");
+    expect(prose).toContain("<options>");
+    expect(prose).toContain("That covers it.");
+  });
+
+  it("requires a tag-name boundary, so <antArtifactList> is prose", () => {
+    const text = `See <antArtifactList> for the full set.`;
+    const events = parseComplete(text);
+    expect(events.every((e) => e.type === "text")).toBe(true);
+    const prose = events
+      .map((e) => (e.type === "text" ? e.text : ""))
+      .join("");
+    expect(prose).toBe(text);
+  });
+
+  it("an unbalanced quote degrades to a mangled title, not a lost artifact", () => {
+    // The fix for '>' inside quoted attributes originally left the scanner
+    // stuck in quote mode forever when a closing quote was missing, which lost
+    // the entire artifact rather than just its title.
+    const text = `<antArtifact identifier="x" type="application/vnd.ant.react" title="Duty Cycle>\nconst a = 1;\n</antArtifact>`;
+    const events = parseComplete(text);
+    const start = events.find((e) => e.type === "artifact_start");
+    expect(start).toBeDefined();
+    const body = events.find((e) => e.type === "artifact_delta");
+    if (body?.type !== "artifact_delta") throw new Error("expected delta");
+    expect(body.delta).toContain("const a = 1;");
+  });
 });
 
 describe("known and accepted limitation", () => {

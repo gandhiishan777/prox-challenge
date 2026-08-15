@@ -195,9 +195,11 @@
 
   "gas": {
     "flow_rate": {
-      "value": "20–30 SCFH",
-      "context": "Set SCFH between 20-30 when following the on-screen polarity and gas settings.",
-      "page": "om-20"
+      "_note": "Flow rate is per-process and the figures are printed on different pages. Do not quote one for another.",
+      "MIG": { "value": "20–30 SCFH", "page": "om-20" },
+      "TIG": { "value": "10–25 SCFH", "page": "om-30" },
+      "FLUX_CORED": { "value": "no shielding gas — self-shielded wire", "page": "sc-01" },
+      "STICK": { "value": "no shielding gas — the polarity screen prints 'No Gas Required'", "page": "om-32" }
     },
     "c100_adapter": {
       "note": "When using C100 shielding gas, connect the enclosed CGA 580/320 adapter to the regulator inlet and wrench-tighten.",

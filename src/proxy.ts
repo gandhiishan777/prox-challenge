@@ -33,6 +33,26 @@ function runnerCsp(origin: string, isDev: boolean): string {
   ].join("; ");
 }
 
+/**
+ * The origin the *browser* used, which is not necessarily the one Next sees.
+ *
+ * Behind a reverse proxy — which is every real deployment of this, Railway,
+ * Render and Fly included — `nextUrl.origin` is the internal address the
+ * container is listening on. Naming that in the CSP produces a policy matching
+ * nothing, `default-src 'none'` blocks the runner's own scripts, and the artifact
+ * panel sits on "Starting sandbox…" forever while chat keeps working. Invisible
+ * on localhost, where the two origins happen to coincide.
+ */
+function browserOrigin(request: NextRequest): string {
+  const host =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  if (!host) return request.nextUrl.origin;
+  const proto =
+    request.headers.get("x-forwarded-proto") ??
+    request.nextUrl.protocol.replace(":", "");
+  return `${proto}://${host}`;
+}
+
 export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
@@ -44,7 +64,7 @@ export function proxy(request: NextRequest) {
 
   response.headers.set(
     "Content-Security-Policy",
-    runnerCsp(request.nextUrl.origin, process.env.NODE_ENV !== "production"),
+    runnerCsp(browserOrigin(request), process.env.NODE_ENV !== "production"),
   );
   response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;
