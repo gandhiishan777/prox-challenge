@@ -40,9 +40,22 @@ after transcription) as a static system-prompt prefix, with **no** search tool.
 - Vocabulary mismatch ("wire keeps stopping" vs "feed motor") is a retrieval
   failure mode that simply does not exist here.
 
-**Escape hatch.** If the transcribed manual had exceeded ~50k tokens the design
-flips to outline-in-prompt plus a `read_section` tool. `00_inspect.py` prints a
-warning at that threshold. Measured: 23.7k tokens, comfortably inside budget.
+**Measured, and it moved.** The raw text layer is 23.7k tokens, but vision
+transcription adds figure descriptions and spatial detail, so the assembled
+document is **50.8k tokens** — just over the 50k threshold I had set myself before
+measuring anything.
+
+I kept full context anyway, and re-derived the economics rather than trusting the
+guess: the prefix is cached, so a session pays ~$0.19 once and then ~$0.015 per
+turn. Observed in practice: ~$0.06–0.15 per warm question. The alternative was
+dropping the figure narration (33% of the corpus), but that narration is exactly
+the label text that answers "which socket" — so the trim would have cost accuracy
+on the question class this product exists to answer. The threshold in
+`04_sectionize.py` now warns at 80k, with a note about cost between 40k and 80k.
+
+**Escape hatch, unchanged.** Past roughly 80k tokens the design flips to
+outline-in-prompt plus a `read_section` tool. That is a one-file change in
+`systemPrompt.ts`.
 
 **Residual risk.** With the manual in context, the model may answer numeric
 questions from prose instead of calling the deterministic lookup tools. Mitigated
@@ -207,3 +220,30 @@ not overwrite them and does not re-spend credit.
 **Flagged for review:** those 7 transcripts did not go through the identical
 prompt path as the other 44. They are, if anything, more carefully done, but they
 are the ones to spot-check first.
+
+## 13. The sandbox was verified by attacking it, not by reading the spec
+
+Security claims are worth what they were tested at. An artifact was written whose
+only job was to escape, and it was run inside a real sandboxed frame in Chrome —
+first against the dev server, then against a production build.
+
+Production build (`npm run build && npm run start`):
+
+| Attempt | Result |
+|---|---|
+| `window.origin` | `null` — confirms the opaque origin, which everything else rests on |
+| `window.parent.document.title` | **BLOCKED** (SecurityError) |
+| `window.parent.location.href` | **BLOCKED** (SecurityError) |
+| `localStorage.setItem` | **BLOCKED** (SecurityError) |
+| `sessionStorage.setItem` | **BLOCKED** (SecurityError) |
+| `document.cookie` | **BLOCKED** (SecurityError) |
+| `fetch('/api/chat')` | **BLOCKED** (TypeError: Failed to fetch — `connect-src 'none'`) |
+
+**One honest caveat: in development, network access is open.** The dev CSP has to
+allow `connect-src <origin> ws:` for hot reload, so an artifact running under
+`npm run dev` *can* issue requests. The parent DOM, cookies and storage stay
+blocked in both modes, because those come from the opaque origin rather than the
+CSP. Production is the mode that matters for the deployed app, and it is closed.
+
+Accepted and unsolved, same as claude.ai: an artifact can spin the CPU and freeze
+its own frame.
