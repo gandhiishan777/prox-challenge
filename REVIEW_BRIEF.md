@@ -74,23 +74,54 @@ fabricated percentage between the two rated points is a real failure. The unit
 test (`lookups.test.ts`, "brackets an off-table amperage") covers the tool; it
 does not cover the model's willingness to be pushed past it.
 
-### 4. Artifact sandbox isolation
+### 4. Artifact sandbox isolation — **now measured, please re-measure**
 
-`sandbox="allow-scripts"` with **no** `allow-same-origin`, plus a CSP set in
-`src/middleware.ts`. `DECISIONS.md` #8 and #9 record the measurements.
+`sandbox="allow-scripts"` with **no** `allow-same-origin`, plus a per-request CSP
+in `src/proxy.ts`. `DECISIONS.md` #8, #9 and #13 record the measurements.
 
-**How to check:**
-- `curl -sD- localhost:3000/runner/index.html | grep -i content-security` — the
-  policy should name the origin explicitly (`'self'` is unmatchable on an opaque
-  origin) and set `connect-src 'none'` in production.
-- Confirm the CSP is **not** applied to app routes. It was, briefly, and because
-  `default-src 'none'` makes `frame-src` inherit `'none'`, the browser silently
-  refused to load the artifact iframe at all.
-- Get an artifact to attempt `fetch('/api/chat')`, `localStorage.setItem`, or
-  `window.parent.document` and confirm each fails.
+I attacked this rather than reasoning about it. An artifact whose only job was to
+escape, run inside a real sandboxed frame in Chrome against a **production build**:
+
+| Attempt | Result |
+|---|---|
+| `window.origin` | `null` — the opaque origin everything rests on |
+| `window.parent.document` | BLOCKED (SecurityError) |
+| `window.parent.location.href` | BLOCKED (SecurityError) |
+| `localStorage` / `sessionStorage` | BLOCKED (SecurityError) |
+| `document.cookie` | BLOCKED (SecurityError) |
+| `fetch('/api/chat')` | BLOCKED (`connect-src 'none'`) |
+
+**Caveat worth your attention: in dev, network access is open.** The dev CSP has
+to allow `connect-src <origin> ws:` for hot reload, so an artifact under
+`npm run dev` *can* issue requests. The opaque-origin protections hold in both
+modes; only the network differs. If you think that dev/prod split is the wrong
+call, that is a fair argument to have.
+
+**Still worth attacking yourself:** the `require` shim in `compile.ts` (can
+`constructor.constructor` reach anything useful from artifact scope?), and
+whether the CSP is genuinely absent on app routes — it was applied app-wide at one
+point, and because `default-src 'none'` makes `frame-src` inherit `'none'`, the
+browser silently refused to load the artifact iframe at all.
 
 **Known limitation, accepted:** an artifact can still spin the CPU and freeze its
 own frame. Not solved; same posture as claude.ai.
+
+### 4b. Parser adversarial inputs — one real bug found and fixed
+
+Attacking the parser with plausible-but-unusual input found a silent corruption:
+a title containing `>` (e.g. `title="Settings for >1/4 inch"`, entirely natural
+here) ended the opening tag mid-attribute, dropped the title, and spilled the
+attribute tail into the artifact's source. Fixed by tracking quote state; covered
+in `src/lib/artifacts/edge.test.ts`.
+
+Also checked, and correct: CRLF content, and an artifact whose content mentions
+`</antArtifact>` (truncates at the first close tag — same as claude.ai, now
+documented in a test rather than left to be rediscovered).
+
+Path traversal on `/api/knowledge` was probed live with encoded traversal,
+`....//` sequences, and a sibling-directory bypass. All 404; `.env` is never
+served. The guard uses `resolve() + path.sep`, which is what defeats a
+`knowledge-evil` sibling.
 
 ### 5. Things I could not verify in this environment
 
@@ -164,12 +195,15 @@ Flagged honestly rather than presented as settled:
 
 | Phase | Status | Evidence |
 |---|---|---|
-| 0 — repo, scaffold, sandbox spike | **pass** | 4 fixtures render/fail correctly in real Chrome; 8/8 compiler tests; clean `npm install` |
+| 0 — repo, scaffold, sandbox spike | **pass** | 4 fixtures render/fail correctly in real Chrome; clean `npm install`, no legacy peer deps |
 | 1 — knowledge pack | **pass** | 51/51 pages transcribed, 0 unreadable markers; 26 figures; `08_qa.py` 0 failures / 0 warnings across 183 numeric tokens |
-| 2 — agent core | **pass** | 30/30 unit tests; all three challenge questions correct with correct tool traces and citations |
-| 3 — artifact runtime + frontend | **pass** | 54/54 tests incl. byte-offset parser invariance; SSE verified by curl; figure + artifact verified in browser |
-| 4 — eval | **see below** | harness verified on a 3-case subset at 100% coverage / tone 5 |
-| 5 — docs, deploy config | **partial** | README, DECISIONS, PHASE_LOG, this file, Dockerfile written. **Not deployed. No video.** |
+| 2 — agent core | **pass** | all three challenge questions correct with correct tool traces and citations |
+| 3 — artifact runtime + frontend | **pass** | SSE verified by curl; figure + generated calculator verified in real Chrome |
+| 4 — eval | **pass, with a caveat** | 15/18 on the full run; all 3 failures investigated (1 real gap fixed, 2 flawed assertions corrected) and re-verified 3/3. **The full suite has not been re-run end to end since.** |
+| 5 — docs, deploy config | **partial** | README, DECISIONS, PHASE_LOG, this file, Dockerfile written; clean-clone verified (clone + install + production build + 59 tests). **Not deployed. No video.** |
+
+Across the whole repo: **59/59 unit tests**, `npx tsc --noEmit` clean, production
+build succeeds from a fresh clone.
 
 Phase 0's Spike B (SDK → SSE → browser) was folded into Phases 2–3 rather than
 done standalone, because the API credit was exhausted mid-phase. It is covered:

@@ -243,3 +243,49 @@ makes a lookup call per rated point before writing any numbers into the artifact
 - Tone on `settings-ambiguous` dropped from 4 to 3 after the door-chart fix, i.e.
   the answer got slightly wordier in exchange for being more accurate. Worth
   watching if that instruction is tuned further.
+
+---
+
+## Phase 5 — Ship
+
+**Status: partial. Everything that does not need the user's accounts is done.**
+
+### Done
+- `README.md` — quickstart, architecture, and the measurements behind each design
+  decision.
+- `DECISIONS.md` — 13 entries, including the ones that were wrong first.
+- `REVIEW_BRIEF.md` — targeted brief for an adversarial reviewer, leading with
+  what I am least confident about.
+- `Dockerfile` + `.dockerignore` for a persistent Node host.
+- Migrated `middleware.ts` → `proxy.ts` (Next 16 deprecates the old convention),
+  so the evaluator does not meet a deprecation warning on first run.
+
+### Clean-clone verification
+Cloned the repo to a scratch directory and ran it as an evaluator would:
+
+| Step | Result |
+|---|---|
+| `git clone` | 0s (local) |
+| `npm install` | 5s, 0 vulnerabilities, no `--legacy-peer-deps` |
+| `.env` present in clone? | **No** — correctly gitignored |
+| knowledge pack present? | Yes, all five data files |
+| `npx vitest run` | 59/59 pass |
+| `npm run build` | succeeds, TypeScript clean, all routes registered |
+
+### Adversarial pass (own review, before the independent one)
+- **Sandbox attacked in a production build** — see DECISIONS #13. Parent DOM,
+  cookies, storage and network all blocked. Dev-mode network access documented as
+  a deliberate exception for HMR.
+- **Parser attacked with unusual-but-plausible input** — found and fixed silent
+  corruption when an attribute value contains `>`. Added `edge.test.ts`.
+- **Path traversal probed live** — encoded traversal, `....//` sequences and a
+  sibling-directory bypass all 404; `.env` never served.
+- **Dependency audit** — every non-builtin import is declared in `package.json`.
+- **`HtmlArtifactFrame`** confirmed `sandbox="allow-scripts"` with no
+  `allow-same-origin`.
+
+### Not done — needs the user
+- **Deploy.** Dockerfile is written but has never been built or pushed; hosting
+  needs the user's Railway/Render account.
+- **Video walkthrough.** Needs the user.
+- **Full eval re-run** after the Phase 4 fixes (~$2.50 of API budget).
