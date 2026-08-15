@@ -261,3 +261,22 @@ hallucination trap?) plus an LLM judge for fact coverage and tone.
 - **`PHASE_LOG.md`** — what was built and tested at each stage, with the bugs found.
 - **`REVIEW_BRIEF.md`** — a targeted brief for reviewing this work, including what
   I am least confident about.
+
+---
+
+## Deploying
+
+The Agent SDK spawns a subprocess and holds a streaming connection open for the
+length of an answer, so this wants a **persistent Node host** (Railway, Render,
+Fly) rather than a serverless function. A `Dockerfile` is included.
+
+```bash
+# Railway
+railway init && railway up
+# then set ANTHROPIC_API_KEY in the project's variables
+```
+
+Set `ANTHROPIC_API_KEY` in the host's environment. Nothing else is required — the
+knowledge pack ships in the image, and `prebuild` bundles the artifact runner.
+
+> Not yet deployed. The Dockerfile has been written but never built or pushed.
