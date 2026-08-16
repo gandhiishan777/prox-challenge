@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { useChat, type Message } from "@/lib/store";
 import { pageIdForCite } from "@/lib/citations";
+import { useSpeech } from "@/hooks/use-voice";
 import { Markdown } from "./Markdown";
 import { FigureCard } from "./FigureCard";
 import { OptionChips } from "./OptionChips";
@@ -51,6 +52,25 @@ function citationsIn(message: Message): string[] {
   return seen;
 }
 
+function SpeakerGlyph() {
+  return (
+    <svg
+      width={13}
+      height={13}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinejoin="round"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+    </svg>
+  );
+}
+
 function AnswerHeader({
   message,
   onOpenPage,
@@ -58,6 +78,7 @@ function AnswerHeader({
   message: Message;
   onOpenPage: (pageId: string) => void;
 }) {
+  const speech = useSpeech();
   const hasText = message.parts.some(
     (p) => p.kind === "text" && p.text.trim().length > 0,
   );
@@ -72,11 +93,29 @@ function AnswerHeader({
   const lookups = message.activity.filter((a) => a.done).length;
   const cites = citationsIn(message);
 
+  const answerText = message.parts
+    .filter((p) => p.kind === "text")
+    .map((p) => (p.kind === "text" ? p.text : ""))
+    .join("\n");
+
   return (
     <div className="mb-4 flex items-center gap-2.5">
       <span className="font-display text-[11px] font-bold uppercase tracking-[.16em] text-rust">
         Answer
       </span>
+      {speech.supported && !message.streaming && answerText.trim() && (
+        <button
+          type="button"
+          onClick={() => speech.toggle(answerText)}
+          title={speech.speaking ? "Stop reading" : "Read this answer aloud"}
+          aria-pressed={speech.speaking}
+          className={`transition-colors ${
+            speech.speaking ? "text-rust" : "text-muted hover:text-ink"
+          }`}
+        >
+          <SpeakerGlyph />
+        </button>
+      )}
       <span aria-hidden="true" className="h-px flex-1 bg-line" />
       {(lookups > 0 || cites.length > 0) && (
         <span className="font-mono text-[11px] text-muted">

@@ -201,6 +201,12 @@ a claim into something checkable without leaving the conversation.
   troubleshooting flow can highlight the right part at each step.
 - **Drawn diagrams.** SVG artifacts for hookups the manual does not illustrate.
 - **Interactive artifacts.** Calculators, flowcharts, configurators.
+- **Voice.** Push-to-talk dictation into the composer and read-aloud on any
+  answer, via the browser's Web Speech API — chosen over hosted STT/TTS because
+  the challenge requires running on a single Anthropic key, and this needs none.
+  Feature-detected; browsers without it never show the buttons. Citations are
+  spoken as "page 7" and parenthesised cites are skipped — they are a visual
+  affordance, not speech.
 
 ### 6. Artifacts, reverse-engineered
 

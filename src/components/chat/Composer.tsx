@@ -2,6 +2,8 @@
 
 import * as React from "react";
 
+import { useDictation } from "@/hooks/use-voice";
+
 /**
  * The input box.
  *
@@ -49,6 +51,25 @@ function StopGlyph() {
   );
 }
 
+function MicGlyph() {
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3Z" />
+      <path d="M6 11a6 6 0 0 0 12 0" />
+      <path d="M12 17v4" />
+    </svg>
+  );
+}
+
 const MODEL_HINT =
   "Sonnet is faster and cheaper for everyday questions. Opus is for the hardest cross-referencing questions, where an answer has to be pieced together from several parts of the manual.";
 
@@ -69,6 +90,17 @@ export function Composer({
 }) {
   const [text, setText] = React.useState("");
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // What was typed before the mic went hot; the live transcript appends to it.
+  const dictationBaseRef = React.useRef("");
+  const dictation = useDictation((transcript) => {
+    const base = dictationBaseRef.current;
+    setText(base ? `${base} ${transcript}` : transcript);
+  });
+  const toggleDictation = () => {
+    if (!dictation.listening) dictationBaseRef.current = text.trim();
+    dictation.toggle();
+  };
 
   const resize = React.useCallback(() => {
     const el = textareaRef.current;
@@ -139,6 +171,28 @@ export function Composer({
           ))}
         </div>
 
+        <div className="flex items-center gap-2">
+          {dictation.supported && (
+            <button
+              type="button"
+              onClick={toggleDictation}
+              title={dictation.listening ? "Stop listening" : "Dictate your question"}
+              aria-pressed={dictation.listening}
+              className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${
+                dictation.listening
+                  ? "animate-pulse bg-rust text-white"
+                  : "bg-transparent text-muted hover:text-ink"
+              }`}
+            >
+              <MicGlyph />
+              {dictation.listening && (
+                <span className="font-mono text-[11px] uppercase tracking-[.08em]">
+                  Listening
+                </span>
+              )}
+            </button>
+          )}
+
         {busy ? (
           <button
             type="button"
@@ -161,6 +215,7 @@ export function Composer({
             <ArrowRightGlyph />
           </button>
         )}
+        </div>
       </div>
     </div>
   );
