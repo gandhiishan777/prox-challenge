@@ -366,3 +366,34 @@ rendering in the parent origin behind a sanitizer rather than in the sandbox,
 `08_qa.py` false-greening on a fresh clone (it globs a gitignored directory),
 `--env-file` making the friendly key-missing errors unreachable, and several
 troubleshooting entries that drop printed causes from om-43/om-44.
+
+## Phase 7 — Deploy, and the cheap-and-safe findings cleared
+
+Deployed to Railway (https://prox-challenge-production-db9e.up.railway.app),
+which surfaced two facts no amount of local testing had:
+
+- **The Agent SDK's CLI refuses `bypassPermissions` as root.** A default root
+  container builds, boots, and serves every static route — then fails on the
+  first real question. The runtime stage now runs as the `node` user. Caught by
+  building and interrogating the image locally *before* pushing to a host.
+- **Railway injects its own `PORT`.** Next binds to it while the generated
+  domain routes to 3000, and every request 502s. Pinned with `PORT=3000`.
+
+Then the recorded findings that were cheap and safe to clear, cleared
+(REVIEW_BRIEF table: 1, 2, 5, 8, 10):
+
+- `parseThickness` is unit-aware: `10mm` converts to inches instead of being
+  read as ten of them; `1 1/2 inch` sums to 1.5; the gauge regex is
+  word-bounded so `galvanized` is no longer `8 Ga`. Four regression tests.
+- `no-power` and `no-arc-ignition` now carry every cause om-43/om-44 print —
+  including tripped thermal protection with its cross-reference to the duty
+  cycle page, the manual's best cross-link — with the shielding-gas cause
+  scoped to TIG only. `08_qa.py` (183 tokens) and `09_verify_facts.py` (21
+  claims) both re-run green.
+- The `require` shim resolves own properties only, so `require("constructor")`
+  fails like any other unstocked module. Test added.
+- `scripts/requirements.txt` records the pipeline's four dependencies.
+
+**87/87 tests.** Findings 3, 4, 6, 7 and 9 stay open and recorded — the
+architectural and eval-infrastructure items, deliberately not touched hours
+before a live demo.

@@ -24,7 +24,7 @@ Other commands:
 
 ```bash
 npm run ask -- "What's the duty cycle for MIG at 200A on 240V?"   # CLI, prints the tool trace
-npm test                                                          # 82 unit tests, no API key needed
+npm test                                                          # 87 unit tests, no API key needed
 npm run eval                                                      # graded gold set
 ```
 
@@ -261,22 +261,25 @@ eval/                      gold set + graded runner
 
 ## Testing
 
-`npm test` — 82 unit tests, no API key required:
+`npm test` — 87 unit tests, no API key required:
 
 - **Lookups (22)** pin the headline facts. MIG at 200A/240V is 25%. 190A brackets
   to 115A/200A with a 25% bound and no fabricated percentage. TIG is DCEN with the
   clamp positive. MIG and flux-cored are exact polarity opposites. Flux-cored
   porosity drops the MIG-only gas causes.
-- **Parser (29)** — byte-offset invariance across 7 fixtures, plus adversarial cases: attribute values containing `>`, CRLF content, and an artifact whose content mentions its own closing tag.
-- **Compiler (8)** — JSX, hooks, `@/components/ui/*` resolution, unknown imports
-  rejected with a useful message, host globals not leaked into artifact scope.
+- **Regressions (19)** — a separate file for bugs found by adversarial review,
+  kept apart so it stays obvious what was learned the hard way: voltage digits
+  must not concatenate, "10mm" is not 10 inches, "1 1/2 inch" is not half an
+  inch, "galvanized" is not a gauge, and a process-filtered match must never
+  arrive with zero causes.
+- **Parser (33)** — byte-offset invariance across 7 fixtures, plus adversarial cases: attribute values containing `>`, CRLF content, and an artifact whose content mentions its own closing tag.
+- **Compiler (9)** — JSX, hooks, `@/components/ui/*` resolution, unknown imports
+  rejected with a useful message (including `require("constructor")` and friends
+  from `Object.prototype`), host globals not leaked into artifact scope.
+- **Machine map (4)** — every hotspot id resolves, coordinates stay in bounds.
 
 Two checks re-verify the knowledge pack, both without an API key:
 
-- `python3 scripts/09_verify_facts.py` — **works on a fresh clone.** 21
-  load-bearing claims checked against the manual's own phrasing: the duty-cycle
-  points per process and voltage, every polarity and socket assignment, the
-  AC-TIG-for-aluminium limit, the consumable ranges.
 - `python3 scripts/08_qa.py` — every numeric value in the curated data must appear
   on the page it cites (183 tokens). This one needs the transcripts in `build/`,
   which are an intermediate artifact and not committed, so it exits non-zero on a
@@ -284,16 +287,19 @@ Two checks re-verify the knowledge pack, both without an API key:
   It earned its keep during the build by catching an item number taken from the
   product page rather than the manual, and a receptacle spec attributed to the
   wrong page.
+- `python3 scripts/09_verify_facts.py` — **works on a fresh clone.** The same idea
+  for claims that carry no distinctive number, where a numeric gate is blind:
+  "the ground clamp goes in the POSITIVE socket for TIG" would pass a numeric
+  check even if it were transposed, and getting that backwards is exactly the
+  kind of error that matters at a live machine. 21 load-bearing claims checked
+  against the manual's own phrasing: the duty-cycle points per process and
+  voltage, every polarity and socket assignment, the AC-TIG-for-aluminium limit,
+  the consumable ranges.
 
 Worth knowing what the numeric gate **cannot** catch: an independent review found
 gas flow being reported as the MIG figure for every process. The number was real
 and was printed on the page cited — just for a different process. `09_verify_facts.py`
 exists partly because of that class of error.
-- `python3 scripts/09_verify_facts.py` — the same idea for claims that contain no
-  distinctive number. "The ground clamp goes in the POSITIVE socket for TIG" would
-  pass a numeric check even if it were transposed, and getting that backwards is
-  exactly the kind of error that matters at a live machine. 21 load-bearing facts,
-  checked against the phrasing the manual actually uses.
 
 `npm run eval` grades the gold set twice over: programmatic gates on the tool trace
 and answer text (did it call the lookup? did it show the figure? did it avoid the

@@ -1,226 +1,924 @@
 {
-  "meta": {
-    "source_pages": ["om-36", "om-37", "om-39", "om-40", "om-42", "om-43", "om-44"],
-    "verified_by_human": true,
-    "note": "Two kinds of entry are merged here: the machine-fault matrices (om-42 to om-44) and the weld-diagnosis pages (om-36 to om-41). Each cause is paired with its printed remedy and carries the page it came from. `applies_to` matters: several causes in the wire-welding tables are marked '(MIG only)' in the manual because flux-cored welding uses no shielding gas."
-  },
-
-  "safety_preamble": {
-    "text": "Be CERTAIN to shut off the Welder, disconnect it from power, and discharge the MIG Gun to ground before adjusting, cleaning, or repairing the unit. Follow all safety precautions whenever diagnosing or servicing the equipment.",
-    "page": "om-42"
-  },
-
-  "entries": [
+ "meta": {
+  "source_pages": [
+   "om-36",
+   "om-37",
+   "om-39",
+   "om-40",
+   "om-42",
+   "om-43",
+   "om-44"
+  ],
+  "verified_by_human": true,
+  "note": "Two kinds of entry are merged here: the machine-fault matrices (om-42 to om-44) and the weld-diagnosis pages (om-36 to om-41). Each cause is paired with its printed remedy and carries the page it came from. `applies_to` matters: several causes in the wire-welding tables are marked '(MIG only)' in the manual because flux-cored welding uses no shielding gas."
+ },
+ "safety_preamble": {
+  "text": "Be CERTAIN to shut off the Welder, disconnect it from power, and discharge the MIG Gun to ground before adjusting, cleaning, or repairing the unit. Follow all safety precautions whenever diagnosing or servicing the equipment.",
+  "page": "om-42"
+ },
+ "entries": [
+  {
+   "id": "porosity-wire",
+   "symptom": "Porosity in a MIG or flux-cored weld — small cavities or holes in the bead",
+   "aliases": [
+    "porosity",
+    "pinholes",
+    "holes in bead",
+    "wormtracks",
+    "bubbles",
+    "pitting"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "weld-mig-porosity"
+   ],
+   "causes": [
     {
-      "id": "porosity-wire",
-      "symptom": "Porosity in a MIG or flux-cored weld — small cavities or holes in the bead",
-      "aliases": ["porosity", "pinholes", "holes in bead", "wormtracks", "bubbles", "pitting"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["weld-mig-porosity"],
-      "causes": [
-        { "cause": "Incorrect polarity", "remedy": "Check that polarity is set correctly for the type of welding. MIG (solid wire with gas) runs DCEP; self-shielded flux-cored runs DCEN.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Insufficient shielding gas (MIG only)", "remedy": "Increase flow of gas. Clean nozzle. Maintain proper CTWD.", "applies_to": ["MIG"], "page": "om-37" },
-        { "cause": "Incorrect shielding gas (MIG only)", "remedy": "Use shielding gas recommended by the wire supplier.", "applies_to": ["MIG"], "page": "om-37" },
-        { "cause": "Dirty workpiece or welding wire", "remedy": "Clean workpiece down to bare metal. Make certain that wire is clean and free from oil, coatings, and other residues.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Inconsistent travel speed", "remedy": "Maintain steady travel speed.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "CTWD too long", "remedy": "Reduce CTWD (contact tip to work distance).", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Shielding gas bottle is empty", "remedy": "Check gas bottle and replenish as necessary.", "applies_to": ["MIG"], "page": "om-43" },
-        { "cause": "Not enough or too much shielding gas", "remedy": "Check gas regulator to ensure proper flow.", "applies_to": ["MIG"], "page": "om-43" },
-        { "cause": "Dirty workpiece", "remedy": "Clean workpiece down to bare metal.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-43" }
-      ]
+     "cause": "Incorrect polarity",
+     "remedy": "Check that polarity is set correctly for the type of welding. MIG (solid wire with gas) runs DCEP; self-shielded flux-cored runs DCEN.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
     },
     {
-      "id": "porosity-stick",
-      "symptom": "Porosity in a stick weld — small cavities or holes in the bead",
-      "aliases": ["stick porosity", "holes stick weld"],
-      "applies_to": ["STICK"],
-      "figures": ["weld-stick-porosity"],
-      "causes": [
-        { "cause": "Dirty workpiece or fill material", "remedy": "Clean workpiece down to bare metal. Make certain that fill material and Electrode are clean and free from oil, coatings, and other residues.", "applies_to": ["STICK"], "page": "om-40" },
-        { "cause": "Inconsistent welding speed", "remedy": "Maintain steady weld speed.", "applies_to": ["STICK"], "page": "om-40" }
-      ]
+     "cause": "Insufficient shielding gas (MIG only)",
+     "remedy": "Increase flow of gas. Clean nozzle. Maintain proper CTWD.",
+     "applies_to": [
+      "MIG"
+     ],
+     "page": "om-37"
     },
     {
-      "id": "spatter-wire",
-      "symptom": "Excessive spatter on a MIG or flux-cored weld",
-      "aliases": ["spatter", "splatter", "balls of metal"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["weld-mig-spatter"],
-      "causes": [
-        { "cause": "Dirty workpiece or welding wire", "remedy": "Clean workpiece down to bare metal. Make certain that wire is clean and free from oil, coatings, and other residues.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Incorrect polarity", "remedy": "Check that polarity is set correctly for type of welding.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Insufficient shielding gas (MIG only)", "remedy": "Increase flow of gas. Clean nozzle. Maintain proper CTWD.", "applies_to": ["MIG"], "page": "om-37" },
-        { "cause": "Wire feeding too fast", "remedy": "Reduce wire feed speed.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "CTWD too long", "remedy": "Reduce CTWD.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" }
-      ]
+     "cause": "Incorrect shielding gas (MIG only)",
+     "remedy": "Use shielding gas recommended by the wire supplier.",
+     "applies_to": [
+      "MIG"
+     ],
+     "page": "om-37"
     },
     {
-      "id": "spatter-stick",
-      "symptom": "Excessive spatter on a stick weld",
-      "aliases": ["stick spatter"],
-      "applies_to": ["STICK"],
-      "figures": ["weld-stick-spatter"],
-      "causes": [
-        { "cause": "Dirty workpiece or fill material", "remedy": "Clean workpiece down to bare metal. Make certain that fill material and Electrode are clean and free from oil, coatings, and other residues. Note that fine spatter is normal; spatter that is grainy and large is a problem.", "applies_to": ["STICK"], "page": "om-40" }
-      ]
+     "cause": "Dirty workpiece or welding wire",
+     "remedy": "Clean workpiece down to bare metal. Make certain that wire is clean and free from oil, coatings, and other residues.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
     },
     {
-      "id": "crooked-bead-wire",
-      "symptom": "Crooked or wavy bead on a MIG or flux-cored weld",
-      "aliases": ["wavy bead", "crooked weld", "wandering bead"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["weld-mig-crooked"],
-      "causes": [
-        { "cause": "Inaccurate welding", "remedy": "Use two hands or rest hand on steady surface.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Inconsistent travel speed", "remedy": "Maintain steady travel speed.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "CTWD too long", "remedy": "Reduce CTWD.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" }
-      ]
+     "cause": "Inconsistent travel speed",
+     "remedy": "Maintain steady travel speed.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
     },
     {
-      "id": "crooked-bead-stick",
-      "symptom": "Crooked or wavy bead on a stick weld",
-      "aliases": ["stick wavy bead"],
-      "applies_to": ["STICK"],
-      "figures": ["weld-stick-crooked"],
-      "causes": [
-        { "cause": "Inaccurate welding", "remedy": "Use two hands or rest hand on steady surface.", "applies_to": ["STICK"], "page": "om-40" },
-        { "cause": "Inconsistent welding speed", "remedy": "Maintain steady weld speed.", "applies_to": ["STICK"], "page": "om-40" }
-      ]
+     "cause": "CTWD too long",
+     "remedy": "Reduce CTWD (contact tip to work distance).",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
     },
     {
-      "id": "burn-through-wire",
-      "symptom": "Burn-through on a MIG or flux-cored weld — base material melts away leaving a hole",
-      "aliases": ["burn through", "blowing holes", "melting through", "hole in metal"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["weld-mig-burnthrough"],
-      "causes": [
-        { "cause": "Workpiece overheating", "remedy": "Reduce current and/or wire feed speed.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Travel speed too slow", "remedy": "Increase travel speed and ensure that travel speed is kept steady.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" },
-        { "cause": "Excessive material at weld", "remedy": "Reduce wire feed speed.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-37" }
-      ]
+     "cause": "Shielding gas bottle is empty",
+     "remedy": "Check gas bottle and replenish as necessary.",
+     "applies_to": [
+      "MIG"
+     ],
+     "page": "om-43"
     },
     {
-      "id": "burn-through-stick",
-      "symptom": "Burn-through on a stick weld — base material melts away leaving a hole",
-      "aliases": ["stick burn through"],
-      "applies_to": ["STICK"],
-      "figures": ["weld-stick-burnthrough"],
-      "causes": [
-        { "cause": "Workpiece overheating", "remedy": "Reduce current.", "applies_to": ["STICK"], "page": "om-40" },
-        { "cause": "Welding speed too slow", "remedy": "Increase welding speed and ensure that welding speed is kept steady.", "applies_to": ["STICK"], "page": "om-40" },
-        { "cause": "Excessive material at weld", "remedy": "Reduce amount of fill material.", "applies_to": ["STICK"], "page": "om-40" }
-      ]
+     "cause": "Not enough or too much shielding gas",
+     "remedy": "Check gas regulator to ensure proper flow.",
+     "applies_to": [
+      "MIG"
+     ],
+     "page": "om-43"
     },
     {
-      "id": "wire-not-feeding",
-      "symptom": "Wire feed motor runs but wire does not feed properly",
-      "aliases": ["wire not feeding", "motor runs no wire", "wire slipping"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["feed-roller-tension", "interior-controls"],
-      "causes": [
-        { "cause": "Insufficient wire feed pressure", "remedy": "Increase wire feed pressure properly (step 27 on page 17).", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Incorrect wire feed roller size", "remedy": "Flip roll to correct size — see the Feed Roller instructions on page 12.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Damaged MIG Gun, cable, or liner assembly", "remedy": "Have a qualified technician inspect these parts and replace as necessary.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Feed Tensioner is too tight", "remedy": "Loosen Feed Tensioner so it applies only enough pressure to prevent continued spinning after the Gun Trigger is released.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" }
-      ]
-    },
-    {
-      "id": "birdnest",
-      "symptom": "Wire creates a bird's nest during operation",
-      "aliases": ["birdnest", "bird nest", "wire tangles at feeder", "wire bunching"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["feed-roller-tension", "interior-controls"],
-      "causes": [
-        { "cause": "Excess wire feed pressure", "remedy": "Adjust wire feed pressure properly (step 27 on page 17).", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Incorrect Contact Tip size", "remedy": "Replace with the proper tip for the wire used.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "MIG Gun Cable Connector not fully inserted into Wire Feed mechanism", "remedy": "Insert Gun Cable Connector properly (steps 13 and 14 on page 13).", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Damaged liner", "remedy": "Have a qualified technician inspect and repair/replace as necessary.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" }
-      ]
-    },
-    {
-      "id": "wire-stops",
-      "symptom": "Wire stops during welding",
-      "aliases": ["wire stops", "feed stops mid weld", "wire keeps stopping"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": ["feed-roller-tension"],
-      "causes": [
-        { "cause": "Gun cable is severely bent and the wire feed mechanism cannot feed wire", "remedy": "Straighten Gun cable.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Gun liner is clogged or worn", "remedy": "Check gun liner for obstruction. Replace if necessary.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Gun liner is too small for the welding wire being used", "remedy": "Check that gun liner is the correct size for the wire.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Wire is tangled on the spool", "remedy": "Check wire for cross winding or tangled spool.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Wire is not making contact with the feed rollers", "remedy": "Check Feed Rollers and ensure the correct groove for the wire diameter is being used.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Feed roller is not making enough contact with the wire, or is crushing flux-cored wire", "remedy": "Check Feed Tensioner and ensure it is set properly.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" }
-      ]
-    },
-    {
-      "id": "arc-not-stable-wire",
-      "symptom": "Welding arc not stable (MIG / flux-cored)",
-      "aliases": ["unstable arc", "arc sputtering", "arc cutting out"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": [],
-      "causes": [
-        { "cause": "Wire not feeding properly", "remedy": "See the wire feed troubleshooting entries.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Incorrect Contact Tip or liner size, or excessive wear", "remedy": "Replace with the proper tip or liner size for the wire used.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Incorrect wire feed speed", "remedy": "Adjust wire feed speed to achieve a more stable arc.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Loose MIG Gun cable or ground cable", "remedy": "Check to ensure that all connections are tight.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Damaged MIG Gun or loose connection within the gun", "remedy": "Have a qualified technician inspect and repair/replace as necessary.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Incorrect polarity for the process being run", "remedy": "Ensure polarity is correct: DCEP for MIG welding and DCEN for flux-cored self-shielded welding.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" },
-        { "cause": "Gas coverage insufficient or too high", "remedy": "Ensure gas flow rate is set according to the Settings Chart. Make sure the MIG Gun Cable Connector is fully inserted into the wire feed mechanism with no O-rings exposed.", "applies_to": ["MIG"], "page": "om-42" },
-        { "cause": "Poor connection with workpiece", "remedy": "Check the ground clamp connection to the workpiece and machine. Ensure the MIG Gun is properly secured.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-42" }
-      ]
-    },
-    {
-      "id": "weak-arc",
-      "symptom": "Weak arc strength",
-      "aliases": ["weak arc", "not enough power", "arc too cold"],
-      "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"],
-      "figures": [],
-      "causes": [
-        { "cause": "Incorrect line voltage", "remedy": "Check the line voltage and, if insufficient, have a licensed electrician remedy the situation.", "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"], "page": "om-42" },
-        { "cause": "Improper gauge or length of cord", "remedy": "Do not use an extension cord on this Welder. Use only one of the supplied power cords or an identical replacement cord.", "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"], "page": "om-42" },
-        { "cause": "Not enough current", "remedy": "Switch current to the proper setting for the metal thickness.", "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"], "page": "om-42" }
-      ]
-    },
-    {
-      "id": "no-power",
-      "symptom": "Welder does not function when switched on",
-      "aliases": ["won't turn on", "no power", "dead"],
-      "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"],
-      "figures": [],
-      "causes": [
-        { "cause": "See the troubleshooting table for supply and connection checks.", "remedy": "Check the power connection and supply circuit.", "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"], "page": "om-43" },
-        { "cause": "Supply circuit does not meet requirements", "remedy": "The welder must be plugged into a properly grounded, GFCI protected 120VAC (20 amp rated) or 240VAC receptacle that matches the plug, on a circuit equipped with delayed action-type circuit breaker or fuses.", "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"], "page": "om-20" }
-      ]
-    },
-    {
-      "id": "lcd-dark",
-      "symptom": "LCD display does not light when the welder is switched on",
-      "aliases": ["screen not working", "display dark", "no display"],
-      "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"],
-      "figures": [],
-      "causes": [
-        { "cause": "See the troubleshooting table for display and supply checks.", "remedy": "Verify the power supply and connections; if the display still does not light, have a qualified technician inspect the unit.", "applies_to": ["MIG", "FLUX_CORED", "TIG", "STICK"], "page": "om-43" }
-      ]
-    },
-    {
-      "id": "no-arc-ignition",
-      "symptom": "Wire feeds, but arc does not ignite",
-      "aliases": ["no arc", "won't strike", "wire feeds no arc"],
-      "applies_to": ["MIG", "FLUX_CORED"],
-      "figures": [],
-      "causes": [
-        { "cause": "See the troubleshooting table for ground and polarity checks.", "remedy": "Check the ground clamp connection to bare metal on the workpiece and confirm the polarity matches the process being run.", "applies_to": ["MIG", "FLUX_CORED"], "page": "om-43" }
-      ]
-    },
-    {
-      "id": "slag-stick",
-      "symptom": "Coat of slag over a stick weld",
-      "aliases": ["slag", "crust on weld"],
-      "applies_to": ["STICK"],
-      "figures": ["weld-stick-slag"],
-      "causes": [
-        { "cause": "Normal — slag is a necessary part of a stick weld and shields the weld from impurities.", "remedy": "Clean off the slag with the Chipping Hammer and Wire Brush after welding.", "applies_to": ["STICK"], "page": "om-40" }
-      ]
+     "cause": "Dirty workpiece",
+     "remedy": "Clean workpiece down to bare metal.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-43"
     }
-  ]
+   ]
+  },
+  {
+   "id": "porosity-stick",
+   "symptom": "Porosity in a stick weld — small cavities or holes in the bead",
+   "aliases": [
+    "stick porosity",
+    "holes stick weld"
+   ],
+   "applies_to": [
+    "STICK"
+   ],
+   "figures": [
+    "weld-stick-porosity"
+   ],
+   "causes": [
+    {
+     "cause": "Dirty workpiece or fill material",
+     "remedy": "Clean workpiece down to bare metal. Make certain that fill material and Electrode are clean and free from oil, coatings, and other residues.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    },
+    {
+     "cause": "Inconsistent welding speed",
+     "remedy": "Maintain steady weld speed.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    }
+   ]
+  },
+  {
+   "id": "spatter-wire",
+   "symptom": "Excessive spatter on a MIG or flux-cored weld",
+   "aliases": [
+    "spatter",
+    "splatter",
+    "balls of metal"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "weld-mig-spatter"
+   ],
+   "causes": [
+    {
+     "cause": "Dirty workpiece or welding wire",
+     "remedy": "Clean workpiece down to bare metal. Make certain that wire is clean and free from oil, coatings, and other residues.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "Incorrect polarity",
+     "remedy": "Check that polarity is set correctly for type of welding.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "Insufficient shielding gas (MIG only)",
+     "remedy": "Increase flow of gas. Clean nozzle. Maintain proper CTWD.",
+     "applies_to": [
+      "MIG"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "Wire feeding too fast",
+     "remedy": "Reduce wire feed speed.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "CTWD too long",
+     "remedy": "Reduce CTWD.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    }
+   ]
+  },
+  {
+   "id": "spatter-stick",
+   "symptom": "Excessive spatter on a stick weld",
+   "aliases": [
+    "stick spatter"
+   ],
+   "applies_to": [
+    "STICK"
+   ],
+   "figures": [
+    "weld-stick-spatter"
+   ],
+   "causes": [
+    {
+     "cause": "Dirty workpiece or fill material",
+     "remedy": "Clean workpiece down to bare metal. Make certain that fill material and Electrode are clean and free from oil, coatings, and other residues. Note that fine spatter is normal; spatter that is grainy and large is a problem.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    }
+   ]
+  },
+  {
+   "id": "crooked-bead-wire",
+   "symptom": "Crooked or wavy bead on a MIG or flux-cored weld",
+   "aliases": [
+    "wavy bead",
+    "crooked weld",
+    "wandering bead"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "weld-mig-crooked"
+   ],
+   "causes": [
+    {
+     "cause": "Inaccurate welding",
+     "remedy": "Use two hands or rest hand on steady surface.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "Inconsistent travel speed",
+     "remedy": "Maintain steady travel speed.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "CTWD too long",
+     "remedy": "Reduce CTWD.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    }
+   ]
+  },
+  {
+   "id": "crooked-bead-stick",
+   "symptom": "Crooked or wavy bead on a stick weld",
+   "aliases": [
+    "stick wavy bead"
+   ],
+   "applies_to": [
+    "STICK"
+   ],
+   "figures": [
+    "weld-stick-crooked"
+   ],
+   "causes": [
+    {
+     "cause": "Inaccurate welding",
+     "remedy": "Use two hands or rest hand on steady surface.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    },
+    {
+     "cause": "Inconsistent welding speed",
+     "remedy": "Maintain steady weld speed.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    }
+   ]
+  },
+  {
+   "id": "burn-through-wire",
+   "symptom": "Burn-through on a MIG or flux-cored weld — base material melts away leaving a hole",
+   "aliases": [
+    "burn through",
+    "blowing holes",
+    "melting through",
+    "hole in metal"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "weld-mig-burnthrough"
+   ],
+   "causes": [
+    {
+     "cause": "Workpiece overheating",
+     "remedy": "Reduce current and/or wire feed speed.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "Travel speed too slow",
+     "remedy": "Increase travel speed and ensure that travel speed is kept steady.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    },
+    {
+     "cause": "Excessive material at weld",
+     "remedy": "Reduce wire feed speed.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-37"
+    }
+   ]
+  },
+  {
+   "id": "burn-through-stick",
+   "symptom": "Burn-through on a stick weld — base material melts away leaving a hole",
+   "aliases": [
+    "stick burn through"
+   ],
+   "applies_to": [
+    "STICK"
+   ],
+   "figures": [
+    "weld-stick-burnthrough"
+   ],
+   "causes": [
+    {
+     "cause": "Workpiece overheating",
+     "remedy": "Reduce current.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    },
+    {
+     "cause": "Welding speed too slow",
+     "remedy": "Increase welding speed and ensure that welding speed is kept steady.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    },
+    {
+     "cause": "Excessive material at weld",
+     "remedy": "Reduce amount of fill material.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    }
+   ]
+  },
+  {
+   "id": "wire-not-feeding",
+   "symptom": "Wire feed motor runs but wire does not feed properly",
+   "aliases": [
+    "wire not feeding",
+    "motor runs no wire",
+    "wire slipping"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "feed-roller-tension",
+    "interior-controls"
+   ],
+   "causes": [
+    {
+     "cause": "Insufficient wire feed pressure",
+     "remedy": "Increase wire feed pressure properly (step 27 on page 17).",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Incorrect wire feed roller size",
+     "remedy": "Flip roll to correct size — see the Feed Roller instructions on page 12.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Damaged MIG Gun, cable, or liner assembly",
+     "remedy": "Have a qualified technician inspect these parts and replace as necessary.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Feed Tensioner is too tight",
+     "remedy": "Loosen Feed Tensioner so it applies only enough pressure to prevent continued spinning after the Gun Trigger is released.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    }
+   ]
+  },
+  {
+   "id": "birdnest",
+   "symptom": "Wire creates a bird's nest during operation",
+   "aliases": [
+    "birdnest",
+    "bird nest",
+    "wire tangles at feeder",
+    "wire bunching"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "feed-roller-tension",
+    "interior-controls"
+   ],
+   "causes": [
+    {
+     "cause": "Excess wire feed pressure",
+     "remedy": "Adjust wire feed pressure properly (step 27 on page 17).",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Incorrect Contact Tip size",
+     "remedy": "Replace with the proper tip for the wire used.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "MIG Gun Cable Connector not fully inserted into Wire Feed mechanism",
+     "remedy": "Insert Gun Cable Connector properly (steps 13 and 14 on page 13).",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Damaged liner",
+     "remedy": "Have a qualified technician inspect and repair/replace as necessary.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    }
+   ]
+  },
+  {
+   "id": "wire-stops",
+   "symptom": "Wire stops during welding",
+   "aliases": [
+    "wire stops",
+    "feed stops mid weld",
+    "wire keeps stopping"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [
+    "feed-roller-tension"
+   ],
+   "causes": [
+    {
+     "cause": "Gun cable is severely bent and the wire feed mechanism cannot feed wire",
+     "remedy": "Straighten Gun cable.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Gun liner is clogged or worn",
+     "remedy": "Check gun liner for obstruction. Replace if necessary.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Gun liner is too small for the welding wire being used",
+     "remedy": "Check that gun liner is the correct size for the wire.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Wire is tangled on the spool",
+     "remedy": "Check wire for cross winding or tangled spool.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Wire is not making contact with the feed rollers",
+     "remedy": "Check Feed Rollers and ensure the correct groove for the wire diameter is being used.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Feed roller is not making enough contact with the wire, or is crushing flux-cored wire",
+     "remedy": "Check Feed Tensioner and ensure it is set properly.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    }
+   ]
+  },
+  {
+   "id": "arc-not-stable-wire",
+   "symptom": "Welding arc not stable (MIG / flux-cored)",
+   "aliases": [
+    "unstable arc",
+    "arc sputtering",
+    "arc cutting out"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [],
+   "causes": [
+    {
+     "cause": "Wire not feeding properly",
+     "remedy": "See the wire feed troubleshooting entries.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Incorrect Contact Tip or liner size, or excessive wear",
+     "remedy": "Replace with the proper tip or liner size for the wire used.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Incorrect wire feed speed",
+     "remedy": "Adjust wire feed speed to achieve a more stable arc.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Loose MIG Gun cable or ground cable",
+     "remedy": "Check to ensure that all connections are tight.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Damaged MIG Gun or loose connection within the gun",
+     "remedy": "Have a qualified technician inspect and repair/replace as necessary.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Incorrect polarity for the process being run",
+     "remedy": "Ensure polarity is correct: DCEP for MIG welding and DCEN for flux-cored self-shielded welding.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Gas coverage insufficient or too high",
+     "remedy": "Ensure gas flow rate is set according to the Settings Chart. Make sure the MIG Gun Cable Connector is fully inserted into the wire feed mechanism with no O-rings exposed.",
+     "applies_to": [
+      "MIG"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Poor connection with workpiece",
+     "remedy": "Check the ground clamp connection to the workpiece and machine. Ensure the MIG Gun is properly secured.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-42"
+    }
+   ]
+  },
+  {
+   "id": "weak-arc",
+   "symptom": "Weak arc strength",
+   "aliases": [
+    "weak arc",
+    "not enough power",
+    "arc too cold"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED",
+    "TIG",
+    "STICK"
+   ],
+   "figures": [],
+   "causes": [
+    {
+     "cause": "Incorrect line voltage",
+     "remedy": "Check the line voltage and, if insufficient, have a licensed electrician remedy the situation.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Improper gauge or length of cord",
+     "remedy": "Do not use an extension cord on this Welder. Use only one of the supplied power cords or an identical replacement cord.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-42"
+    },
+    {
+     "cause": "Not enough current",
+     "remedy": "Switch current to the proper setting for the metal thickness.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-42"
+    }
+   ]
+  },
+  {
+   "id": "no-power",
+   "symptom": "Welder does not function when switched on",
+   "aliases": [
+    "won't turn on",
+    "no power",
+    "dead"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED",
+    "TIG",
+    "STICK"
+   ],
+   "figures": [],
+   "causes": [
+    {
+     "cause": "Tripped thermal protection device (welder overheated)",
+     "remedy": "If a warning screen appears in the LCD Display, the welder may have overheated and shut down. Stop and wait with the Power Switch ON for it to cool — it automatically returns to service after cooling off. Reduce duration or frequency of welding periods; see Duty Cycle (Duration of Use) on page 19.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Circuit supplies insufficient input voltage or amperage",
+     "remedy": "Verify the circuit supplies the required input voltage and amperage as detailed on the Specifications table. If a warning screen appears in the LCD Display, check the input voltage is within the specified range.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Machine is in low- or over-voltage protection",
+     "remedy": "Check input voltage and ensure it falls within the specified range. If input voltage is correct, press the Reset Button on the back of the machine.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Faulty or improperly connected trigger",
+     "remedy": "Ensure the gun connection is properly seated on the machine. A qualified technician must check and secure or replace the trigger.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Machine is in the incorrect mode",
+     "remedy": "Ensure the correct process has been selected.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Ground Clamp not attached to workpiece",
+     "remedy": "Attach the Ground Clamp to the workpiece.",
+     "applies_to": [
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-44"
+    },
+    {
+     "cause": "Shielding gas not connected",
+     "remedy": "Connect shielding gas to the welder.",
+     "applies_to": [
+      "TIG"
+     ],
+     "page": "om-44"
+    },
+    {
+     "cause": "Supply circuit does not meet requirements",
+     "remedy": "The welder must be plugged into a properly grounded, GFCI protected 120VAC (20 amp rated) or 240VAC receptacle that matches the plug, on a circuit equipped with delayed action-type circuit breaker or fuses.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-20"
+    }
+   ]
+  },
+  {
+   "id": "lcd-dark",
+   "symptom": "LCD display does not light when the welder is switched on",
+   "aliases": [
+    "screen not working",
+    "display dark",
+    "no display"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED",
+    "TIG",
+    "STICK"
+   ],
+   "figures": [],
+   "causes": [
+    {
+     "cause": "See the troubleshooting table for display and supply checks.",
+     "remedy": "Verify the power supply and connections; if the display still does not light, have a qualified technician inspect the unit.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED",
+      "TIG",
+      "STICK"
+     ],
+     "page": "om-43"
+    }
+   ]
+  },
+  {
+   "id": "no-arc-ignition",
+   "symptom": "Wire feeds, but arc does not ignite",
+   "aliases": [
+    "no arc",
+    "won't strike",
+    "wire feeds no arc"
+   ],
+   "applies_to": [
+    "MIG",
+    "FLUX_CORED"
+   ],
+   "figures": [],
+   "causes": [
+    {
+     "cause": "Improper ground connection",
+     "remedy": "Make certain the workpiece is contacted properly by the Ground Clamp, and that the workpiece is properly cleaned near the ground clamp and the welding location.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Improperly sized Contact Tip",
+     "remedy": "Verify the Contact Tip is the proper size for the welding wire. If needed, replace it with the proper size and type.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Excessively worn Contact Tip",
+     "remedy": "Check that the hole in the tip is not deformed or enlarged. If needed, replace the Contact Tip with the proper size and type.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-43"
+    },
+    {
+     "cause": "Dirty Contact Tip",
+     "remedy": "Properly clean the Contact Tip.",
+     "applies_to": [
+      "MIG",
+      "FLUX_CORED"
+     ],
+     "page": "om-43"
+    }
+   ]
+  },
+  {
+   "id": "slag-stick",
+   "symptom": "Coat of slag over a stick weld",
+   "aliases": [
+    "slag",
+    "crust on weld"
+   ],
+   "applies_to": [
+    "STICK"
+   ],
+   "figures": [
+    "weld-stick-slag"
+   ],
+   "causes": [
+    {
+     "cause": "Normal — slag is a necessary part of a stick weld and shields the weld from impurities.",
+     "remedy": "Clean off the slag with the Chipping Hammer and Wire Brush after welding.",
+     "applies_to": [
+      "STICK"
+     ],
+     "page": "om-40"
+    }
+   ]
+  }
+ ]
 }

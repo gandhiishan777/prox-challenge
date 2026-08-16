@@ -410,8 +410,30 @@ export function parseThickness(input?: string | null): {
   if (!input) return { inches: null, label: null };
   const text = input.trim().toLowerCase();
 
-  const gauge = /(\d+)\s*(?:ga|gauge)/.exec(text);
+  // Word boundary required: without it the "ga" inside "galvanized" turned
+  // "3/8 galvanized" into "8 Ga".
+  const gauge = /(\d+)\s*(?:ga|gauge)\b/.exec(text);
   if (gauge) return { inches: null, label: `${gauge[1]} Ga` };
+
+  // Metric before anything bare-number: "10mm" read as a bare number became
+  // 10 INCHES, a ~25× error inside a capability verdict. The manual is
+  // imperial, so the label carries both so the comparison stays legible.
+  const metric = /(\d*\.?\d+)\s*(mm|cm)\b/.exec(text);
+  if (metric) {
+    const raw = parseFloat(metric[1]);
+    const mm = metric[2] === "cm" ? raw * 10 : raw;
+    const value = Math.round((mm / 25.4) * 1000) / 1000;
+    return { inches: value, label: `${metric[1]} ${metric[2]} (~${value}")` };
+  }
+
+  // Compound fraction first: "1 1/2" through the simple-fraction branch kept
+  // only the "1/2" and silently accepted a third of the stated thickness.
+  const compound = /(\d+)[\s-]+(\d+)\s*\/\s*(\d+)/.exec(text);
+  if (compound) {
+    const value =
+      parseInt(compound[1], 10) + parseInt(compound[2], 10) / parseInt(compound[3], 10);
+    return { inches: value, label: `${compound[1]} ${compound[2]}/${compound[3]}"` };
+  }
 
   const fraction = /(\d+)\s*\/\s*(\d+)/.exec(text);
   if (fraction) {

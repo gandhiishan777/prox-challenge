@@ -73,6 +73,20 @@ describe("compileArtifact", () => {
     expect(result.error?.message).toContain("recharts");
   });
 
+  it("rejects module names that are Object.prototype properties", () => {
+    // `name in scope` walked the prototype chain, so require("constructor")
+    // resolved to Object's machinery instead of failing like any other
+    // unstocked module. The allow-list must mean own properties only.
+    const result = compileArtifact(
+      `import React from "react";
+       const C = require("constructor");
+       export default () => <div>{typeof C}</div>;`,
+      scope,
+    );
+    expect(result.error?.phase).toBe("execute");
+    expect(result.error?.message).toContain("constructor");
+  });
+
   it("tolerates an unknown import that is never referenced", () => {
     // Sucrase elides unused imports, so a stray `import "axios"` that the
     // artifact never actually uses costs nothing. Failing here would reject

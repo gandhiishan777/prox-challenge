@@ -63,7 +63,11 @@ export function compileArtifact(
 
   const moduleNames = Object.keys(scope);
   const requireShim = (name: string): unknown => {
-    if (name in scope) return scope[name];
+    // Own properties only: `in` walks the prototype chain, so require("constructor")
+    // resolved to Object's machinery instead of failing like any other unstocked
+    // module. Not an escape (new Function already runs in the frame's realm), but
+    // it made the allow-list claim false.
+    if (Object.prototype.hasOwnProperty.call(scope, name)) return scope[name];
 
     // Any @/components/ui/* path maps onto the single ui kit object, so the
     // model can split imports across files the way shadcn projects do.

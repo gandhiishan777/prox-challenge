@@ -5,6 +5,7 @@ import {
   getWeldSettings,
   lookupDutyCycle,
   lookupTroubleshooting,
+  parseThickness,
   parseVoltage,
 } from "./lookups";
 
@@ -158,5 +159,39 @@ describe("troubleshooting relevance", () => {
         }
       }
     }
+  });
+});
+
+describe("parseThickness: units and compound fractions", () => {
+  it("converts metric instead of reading it as inches", () => {
+    // "10mm" through the bare-number branch became 10 INCHES — a ~25× error
+    // that a capability verdict then presented with a citation attached.
+    expect(parseThickness("10mm").inches).toBeCloseTo(0.394, 3);
+    expect(parseThickness("10 mm steel").inches).toBeCloseTo(0.394, 3);
+    expect(parseThickness("1.2cm").inches).toBeCloseTo(0.472, 3);
+    expect(parseThickness("10mm").label).toContain("mm");
+  });
+
+  it("sums compound fractions instead of keeping only the fraction", () => {
+    // "1 1/2 inch" parsed as 0.5" — a third of the stated thickness,
+    // silently accepted.
+    expect(parseThickness("1 1/2 inch").inches).toBe(1.5);
+    expect(parseThickness("1-1/2 in").inches).toBe(1.5);
+    expect(parseThickness("2 3/8").inches).toBe(2.375);
+  });
+
+  it("does not read the 'ga' in 'galvanized' as a gauge", () => {
+    // "3/8 galvanized" returned "8 Ga" — wrong kind of unit entirely.
+    const r = parseThickness("3/8 galvanized");
+    expect(r.inches).toBe(0.375);
+    expect(r.label).toBe('3/8"');
+  });
+
+  it("still parses the ordinary cases", () => {
+    expect(parseThickness("1/8").inches).toBe(0.125);
+    expect(parseThickness("0.125").inches).toBe(0.125);
+    expect(parseThickness("11 gauge").label).toBe("11 Ga");
+    expect(parseThickness("24 ga").label).toBe("24 Ga");
+    expect(parseThickness(null).inches).toBeNull();
   });
 });

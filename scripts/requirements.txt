@@ -1,0 +1,10 @@
+# Extraction pipeline dependencies (dev-time only — the app itself needs none of
+# these; the knowledge pack is committed). Install with:
+#   pip install -r scripts/requirements.txt
+#
+# Stage 3 (transcription) additionally needs ANTHROPIC_API_KEY in .env.
+
+PyMuPDF>=1.24        # imported as `fitz` — page rendering, text layer, drawing census
+Pillow>=10           # figure cropping and whitespace trimming
+python-dotenv>=1.0   # loads .env for the transcription stage
+anthropic>=0.40      # vision transcription calls
