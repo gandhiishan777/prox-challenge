@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { useChat, type Message } from "@/lib/store";
+import { pageIdForCite } from "@/lib/citations";
 import { Markdown } from "./Markdown";
 import { FigureCard } from "./FigureCard";
 import { OptionChips } from "./OptionChips";
@@ -30,7 +31,7 @@ import { MachineDiagram } from "../machine/MachineDiagram";
  * there only to normalise the spelling — "p.12" and "p. 12" are one citation and
  * must not both land in the strip.
  */
-const CITE = /\bp\.\s*(\d{1,2})\b/g;
+const CITE = /\bQuick Start p\.\s*(\d)\b|\bSelection Chart\b|\bp\.\s*(\d{1,2})\b/g;
 
 /** Unique page citations in the order the answer made them. */
 function citationsIn(message: Message): string[] {
@@ -38,14 +39,25 @@ function citationsIn(message: Message): string[] {
   for (const part of message.parts) {
     if (part.kind !== "text") continue;
     for (const match of part.text.matchAll(CITE)) {
-      const tidy = `p. ${match[1]}`;
+      const tidy =
+        match[1] !== undefined
+          ? `Quick Start p. ${match[1]}`
+          : match[2] !== undefined
+            ? `p. ${match[2]}`
+            : "Selection Chart";
       if (!seen.includes(tidy)) seen.push(tidy);
     }
   }
   return seen;
 }
 
-function AnswerHeader({ message }: { message: Message }) {
+function AnswerHeader({
+  message,
+  onOpenPage,
+}: {
+  message: Message;
+  onOpenPage: (pageId: string) => void;
+}) {
   const hasText = message.parts.some(
     (p) => p.kind === "text" && p.text.trim().length > 0,
   );
@@ -60,21 +72,37 @@ function AnswerHeader({ message }: { message: Message }) {
   const lookups = message.activity.filter((a) => a.done).length;
   const cites = citationsIn(message);
 
-  const summary = [
-    lookups ? `${lookups} lookup${lookups === 1 ? "" : "s"}` : null,
-    cites.length ? cites.join(", ") : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
   return (
     <div className="mb-4 flex items-center gap-2.5">
       <span className="font-display text-[11px] font-bold uppercase tracking-[.16em] text-rust">
         Answer
       </span>
       <span aria-hidden="true" className="h-px flex-1 bg-line" />
-      {summary && (
-        <span className="font-mono text-[11px] text-muted">{summary}</span>
+      {(lookups > 0 || cites.length > 0) && (
+        <span className="font-mono text-[11px] text-muted">
+          {lookups > 0 && `${lookups} lookup${lookups === 1 ? "" : "s"}`}
+          {lookups > 0 && cites.length > 0 && " · "}
+          {cites.map((cite, i) => {
+            const pageId = pageIdForCite(cite);
+            return (
+              <React.Fragment key={cite}>
+                {i > 0 && ", "}
+                {pageId ? (
+                  <button
+                    type="button"
+                    onClick={() => onOpenPage(pageId)}
+                    title="Open this page of the manual"
+                    className="underline decoration-dotted underline-offset-[3px] transition-colors hover:text-rust"
+                  >
+                    {cite}
+                  </button>
+                ) : (
+                  cite
+                )}
+              </React.Fragment>
+            );
+          })}
+        </span>
       )}
     </div>
   );
@@ -114,7 +142,7 @@ function MessageView({
 
   return (
     <div>
-      <AnswerHeader message={message} />
+      <AnswerHeader message={message} onOpenPage={onOpenPage} />
       <ToolActivity items={message.activity} />
 
       {/* No wrapper spacing here on purpose: every part already carries its own
@@ -127,7 +155,9 @@ function MessageView({
         switch (part.kind) {
           case "text":
             return part.text.trim() ? (
-              <Markdown key={i}>{part.text}</Markdown>
+              <Markdown key={i} onOpenPage={onOpenPage}>
+                {part.text}
+              </Markdown>
             ) : null;
 
           case "figure":

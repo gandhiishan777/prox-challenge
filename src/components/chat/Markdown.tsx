@@ -4,6 +4,8 @@ import * as React from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { linkifyCitations, pageIdFromHref } from "@/lib/citations";
+
 /**
  * Assistant prose renderer.
  *
@@ -22,6 +24,19 @@ import remarkGfm from "remark-gfm";
  * flags its subtree, so a fence with no language still styles as a block.
  */
 const InsidePre = React.createContext(false);
+
+function ExternalLink({ href, children }: { href?: string; children?: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="text-rust underline underline-offset-2"
+    >
+      {children}
+    </a>
+  );
+}
 
 const components: Components = {
   p: ({ children }) => (
@@ -64,16 +79,7 @@ const components: Components = {
   ),
   li: ({ children }) => <li className="leading-[1.55]">{children}</li>,
 
-  a: ({ href, children }) => (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="text-rust underline underline-offset-2"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }) => <ExternalLink href={href}>{children}</ExternalLink>,
 
   // The agent quotes the manual's printed WARNING blocks this way, so it has to
   // read as lifted text rather than as the agent's own voice.
@@ -125,11 +131,41 @@ const components: Components = {
   ),
 };
 
-export function Markdown({ children }: { children: string }) {
+export function Markdown({
+  children,
+  onOpenPage,
+}: {
+  children: string;
+  /** When given, citations become buttons that open the manual at that page. */
+  onOpenPage?: (pageId: string) => void;
+}) {
+  const merged = React.useMemo<Components>(() => {
+    if (!onOpenPage) return components;
+    return {
+      ...components,
+      a: ({ href, children: label }) => {
+        const pageId = pageIdFromHref(href);
+        if (!pageId) return <ExternalLink href={href}>{label}</ExternalLink>;
+        return (
+          <button
+            type="button"
+            onClick={() => onOpenPage(pageId)}
+            title="Open this page of the manual"
+            className="align-baseline font-mono text-[.85em] text-rust underline decoration-dotted underline-offset-[3px] transition-colors hover:text-rust-dark"
+          >
+            {label}
+          </button>
+        );
+      },
+    };
+  }, [onOpenPage]);
+
+  const text = onOpenPage ? linkifyCitations(children) : children;
+
   return (
     <div className="[&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-        {children}
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={merged}>
+        {text}
       </ReactMarkdown>
     </div>
   );
